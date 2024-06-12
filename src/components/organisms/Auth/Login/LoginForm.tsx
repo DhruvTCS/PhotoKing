@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import phoneIcon from '../../../../assets/images/Icons/phone.svg'
 import UnderLine from '../../../atoms/Login/UnderLine'
 import Checkbox from '../../../atoms/Login/Checkbox'
 import InputComponent from '../../../atoms/Login/InputComponent'
 import SubmitButton from '../../../atoms/Login/SubmitButton'
-
+import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
+import { useNavigate } from 'react-router-dom'
+import { loginUser, setContactNumber, clearError } from '../../../../Redux/Slice/Auth/LoginSlice'
 
 
 
@@ -155,6 +157,37 @@ const LoginForm: React.FC = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [contact, setContact] = useState('')
     const [countryCode, setCountryCode] = useState('+91');
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    const { status, loading, error, isError } = useAppSelector(state => state.login)
+
+
+    useEffect(() => {
+
+        if (status === true) {
+            navigate('/otp')
+        }
+        return () => {
+            dispatch(clearError())
+        }
+    }, [navigate, status])
+    useEffect(() => {
+
+        if (isError) {
+            if (error.status === 401) {
+                alert("Please Register first");
+
+            }
+            else {
+                alert(error.messgae)
+            }
+        }
+
+        return () => {
+            dispatch(clearError());
+        }
+    }, [isError])
+
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
     };
@@ -163,6 +196,9 @@ const LoginForm: React.FC = () => {
         event.preventDefault();
         if (validatePhoneNumber(contact)) {
             console.log(contact);
+            // setContact((contact) => );
+            dispatch(setContactNumber({ phone_number: contact, countryCode }));
+            dispatch(loginUser({ phone_number: countryCode + contact }));
 
         } else {
             console.log("invalid phone number");
@@ -202,7 +238,7 @@ const LoginForm: React.FC = () => {
 
                     </CheckBoxContainer>
                     <SubmitButtonContainer >
-                        <SubmitButton onClick={handleSubmit} width={291} text='Submit' needArrow={true} />
+                        <SubmitButton onClick={handleSubmit} disabled={loading} width={291} text='Send' needArrow={true} />
 
                     </SubmitButtonContainer>
                 </InputFields>

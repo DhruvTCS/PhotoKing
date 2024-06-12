@@ -8,12 +8,16 @@ border:none;
 border-radius: 16px 16px 16px 16px;
 background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
 box-shadow: 0px 4px 14px 0px #86169680;
-font-family: "Urbanist", sans-serif;;
+font-family: "Urbanist", sans-serif;
 font-size: 16px;
 font-weight: 500;
 line-height: 19.2px;
 text-align: center;
 color: #FFFFFF;
+
+&:disabled{
+
+}
 
 
 
@@ -42,14 +46,15 @@ interface ButtonProps {
     width: number;
     needArrow: boolean;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    disabled?: boolean;
 }
 
 interface ButtonStyleProps {
     width: number;
 }
-const SubmitButton: React.FC<ButtonProps> = ({ text, width, needArrow,onClick }) => {
+const SubmitButton: React.FC<ButtonProps> = ({ text, width, needArrow, onClick, disabled }) => {
     return (
-        <Button width={width} onClick={onClick}>
+        <Button width={width} disabled={disabled} onClick={onClick}>
             {text}
             {
                 needArrow ? (<ArrowContainer>

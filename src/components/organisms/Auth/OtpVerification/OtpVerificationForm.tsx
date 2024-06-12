@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import SubmitButton from "../../../atoms/Login/SubmitButton";
+import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { clearError, verifyOTP } from "../../../../Redux/Slice/Auth/LoginSlice";
 
 interface otpTextProps {
   isActivated: boolean;
@@ -136,7 +140,9 @@ const OtplVerificationForm: React.FC = () => {
   const [showResendLink, setShowResendLink] = useState<boolean>(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const inputsRef = useRef<HTMLInputElement[]>([]);
-
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isError, phone_number, country_code, error, user, status, loading, orderId } = useAppSelector(state => state.login)
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => {
@@ -147,6 +153,32 @@ const OtplVerificationForm: React.FC = () => {
       setShowResendLink(true);
     }
   }, [timer]);
+  useEffect(() => {
+
+    if (!orderId) {
+      navigate('/login');
+    }
+
+    return () => {
+      dispatch(clearError());
+    }
+  }, [orderId])
+  useEffect(() => {
+
+    if (isError) {
+      if (error.status === 401) {
+        alert("Please Register first");
+
+      }
+      else {
+        alert(error.messgae)
+      }
+    }
+
+    return () => {
+      dispatch(clearError());
+    }
+  }, [isError])
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -158,6 +190,13 @@ const OtplVerificationForm: React.FC = () => {
     } else {
       console.log("Submitted OTP:", otpValue);
       // Handle OTP submission logic here
+      dispatch(verifyOTP({
+        phone_number,
+        country_code,
+        orderId: orderId,
+        otp: otpValue,
+
+      }))
     }
   };
 
