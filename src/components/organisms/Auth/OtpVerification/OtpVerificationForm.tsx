@@ -4,7 +4,9 @@ import SubmitButton from "../../../atoms/Login/SubmitButton";
 import { useAppDispatch, useAppSelector } from "../../../../Redux/Hooks";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearError, verifyOTP } from "../../../../Redux/Slice/Auth/LoginSlice";
+import { clearError } from "../../../../Redux/Slice/Auth/AuthSlice";
+import { resendOTP, verifyOTP } from "../../../../Redux/ApiCalls/Auth/login";
+import LoadingDots from "../../../atoms/Utlis/LoadinDots";
 
 interface otpTextProps {
   isActivated: boolean;
@@ -122,6 +124,7 @@ const ResesndOtpText = styled.p<otpTextProps>`
   font-weight: 600;
   line-height: 32px;
   color: #a720b9;
+  cursor: ${(props) => props.isActivated ? 'pointer' : ''};
   margin-left: ${(props) => (props.isActivated ? "25px" : "0px")};
   text-decoration: ${(props) => (props.isActivated ? "underline" : "none")};
 `;
@@ -142,7 +145,7 @@ const OtplVerificationForm: React.FC = () => {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isError, phone_number, country_code, error, user, status, loading, orderId } = useAppSelector(state => state.login)
+  const { isError, phone_number, country_code, error, user, apiStatus, loading, orderId } = useAppSelector(state => state.auth);
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => {
@@ -171,18 +174,24 @@ const OtplVerificationForm: React.FC = () => {
 
       }
       else {
-        alert(error.messgae)
+        alert(error.message)
       }
+    }
+    if (apiStatus === true && user && Object.keys(user).length !== 0) {
+      alert("Number verified");
+
     }
 
     return () => {
       dispatch(clearError());
     }
-  }, [isError])
+
+  }, [isError, apiStatus, user])
+
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    e.preventDefault();
+
     const otpValue = otp.join("");
     if (otpValue.length !== 4 || otp.some((digit) => !/^\d$/.test(digit))) {
       // Error of inappropriate otp value
@@ -200,12 +209,15 @@ const OtplVerificationForm: React.FC = () => {
     }
   };
 
-  const handleResendOtp = () => {
+  const handleResendOtp = (e: React.MouseEvent<HTMLParagraphElement>) => {
+    e.preventDefault();
     console.log("Resend OTP");
     // Handle resend OTP logic here
+    dispatch(resendOTP({ orderId }));
     setTimer(60);
     setShowResendLink(false);
-  };
+  }
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -276,12 +288,22 @@ const OtplVerificationForm: React.FC = () => {
             )}
           </ResendOtpContainer>
           <SubmitButtonContainer>
-            <SubmitButton
-              onClick={handleSubmit}
-              width={291}
-              text="Verify"
-              needArrow={true}
-            />
+            {loading ?
+
+
+              <LoadingDots position={{ type: "absolute", top: "30px", left: "115px" }} />
+
+              :
+
+
+              <SubmitButton
+                onClick={handleSubmit}
+                width={291}
+                text="Verify"
+                needArrow={true}
+              />
+            }
+
           </SubmitButtonContainer>
         </InputFields>
       </Form>

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import LogoImage from "../../atoms/Logo/LogoImage";
+import LogoImage from "../../atoms/Utlis/LogoImage";
 
 
 

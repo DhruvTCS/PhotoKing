@@ -19,7 +19,8 @@ font-size: 18px;
 font-weight: 600;
 line-height: 32px;
 text-align: left;
-color: #292929;
+color: #746b74;
+opacity:50%;
 }
 
 &:focus{

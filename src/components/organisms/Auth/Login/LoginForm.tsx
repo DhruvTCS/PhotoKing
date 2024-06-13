@@ -7,8 +7,9 @@ import InputComponent from '../../../atoms/Login/InputComponent'
 import SubmitButton from '../../../atoms/Login/SubmitButton'
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
 import { useNavigate } from 'react-router-dom'
-import { loginUser, setContactNumber, clearError } from '../../../../Redux/Slice/Auth/LoginSlice'
-
+import { setContactNumber, clearError } from '../../../../Redux/Slice/Auth/AuthSlice'
+import { loginUser } from '../../../../Redux/ApiCalls/Auth/login'
+import LoadingDots from '../../../atoms/Utlis/LoadinDots'
 
 
 const LoginFormContainer = styled.div`
@@ -159,27 +160,26 @@ const LoginForm: React.FC = () => {
     const [countryCode, setCountryCode] = useState('+91');
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { status, loading, error, isError } = useAppSelector(state => state.login)
+    const { apiStatus, loading, error, isError } = useAppSelector(state => state.auth)
 
 
     useEffect(() => {
 
-        if (status === true) {
+        if (apiStatus === true) {
             navigate('/otp')
         }
         return () => {
             dispatch(clearError())
         }
-    }, [navigate, status])
+    }, [navigate, apiStatus])
     useEffect(() => {
 
         if (isError) {
-            if (error.status === 401) {
+            if (error.status === 402) {
                 alert("Please Register first");
-
             }
             else {
-                alert(error.messgae)
+                alert(error.message)
             }
         }
 
@@ -238,7 +238,16 @@ const LoginForm: React.FC = () => {
 
                     </CheckBoxContainer>
                     <SubmitButtonContainer >
-                        <SubmitButton onClick={handleSubmit} disabled={loading} width={291} text='Send' needArrow={true} />
+                        {loading ?
+
+
+                            <LoadingDots position={{ type: "absolute", top: "41px", left: "135px" }} />
+
+                            :
+
+
+                            <SubmitButton onClick={handleSubmit} disabled={loading} width={291} text='Send' needArrow={true} />
+                        }
 
                     </SubmitButtonContainer>
                 </InputFields>
