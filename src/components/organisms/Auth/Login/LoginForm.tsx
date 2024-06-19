@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import phoneIcon from '../../../../assets/images/Icons/phone.svg'
+import phoneIcon from '../../../../assets/Icons/phone.svg'
 import UnderLine from '../../../atoms/Login/UnderLine'
 import Checkbox from '../../../atoms/Login/Checkbox'
 import InputComponent from '../../../atoms/Login/InputComponent'
 import SubmitButton from '../../../atoms/Login/SubmitButton'
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
 import { useNavigate } from 'react-router-dom'
-import { setContactNumber, clearError } from '../../../../Redux/Slice/Auth/AuthSlice'
+import { setContactNumber, clearError, setRemeberMe } from '../../../../Redux/Slice/Auth/AuthSlice'
 import { loginUser } from '../../../../Redux/ApiCalls/Auth/login'
 import LoadingDots from '../../../atoms/Utlis/LoadinDots'
 
@@ -158,6 +158,7 @@ const LoginForm: React.FC = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [contact, setContact] = useState('')
     const [countryCode, setCountryCode] = useState('+91');
+    const [activeButton, setActiveButton] = useState(false);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { apiStatus, loading, error, isError } = useAppSelector(state => state.auth)
@@ -166,7 +167,7 @@ const LoginForm: React.FC = () => {
     useEffect(() => {
 
         if (apiStatus === true) {
-            navigate('/otp')
+            navigate('/auth/otp')
         }
         return () => {
             dispatch(clearError())
@@ -191,12 +192,25 @@ const LoginForm: React.FC = () => {
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
     };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setContact(event.target.value);
 
+        if (event.target.value.length === 10) {
+            setActiveButton(true);
+
+        } else {
+            setActiveButton(false);
+        }
+
+    }
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (validatePhoneNumber(contact)) {
             console.log(contact);
             // setContact((contact) => );
+            if (isChecked) {
+                dispatch(setRemeberMe(true));
+            }
             dispatch(setContactNumber({ phone_number: contact, countryCode }));
             dispatch(loginUser({ phone_number: countryCode + contact }));
 
@@ -228,7 +242,7 @@ const LoginForm: React.FC = () => {
                         </CountryCodeContainer>
 
                         <Input>
-                            <InputComponent id="contactNo" width={314} value={contact} onChange={(e) => setContact(e.target.value)} name='contact' placeholder='123456789' type='text' />
+                            <InputComponent id="contactNo" width={314} value={contact} onChange={handleChange} name='contact' placeholder='123456789' type='text' />
                             <UnderLine width={314} />
                         </Input>
                     </InputContainer>
@@ -246,7 +260,7 @@ const LoginForm: React.FC = () => {
                             :
 
 
-                            <SubmitButton onClick={handleSubmit} disabled={loading} width={291} text='Send' needArrow={true} />
+                            <SubmitButton onClick={handleSubmit} width={291} text='Send' needArrow={true} active={loading ? true : !activeButton} />
                         }
 
                     </SubmitButtonContainer>

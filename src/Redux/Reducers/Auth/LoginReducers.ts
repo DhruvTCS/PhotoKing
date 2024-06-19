@@ -16,13 +16,13 @@ export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             }
         }>) => {
             state.loading = false;
-            if (action.payload.data.role === null) {
+            if (action.payload.data.role === null && !state.isRegister) {
                 state.isError = true;
                 state.error = {
                     status: 402,
                     message: "Please Register first"
                 }
-            } else if (action.payload.data.role !== 3) {
+            } else if (action.payload.data.role !== 3 && !state.isRegister) {
                 state.isError = true;
                 state.error = {
                     status: 401,

@@ -7,7 +7,6 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
         state.error = {};
         state.isError = false;
         state.apiStatus = false;
-
     })
         .addCase(verifyOTP.fulfilled, (state, action: PayloadAction<{
             status: number;
@@ -16,27 +15,31 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
                 access_token: string;
                 refresh_token: string;
                 user: {
-                    id: string;
+                    id: number;
                     name: string;
                     email: string;
                     country_code: string;
                     phone_number: string;
                     username: string;
-                    role: string;
+                    role: number;
+                    image: string | null;
 
                 }
-
             }
-
-
         }>) => {
             state.loading = false;
             console.log(action.payload);
             state.user = action.payload.data.user;
             console.log(action.payload.success);
             state.apiStatus = action.payload.success;
-            localStorage.setItem("access_token", action.payload.data.access_token);
-            localStorage.setItem("refresh_token", action.payload.data.refresh_token);
+            state.access_token = action.payload.data.access_token;
+            state.refresh_token = action.payload.data.refresh_token;
+            if (state.remeberMe) {
+
+                localStorage.setItem("access_token", action.payload.data.access_token);
+                localStorage.setItem("refresh_token", action.payload.data.refresh_token);
+            }
+            state.isAuthticated = true;
         })
         .addCase(verifyOTP.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
@@ -55,8 +58,6 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
             orderId: string;
         }>) => {
             state.loading = false;
-
-
         }).addCase(resendOTP.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.apiStatus = false;

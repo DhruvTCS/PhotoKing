@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import LogoImage from "../../atoms/Utlis/LogoImage";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -12,7 +13,7 @@ const LogoContainer = styled.div`
   gap: 0px;
   opacity: 0px;
   display:flex;
-  direction:row;
+  flex-direction:row;
 `;
 
 const TextContainer = styled.div`
@@ -31,8 +32,9 @@ const TextContainer = styled.div`
 
 
 const CompanyLogo: React.FC = () => {
+  const navigate = useNavigate();
   return (
-    <LogoContainer>
+    <LogoContainer onClick={() => navigate('/')}>
       <LogoImage />
 
       <TextContainer>Photo King</TextContainer>

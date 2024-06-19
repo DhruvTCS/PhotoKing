@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import apiCall from "../AuthorizedApi";
 
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
@@ -20,6 +21,22 @@ export const verifyOTP = createAsyncThunk(
             const response = await axios.post('/account/login/', credentials);
             console.log(response.data);
             return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
+
+export const getUserByToken = createAsyncThunk(
+    'auth/getUserByToken',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'GET',
+                url: '/account/user-details/'
+            });
+            // console.log(response);
+            return response.data.user;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }

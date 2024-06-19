@@ -1,82 +1,73 @@
-// src/utils/axiosSetup.ts
-import axios from 'axios';
-import store from '../Store';
-import { refreshAccessToken } from './Auth/refreshToken';
+import axios, { AxiosRequestConfig } from 'axios';
+import store from '../Store'; // Import the Redux store
+import { setToken, clearToken } from './../Slice/Auth/AuthSlice';
+import { refreshAccessToken } from './../ApiCalls/Auth/refreshToken'; // Assume you have a thunk for refreshing the token
 
 const api = axios.create({
-    baseURL: 'https://photo-app-be-python.onrender.com', // Replace with your API base URL
+    baseURL: 'https://photo-app-be-python.onrender.com'
 });
-
-let isRefreshing = false;
-let failedQueue: Array<{ resolve: (value?: unknown) => void; reject: (reason?: unknown) => void }> = [];
-
-const processQueue = (error: any, token: string | null = null) => {
-    failedQueue.forEach((prom) => {
-        if (error) {
-            prom.reject(error);
-        } else {
-            prom.resolve(token);
-        }
-    });
-    failedQueue = [];
+const getTokens = () => {
+    const state = store.getState();
+    const accessToken = state.auth.access_token || localStorage.getItem('access_token');
+    const refreshToken = state.auth.refresh_token || localStorage.getItem('refresh_token');
+    return { accessToken, refreshToken };
 };
 
-// Request Interceptor
-api.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+// Generic function to handle API calls with token refresh
+const apiCall = async (options: AxiosRequestConfig<any>) => {
+    const { accessToken, refreshToken } = getTokens();
+    // console.log(accessToken, refreshToken)
 
-// Response Interceptor
-api.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-        const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
-            if (isRefreshing) {
-                return new Promise(function (resolve, reject) {
-                    failedQueue.push({ resolve, reject });
-                })
-                    .then((token) => {
-                        originalRequest.headers['Authorization'] = 'Bearer ' + token;
-                        return api(originalRequest);
-                    })
-                    .catch((err) => {
-                        return Promise.reject(err);
-                    });
-            }
+    // Attach the access token to the request
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        ...options.headers,
+    };
 
-            originalRequest._retry = true;
-            isRefreshing = true;
-
-            const refreshToken = localStorage.getItem('refresh_token');
-
-            if (refreshToken) {
-                try {
-                    const response = await store.dispatch(refreshAccessToken(refreshToken));
-                    const newAccessToken = response.payload as string;
-                    localStorage.setItem('access_token', newAccessToken);
-                    api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-                    originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                    processQueue(null, newAccessToken);
-                    return api(originalRequest);
-                } catch (err) {
-                    processQueue(err, null);
-                    // Handle token refresh error (e.g., logout user)
-                    return Promise.reject(err);
-                } finally {
-                    isRefreshing = false;
+    try {
+        // console.log(headers);
+        // console.log(options);
+        const response = await api({
+            ...options,
+            headers: headers
+        });
+        return response.data;
+    } catch (error: any) {
+        console.log("error above sending refresh token api");
+        console.log(error.response);
+        if ((error.response.status === 401 || error.response.status === 400) && refreshToken) {
+            // Token might be expired, attempt to refresh it
+            try {
+                const newAccessToken = await store.dispatch(refreshAccessToken(refreshToken)).unwrap();
+                console.log(newAccessToken);
+                console.log(newAccessToken.data)
+                // Update the access token in the Redux store
+                store.dispatch(setToken({ access_token: newAccessToken.data, refresh_token: refreshToken }));
+                if (localStorage.getItem('access_token')) {
+                    localStorage.setItem('access_token', newAccessToken.data);
                 }
-            }
-        }
-        return Promise.reject(error);
-    }
-);
+                // Retry the original request with the new access token
+                const retryHeaders = {
+                    Authorization: `Bearer ${newAccessToken.data}`,
+                    ...options.headers,
+                };
 
-export default api;
+                const retryResponse = await api({
+                    ...options,
+                    headers: retryHeaders,
+                });
+                return retryResponse.data;
+            } catch (refreshError) {
+                console.log("error in refresh token request from authAPI")
+                console.log(refreshError)
+                // If refresh fails, clear tokens and handle error appropriately;
+                // store.dispatch(clearToken());
+                throw refreshError;
+            }
+        } else {
+            throw error;
+        }
+    }
+};
+
+export default apiCall;

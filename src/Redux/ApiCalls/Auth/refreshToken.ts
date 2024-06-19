@@ -4,11 +4,13 @@ import axios from 'axios';
 
 export const refreshAccessToken = createAsyncThunk(
     'auth/refreshAccessToken',
-    async (refreshToken: string, { rejectWithValue }) => {
+    async (refresh_token: string, { rejectWithValue }) => {
         try {
-            const response = await axios.post('/api/refresh-token', { refreshToken });
-            return response.data.accessToken;
+            const response = await axios.post('/account/token/', { refresh_token });
+            // console.log("from refresh token ")
+            return response.data;
         } catch (error: any) {
+            // console.log(error.refresh);
             return rejectWithValue(error.response.data.message || 'Failed to refresh token');
         }
     }

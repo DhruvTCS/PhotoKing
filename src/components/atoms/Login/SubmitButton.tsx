@@ -1,23 +1,28 @@
 import React from 'react'
 import styled from 'styled-components'
-import Arrow from '../../../assets/images/Icons/Arrow.png'
+import Arrow from '../../../assets/Icons/Arrow.png'
 const Button = styled.button<ButtonStyleProps>`
 width: ${props => props.width}px;
-height: 54px;
 border:none;
 border-radius: 16px 16px 16px 16px;
-background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
-box-shadow: 0px 4px 14px 0px #86169680;
 font-family: "Urbanist", sans-serif;
 font-size: 16px;
 font-weight: 500;
 line-height: 19.2px;
 text-align: center;
+
+height: ${props => props.height ? props.height : 54}px;
 color: #FFFFFF;
 
-&:disabled{
+${props => props.flag === true ? `
+    background-color:#bcbaba;
+    color:black;
+    `: `
+    background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
+    box-shadow: 0px 4px 14px 0px #86169680;
+    `}
+    
 
-}
 
 
 
@@ -46,15 +51,19 @@ interface ButtonProps {
     width: number;
     needArrow: boolean;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-    disabled?: boolean;
+    active?: boolean;
+    height?: number;
 }
 
 interface ButtonStyleProps {
     width: number;
+    flag?: boolean;
+    height?: number;
 }
-const SubmitButton: React.FC<ButtonProps> = ({ text, width, needArrow, onClick, disabled }) => {
+const SubmitButton: React.FC<ButtonProps> = ({ text, width, needArrow, onClick, active, height }) => {
+
     return (
-        <Button width={width} disabled={disabled} onClick={onClick}>
+        <Button width={width} height={height} flag={active} disabled={active} onClick={onClick} >
             {text}
             {
                 needArrow ? (<ArrowContainer>

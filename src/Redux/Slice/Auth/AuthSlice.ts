@@ -1,19 +1,32 @@
 // src/store/slices/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { User } from '../../../dto/user.dto';
-import { Error } from '../../../dto/error.dto';
+import { User } from '../../../Data/user.dto';
+import { Error } from '../../../Data/error.dto';
 
 import { LoginReducer } from '../../Reducers/Auth/LoginReducers';
 import { OTPVerificationReducer } from '../../Reducers/Auth/OTPVerificationReducer';
+import { UserReducer } from '../../Reducers/Auth/userReducer';
+import { RegisterReducer } from '../../Reducers/Auth/SignUpReducer';
 export interface UserState {
     user: User | null;
     loading: boolean;
+    isRegister: boolean;
     error: Error;
     isError: boolean;
     apiStatus: boolean;
     phone_number: string;
     country_code: string;
     orderId: string;
+    isAuthticated: boolean;
+    access_token: string | null;
+    refresh_token: string | null;
+    remeberMe: boolean;
+    temp_user: {
+        name: string;
+        email: string;
+        phone_number: string;
+        country_code: string;
+    } | null;
 }
 
 const initialState: UserState = {
@@ -25,6 +38,12 @@ const initialState: UserState = {
     phone_number: "",
     country_code: "",
     orderId: "",
+    isAuthticated: false,
+    access_token: null,
+    refresh_token: null,
+    remeberMe: false,
+    isRegister: false,
+    temp_user: null,
 };
 
 
@@ -44,15 +63,38 @@ const authSlice = createSlice({
             state.isError = false;
             state.apiStatus = false;
 
+        },
+        clearToken(state) {
+            state.access_token = null;
+            state.refresh_token = null;
+            state.isAuthticated = false;
+        },
+        setToken(state, action: PayloadAction<{ access_token: string, refresh_token: string }>) {
+            state.access_token = action.payload.access_token;
+            state.refresh_token = action.payload.refresh_token;
+        },
+        setRemeberMe(state, action: PayloadAction<boolean>) {
+            state.remeberMe = action.payload;
+        },
+        setIsRegister(state, action: PayloadAction<{
+            name: string;
+            email: string;
+            phone_number: string;
+            country_code: string;
+        }>) {
+            state.isRegister = true;
+            state.temp_user = action.payload;
         }
     },
     extraReducers: (builder) => {
         LoginReducer(builder);
         OTPVerificationReducer(builder);
+        UserReducer(builder);
+        RegisterReducer(builder);
     },
 });
 
-export const { setContactNumber, clearError } = authSlice.actions;
+export const { setContactNumber, clearError, setToken, clearToken, setRemeberMe, setIsRegister } = authSlice.actions;
 
 
 export default authSlice.reducer;

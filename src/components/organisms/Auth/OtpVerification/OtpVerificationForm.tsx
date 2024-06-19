@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { clearError } from "../../../../Redux/Slice/Auth/AuthSlice";
 import { resendOTP, verifyOTP } from "../../../../Redux/ApiCalls/Auth/login";
 import LoadingDots from "../../../atoms/Utlis/LoadinDots";
+import { registerUser } from "../../../../Redux/ApiCalls/Auth/signup";
 
 interface otpTextProps {
   isActivated: boolean;
@@ -141,11 +142,12 @@ const Timer = styled.p`
 const OtplVerificationForm: React.FC = () => {
   const [timer, setTimer] = useState<number>(60);
   const [showResendLink, setShowResendLink] = useState<boolean>(false);
+  const [activeButton, setActiveButton] = useState<boolean>(false);
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isError, phone_number, country_code, error, user, apiStatus, loading, orderId } = useAppSelector(state => state.auth);
+  const { isError, phone_number, country_code, error, user, isAuthticated, loading, orderId, isRegister, temp_user } = useAppSelector(state => state.auth);
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => {
@@ -159,7 +161,7 @@ const OtplVerificationForm: React.FC = () => {
   useEffect(() => {
 
     if (!orderId) {
-      navigate('/login');
+      navigate('/auth/otp');
     }
 
     return () => {
@@ -177,8 +179,8 @@ const OtplVerificationForm: React.FC = () => {
         alert(error.message)
       }
     }
-    if (apiStatus === true && user && Object.keys(user).length !== 0) {
-      alert("Number verified");
+    if (isAuthticated === true && user && Object.keys(user).length !== 0) {
+      navigate('/dashboard');
 
     }
 
@@ -186,7 +188,7 @@ const OtplVerificationForm: React.FC = () => {
       dispatch(clearError());
     }
 
-  }, [isError, apiStatus, user])
+  }, [isError, isAuthticated, user])
 
 
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -199,13 +201,23 @@ const OtplVerificationForm: React.FC = () => {
     } else {
       console.log("Submitted OTP:", otpValue);
       // Handle OTP submission logic here
-      dispatch(verifyOTP({
-        phone_number,
-        country_code,
-        orderId: orderId,
-        otp: otpValue,
+      if (isRegister) {
+        if (temp_user) {
+          dispatch(registerUser({
+            name: temp_user.name, email: temp_user.email, orderId: orderId, phone_number: temp_user.phone_number, country_code: temp_user.country_code,
+            role: 3,
+            otp: otpValue
+          }))
+        }
+      } else {
+        dispatch(verifyOTP({
+          phone_number,
+          country_code,
+          orderId: orderId,
+          otp: otpValue,
 
-      }))
+        }))
+      }
     }
   };
 
@@ -228,10 +240,19 @@ const OtplVerificationForm: React.FC = () => {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
+      console.log(newOtp);
+      console.log(newOtp)
+      if (newOtp.join('').length === 4) {
+        console.log("done");
+        setActiveButton(true);
+      }
 
       if (value !== "" && index < 3) {
         inputsRef.current[index + 1].focus();
       }
+
+
+
     }
   };
 
@@ -243,8 +264,8 @@ const OtplVerificationForm: React.FC = () => {
       if (otp[index] === "" && index > 0) {
         let finalIdex = index - 1;
         inputsRef.current[finalIdex].focus();
-        console.log(finalIdex);
       }
+      setActiveButton(false);
     }
   };
 
@@ -301,6 +322,7 @@ const OtplVerificationForm: React.FC = () => {
                 width={291}
                 text="Verify"
                 needArrow={true}
+                active={loading ? true : !activeButton}
               />
             }
 
