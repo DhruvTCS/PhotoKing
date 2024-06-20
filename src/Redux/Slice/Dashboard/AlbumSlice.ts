@@ -38,7 +38,7 @@ const albumSlice = createSlice({
     name: 'album',
     initialState,
     reducers: {
-        setLoading(state) {
+        setAlbumLoading(state) {
             state.loading = true;
         },
         setAlbums(state, action: PayloadAction<Albums[]>) {
@@ -71,7 +71,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setLoading, setAlbums, setError, clearError, setCurrentAlbum } = albumSlice.actions;
+export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

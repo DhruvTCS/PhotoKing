@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import AlbumBackImage from '../../../../assets/images/Albumbackimage.png'
+import AlbumBackImage from '../../../../assets/images/Extra/Albumbackimage.png'
 import HideIcon from '../../../../assets/Icons/DropDownMenu/hide.png'
 import LockIcon from '../../../../assets/Icons/DropDownMenu/Lock.png'
 import WatermarkIcon from '../../../../assets/Icons/DropDownMenu/watermark.png'

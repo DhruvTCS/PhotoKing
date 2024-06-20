@@ -32,8 +32,8 @@ const memberSlice = createSlice({
     name: 'member',
     initialState,
     reducers: {
-        setLoading(state) {
-            state.loading = true;
+        setMemberLoading(state, action: PayloadAction<boolean>) {
+            state.loading = action.payload;
         },
         setMember(state, action: PayloadAction<Member[]>) {
             state.loading = false;
@@ -45,7 +45,7 @@ const memberSlice = createSlice({
     },
 });
 
-export const { setMember } = memberSlice.actions;
+export const { setMember, setMemberLoading } = memberSlice.actions;
 
 
 export default memberSlice.reducer;

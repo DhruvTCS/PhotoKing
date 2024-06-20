@@ -15,7 +15,7 @@ export const sidebarOptions = [
     {
         key: "Dashboard",
         icon: Subscriptions,
-        redirection: "/dashboard/home"
+        redirection: "/dashboard/"
     },
     {
         key: "Subscriptions",
@@ -30,7 +30,7 @@ export const sidebarOptions = [
     {
         key: "Members",
         icon: Members,
-        redirection: "/dashboard/members"
+        redirection: "/dashboard/members/all"
     },
     {
         key: "Change Password",

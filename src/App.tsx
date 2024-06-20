@@ -13,6 +13,7 @@ import { setMember } from './Redux/Slice/Dashboard/MemberSlice';
 import HomePage from './components/organisms/Dashboard/HomePage';
 import SingleAlbum from './components/organisms/Dashboard/SingleAlbumPage';
 import AllMembersPage from './components/organisms/Dashboard/AllMembersPage';
+import CreateNewMemberPage from './components/molecules/Dashboard/Member/CreateNewMember';
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -35,6 +36,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="singleAlbum/:new" element={< SingleAlbum />} />
             <Route path="members/all" element={<AllMembersPage />} />
+            <Route path="members/create" element={<CreateNewMemberPage />} />
           </Route>
         </Routes>
       </div>

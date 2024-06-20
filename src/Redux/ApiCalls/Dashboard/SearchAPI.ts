@@ -1,19 +1,21 @@
 
 import apiCall from "../AuthorizedApi"
 import store from "../../Store"
-import { setAlbums, setError, setLoading } from "../../Slice/Dashboard/AlbumSlice"
+import { setAlbums, setError, setAlbumLoading } from "../../Slice/Dashboard/AlbumSlice"
 import { Albums } from "../../../Data/album.dto"
 import { Member } from "../../../Data/member.dto"
-import { setMember } from "../../Slice/Dashboard/MemberSlice"
+import { setMember, setMemberLoading } from "../../Slice/Dashboard/MemberSlice"
 
-export const SearchData = async (keyword: string) => {
+export const SearchData = async (keyword: string, isAlbum: boolean, isMember: boolean) => {
     try {
-        store.dispatch(setLoading());
+        store.dispatch(setAlbumLoading());
+        store.dispatch(setMemberLoading(true))
         const res = await apiCall({
             method: "GET",
             url: `/project/search-albums/?search=${keyword}`,
         })
         console.log(res);
+        // store.dispatch(setAlbumLoading())
         let albums: Albums[] = [];
         let members: Member[] = [];
         res.data.forEach((data: any) => {
@@ -43,8 +45,10 @@ export const SearchData = async (keyword: string) => {
         });
 
         console.log(albums);
-        store.dispatch(setMember(members));
-        store.dispatch(setAlbums(albums))
+        if (isMember)
+            store.dispatch(setMember(members));
+        if (isAlbum)
+            store.dispatch(setAlbums(albums))
     } catch (error: any) {
         store.dispatch(setError(error.response));
     }

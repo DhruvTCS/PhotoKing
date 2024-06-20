@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import CompanyLogo from '../molecules/Logo/CompanyLogo'
 import { OptionProps, sidebarOptions } from '../../Data/SiderbarOptionsData'
+import { useNavigate } from 'react-router-dom'
 
 const SidebarContainer = styled.div`
 width: 364px;
@@ -79,8 +80,10 @@ margin-right:26px;
 `;
 const Sidebar: React.FC = () => {
     const [activeTab, setActiveTab] = useState(sidebarOptions[0]);
+    const navigate = useNavigate();
     const handleClick = (clickedTab: any) => {
         setActiveTab(clickedTab);
+        navigate(clickedTab.redirection);
     }
     return (
         <SidebarContainer>

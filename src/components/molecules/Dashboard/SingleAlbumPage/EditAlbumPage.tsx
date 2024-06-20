@@ -9,7 +9,7 @@ import { Folder, NewAlbum } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
-import { clearError, setLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { clearError, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import { getFoldersForAlbum } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
@@ -339,7 +339,7 @@ const EditAlbumPage: React.FC = () => {
     const handleSubmit = async () => {
         if (currentAlbum) {
 
-            dispatch(setLoading())
+            dispatch(setAlbumLoading())
             if (album.image.length !== 0 || slectedImage) {
                 if (slectedImage)
                     sendImageToCloudinary().then(() => dispatch(updateAlbumAPI({ project: album, albumId: currentAlbum.id })));

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Folder } from '../../../../Data/album.dto';
-import TestImageIcon from '../../../../assets/images/folderIconImage.png'
+import TestImageIcon from '../../../../assets/images/Extra/folderIconImage.png'
 interface FolderCardProps {
     folder: Folder
 }

@@ -9,7 +9,7 @@ import { NewAlbum, NewFolder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
-import { clearError, setLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { clearError, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 
 
@@ -268,7 +268,7 @@ const CreateNewAlbumPage: React.FC = () => {
         fileInputRef.current?.click();
     };
     const handleSubmit = async () => {
-        dispatch(setLoading())
+        dispatch(setAlbumLoading())
         sendImageToCloudinary().then(() => dispatch(createAlbumAPI({ project: album })));
 
     }
