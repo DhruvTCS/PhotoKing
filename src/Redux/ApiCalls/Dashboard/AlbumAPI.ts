@@ -1,8 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import apiCall from "../AuthorizedApi";
-import store from "../../Store";
-import { setMember } from "../../Slice/Dashboard/MemberSlice";
 import { NewAlbum } from "../../../Data/album.dto";
 export const getAllAlbums = createAsyncThunk(
     'album/getAllAlbums',
@@ -73,6 +70,22 @@ export const createAlbumAPI = createAsyncThunk(
                 method: 'POST',
                 url: `/project/user/create-project/`,
                 data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+export const updateAlbumAPI = createAsyncThunk(
+    'album/updateAlbumAPI',
+    async (data: { project: NewAlbum, albumId: number }, { rejectWithValue }) => {
+        try {
+
+            const response = await apiCall({
+                method: 'PUT',
+                url: `/project/user/project-media-view/`,
+                data: { ...data.project, id: data.albumId }
             })
             console.log(response);
             return response.data;

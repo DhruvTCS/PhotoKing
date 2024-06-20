@@ -1,9 +1,7 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { createAlbumAPI, getAllAlbums, getSearchData } from '../../ApiCalls/Dashboard/AlbumAPI';
-import store from '../../Store'
-import { setMember } from '../../Slice/Dashboard/MemberSlice';
-import { Albums, Folder } from '../../../Data/album.dto';
+import { createAlbumAPI, getAllAlbums, updateAlbumAPI } from '../../ApiCalls/Dashboard/AlbumAPI';
+import { Folder } from '../../../Data/album.dto';
 import { getFoldersForAlbum } from '../../ApiCalls/Dashboard/FolderApi';
 export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
@@ -39,6 +37,21 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
             console.log(action.payload);
             state.error = action.payload;
+        }).addCase(updateAlbumAPI.pending, (state) => {
+            state.loading = true;
+
+        })
+        .addCase(updateAlbumAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isUpdate = true;
+
+        })
+        .addCase(updateAlbumAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
         }).addCase(getFoldersForAlbum.pending, (state) => {
 
             state.folderLoading = true;
@@ -52,6 +65,10 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
             if (action.payload.length > 0) {
                 state.isFolderChange = false;
+                if (state.currentAlbum) {
+                    if (state.currentAlbum.id === action.payload[0].project_id)
+                        state.currentAlbum.folders = action.payload;
+                }
                 state.albums.forEach((album) => {
                     if (album.id === action.payload[0].project_id) {
                         album.folders = action.payload;

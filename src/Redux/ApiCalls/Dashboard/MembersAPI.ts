@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import apiCall from "../AuthorizedApi";
 export const getAllMembers = createAsyncThunk(
     'member/getAllMembers',

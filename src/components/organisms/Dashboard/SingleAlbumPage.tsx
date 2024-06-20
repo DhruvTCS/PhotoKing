@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useAppSelector } from '../../../Redux/Hooks'
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import BackButtonIconPng from '../../../assets/Icons/SingleAlbum/back.png'
 import CreateNewAlbumPage from '../../molecules/Dashboard/SingleAlbumPage/CreateNewAlbumPage'
+import EditAlbumPage from '../../molecules/Dashboard/SingleAlbumPage/EditAlbumPage'
 const SingleAlbumPageContainer = styled.div`
 width:100%;
 height:97%;
@@ -50,7 +51,7 @@ const SingleAlbum: React.FC = () => {
         if (params.new !== 'true') {
 
             if (!currentAlbum) {
-                navigate('/');
+                navigate('/dashboard/');
             }
         }
 
@@ -62,10 +63,15 @@ const SingleAlbum: React.FC = () => {
     return (
         <SingleAlbumPageContainer>
             <BackButtonContainer >
-                <BackButtonIcon src={BackButtonIconPng} />
+                <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate('/dashboard/')} />
                 <BackButtonText>Create Album</BackButtonText>
             </BackButtonContainer>
-            <CreateNewAlbumPage />
+            {
+                params.new === 'true' ?
+                    <CreateNewAlbumPage />
+                    :
+                    <EditAlbumPage />
+            }
 
         </SingleAlbumPageContainer>
     )

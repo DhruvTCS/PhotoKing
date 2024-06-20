@@ -8,6 +8,9 @@ import GenerateEventIcon from '../../../../assets/Icons/DropDownMenu/generateEve
 import ShareAlbumIcon from '../../../../assets/Icons/DropDownMenu/shareAlbum.png'
 import LockAlbumModal from './LockAlbumModal'
 import { Albums } from '../../../../Data/album.dto'
+import { useAppDispatch } from '../../../../Redux/Hooks'
+import { setCurrentAlbum } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
+import { useNavigate } from 'react-router-dom'
 interface CardProps {
   backgroundImage: string
   name: string
@@ -44,6 +47,10 @@ const CardName = styled.h3`
   font-weight: 700;
   line-height: 20.72px;
   text-align: center;
+  text-decoration: underline;
+  &:hover{
+    cursor: pointer;
+  }
 `
 
 const CardDate = styled.p`
@@ -155,12 +162,14 @@ width: 15px;
 const AlbumCard: React.FC<CardProps> = ({ name, Date, backgroundImage, album }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const toggleMenu = () => {
     console.log('calling')
     setMenuOpen(menuOpen => !menuOpen)
   }
-  const menuRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
   const handleClickOutside = (event: MouseEvent) => {
     if (
       menuRef.current &&
@@ -185,7 +194,11 @@ const AlbumCard: React.FC<CardProps> = ({ name, Date, backgroundImage, album }) 
   return (
     <AlbumCardContainer backgroundImage={album.image ? album.image : AlbumBackImage}>
       <CardContent>
-        <CardName>{name}</CardName>
+        <CardName onClick={() => {
+          dispatch(setCurrentAlbum(album))
+          navigate(`/dashboard/singleAlbum/${album.id}`)
+        }
+        }>{name}</CardName>
         <CardDate>{Date}</CardDate>
       </CardContent>
       {album.is_locked ?

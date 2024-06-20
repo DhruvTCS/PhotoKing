@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import SubmitButton from '../../Login/SubmitButton';
-import UnderLine from '../../Login/UnderLine';
 
 interface ReasonModalProps {
     selectedReason: number;

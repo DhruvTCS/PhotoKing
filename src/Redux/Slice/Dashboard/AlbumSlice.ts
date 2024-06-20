@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Error } from '../../../Data/error.dto';
 import { AlbumReducer } from '../../Reducers/Dashboard/AlbumReducer';
@@ -56,8 +56,11 @@ const albumSlice = createSlice({
             state.error = {};
             state.loading = false;
         },
-        setCuurentAlbum(state, action: PayloadAction<Albums>) {
+        setCurrentAlbum(state, action: PayloadAction<Albums>) {
             state.currentAlbum = action.payload;
+        },
+        setIsFolderChanged(state, action: PayloadAction<boolean>) {
+            state.isFolderChange = action.payload;
         }
 
     },
@@ -68,7 +71,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setLoading, setAlbums, setError, clearError } = albumSlice.actions;
+export const { setLoading, setAlbums, setError, clearError, setCurrentAlbum } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

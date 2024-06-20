@@ -1,7 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import apiCall from "../AuthorizedApi";
-
 export const registerUser = createAsyncThunk(
     'auth/registerUser',
     async (credentials: { name: string, email: string, phone_number: string, country_code: string, orderId: string, role: number, otp: string }, { rejectWithValue }) => {

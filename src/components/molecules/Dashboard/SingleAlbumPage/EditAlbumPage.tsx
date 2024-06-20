@@ -5,12 +5,14 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
-import { NewAlbum, NewFolder } from '../../../../Data/album.dto';
+import { Folder, NewAlbum } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
-import { createAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
+import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
 import { clearError, setLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
+import { getFoldersForAlbum } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
+import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
 
 
 const AlbumPageContainer = styled.div`
@@ -32,6 +34,7 @@ const UploadImageContainer = styled.div`
 display: flex;
 flex-direction: column;
 cursor:pointer;
+position:relative;
 
 `;
 const UploadImageIcon = styled.img`
@@ -155,13 +158,29 @@ const FolderHeadertext = styled.p`
 `;
 
 const FoldersHeaderText = styled.p``;
+const FolderListContainer = styled.div`
+height:100%;
+width:96%;
+margin-left:46px;
+
+
+`;
 const FolderList = styled.div`
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 50px;
+width: 100%;
+height: 100%;
+`;
+const NoFolderTextContainer = styled.div`
 height:100%;
 width:100%;
 display: flex;
 align-items: center;
 justify-content: center;
+
 `;
+
 const SubmitButtonContainer = styled.div`
 cursor:pointer;
 
@@ -171,16 +190,41 @@ width:418px;
 height:300px;
 border-radius:10px;
 `;
-const CreateNewAlbumPage: React.FC = () => {
+const CancleButtonContainer = styled.div`
+background: #FF3333;
+box-shadow: 0px 4px 14px 0px #86169680;
+height:26px;
+width:25px;
+border-radius:50%;
+display:flex;
+justify-content: center;
+align-items: center;
+position: absolute;
+left:370px;
+top:15px;
+z-index: 1000;
+`;
+
+const CancleButton = styled.p`
+background: transparent;
+    color: white;
+    font-size: 26px;
+    margin: 0px;
+transform: rotate(-45deg);
+margin-bottom:2px;
+line-height:0px;
+`
+const EditAlbumPage: React.FC = () => {
 
     const [album, setAlbum] = useState<NewAlbum>({ name: "", date: "", media_type: 1, image: "" });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [slectedImage, setSelectedImage] = useState<File | null>(null);
+    const [loadFirstTime, setLoadingFirstTime] = useState(true);
     const [activeButton, setActiveButton] = useState(true);
-    const [folders, setFolders] = useState<NewFolder[] | []>([]);
+    const [folders, setFolders] = useState<Folder[] | []>([]);
     const dispatch = useAppDispatch();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { isUpdate, isError, error, loading } = useAppSelector(state => state.album)
+    const { isUpdate, isError, error, loading, currentAlbum, folderLoading } = useAppSelector(state => state.album)
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
@@ -191,6 +235,28 @@ const CreateNewAlbumPage: React.FC = () => {
 
         }
     }, [isUpdate])
+    useEffect(() => {
+        if (!currentAlbum) {
+            navigate('/dashboard/');
+        } else {
+            setAlbum(album => {
+                album.name = currentAlbum.name;
+                album.date = currentAlbum.date;
+                album.image = currentAlbum.image;
+
+                return album;
+            });
+            setImagePreview(album.image);
+            if (currentAlbum.folders && currentAlbum.folders.length > 0)
+                setFolders(currentAlbum.folders);
+            else
+                dispatch(getFoldersForAlbum(currentAlbum.id));
+        }
+
+        return () => {
+
+        }
+    }, [currentAlbum])
 
     useEffect(() => {
         console.log(isError)
@@ -205,9 +271,11 @@ const CreateNewAlbumPage: React.FC = () => {
 
     useEffect(() => {
         // This function will be called every time `state` changes
-        isValidAlbum(album);
+        if (!loadFirstTime)
+            isValidAlbum(album);
     }, [slectedImage, album]);
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setLoadingFirstTime(false)
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -226,6 +294,7 @@ const CreateNewAlbumPage: React.FC = () => {
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target;
+        setLoadingFirstTime(false)
         // isValidAlbum(album);
         setAlbum(album => {
             album = { ...album, [name]: value }
@@ -234,8 +303,8 @@ const CreateNewAlbumPage: React.FC = () => {
         });
     }
     const isValidAlbum = (album: NewAlbum) => {
-        console.log(isValidDate(album.date) && album.name.length > 3 && slectedImage !== null);
-        if (isValidDate(album.date) && album.name.length > 3 && slectedImage) {
+        console.log(isValidDate(album.date) && album.name.length > 3);
+        if (isValidDate(album.date) && album.name.length > 3 && (album.image.length !== 0 || slectedImage)) {
             setActiveButton(false);
         } else {
             setActiveButton(true);
@@ -268,23 +337,49 @@ const CreateNewAlbumPage: React.FC = () => {
         fileInputRef.current?.click();
     };
     const handleSubmit = async () => {
-        dispatch(setLoading())
-        sendImageToCloudinary().then(() => dispatch(createAlbumAPI({ project: album })));
+        if (currentAlbum) {
 
+            dispatch(setLoading())
+            if (album.image.length !== 0 || slectedImage) {
+                if (slectedImage)
+                    sendImageToCloudinary().then(() => dispatch(updateAlbumAPI({ project: album, albumId: currentAlbum.id })));
+                else
+                    dispatch(updateAlbumAPI({ project: album, albumId: currentAlbum.id }))
+            } else {
+
+            }
+        }
+
+    }
+    const removeImageandPreview = () => {
+        setImagePreview(null)
+        setAlbum(album => {
+            album.image = '';
+            return album;
+        })
+        setSelectedImage(img => {
+            isValidAlbum(album);
+            return null;
+        });
     }
 
     return (
         <AlbumPageContainer>
             <UperContainer>
-                <UploadImageContainer onClick={() => handleDivClick()}>
-                    {imagePreview ? <CoverImagePreview src={imagePreview} /> : (<>
+                <UploadImageContainer >
+                    {imagePreview ? <div>
+                        <CancleButtonContainer onClick={() => removeImageandPreview()}>
+                            <CancleButton>+</CancleButton>
+                        </CancleButtonContainer>
+                        <CoverImagePreview src={imagePreview} onClick={() => handleDivClick()} />
+                    </div> : (< div onClick={() => handleDivClick()}>
                         <UploadImageText>Cover Photo</UploadImageText>
                         <UploadImageIconContainer >
 
                             <UploadImageIcon src={AddCoverImageIconPng} />
                             <UploadImageIconText >Add Cover Photo</UploadImageIconText>
                         </UploadImageIconContainer>
-                    </>
+                    </div>
                     )}
                     <input
                         type="file"
@@ -297,12 +392,12 @@ const CreateNewAlbumPage: React.FC = () => {
                 <UplaodDataContainer>
                     <InputContainer>
                         <InputLabel>Name</InputLabel>
-                        <Input type="text" name="name" placeholder='Photo King' onChange={onChange} />
+                        <Input type="text" name="name" placeholder='Photo King' onChange={onChange} value={album.name} />
                         <UnderLine width={478} />
                     </InputContainer>
                     <InputContainer>
                         <InputLabel>Creation Date</InputLabel>
-                        <Input type="date" name='date' placeholder='dd/mm/yyyy' onChange={onChange} />
+                        <Input type="date" name='date' placeholder='dd/mm/yyyy' onChange={onChange} value={album.date} />
                         <UnderLine width={478} />
                     </InputContainer>
                 </UplaodDataContainer>
@@ -321,12 +416,16 @@ const CreateNewAlbumPage: React.FC = () => {
                         </ButtonText>
                     </AddMemberButton>
                 </FoldersHeader>
-                <FolderList>
-                    {
-                        folders.length > 0 ? null :
-                            `No any folder created yet!`
+                <FolderListContainer>
+                    {folderLoading ? <LoadingDots ></LoadingDots> :
+                        folders.length > 0 ? <FolderList>
+                            {folders.map((folder: Folder) => <FolderCard folder={folder} />)}
+
+                        </FolderList> :
+                            <NoFolderTextContainer>`No any folder created yet!`</NoFolderTextContainer>
+
                     }
-                </FolderList>
+                </FolderListContainer>
             </FoldersContainer>
             <SubmitButtonContainer>
                 {loading ? <LoadingDots /> :
@@ -337,4 +436,4 @@ const CreateNewAlbumPage: React.FC = () => {
     )
 }
 
-export default CreateNewAlbumPage
+export default EditAlbumPage

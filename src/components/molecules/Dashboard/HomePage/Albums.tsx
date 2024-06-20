@@ -100,7 +100,7 @@ const Albums: React.FC = () => {
 
 
         }
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         if (isUpdate) {
@@ -110,7 +110,7 @@ const Albums: React.FC = () => {
         return () => {
             dispatch(clearError());
         }
-    }, [isUpdate])
+    }, [isUpdate, dispatch])
 
 
     const handlePageChange = (page: number) => {

@@ -1,7 +1,7 @@
-import axios from "axios"
+
 import apiCall from "../AuthorizedApi"
 import store from "../../Store"
-import { clearError, setAlbums, setError, setLoading } from "../../Slice/Dashboard/AlbumSlice"
+import { setAlbums, setError, setLoading } from "../../Slice/Dashboard/AlbumSlice"
 import { Albums } from "../../../Data/album.dto"
 import { Member } from "../../../Data/member.dto"
 import { setMember } from "../../Slice/Dashboard/MemberSlice"

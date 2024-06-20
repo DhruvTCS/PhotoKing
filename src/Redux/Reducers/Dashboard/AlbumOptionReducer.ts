@@ -1,9 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
 import { lockAlbum, unlockAlbum } from '../../ApiCalls/Dashboard/AlbumAPI';
-import store from '../../Store'
-import { setMember } from '../../Slice/Dashboard/MemberSlice';
-import { Albums, Folder } from '../../../Data/album.dto';
 export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockAlbum.pending, (state) => {

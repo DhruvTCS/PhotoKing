@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FaSearch } from 'react-icons/fa'; // Install react-icons if not already installed
 import { useAppDispatch } from '../../../../Redux/Hooks';
-import { getSearchData } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { SearchData } from '../../../../Redux/ApiCalls/Dashboard/SearchAPI';
 
 // Styled Components

@@ -12,6 +12,7 @@ import Dashboard from './components/pages/Dashboard/Dashboard';
 import { setMember } from './Redux/Slice/Dashboard/MemberSlice';
 import HomePage from './components/organisms/Dashboard/HomePage';
 import SingleAlbum from './components/organisms/Dashboard/SingleAlbumPage';
+import AllMembersPage from './components/organisms/Dashboard/AllMembersPage';
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -31,8 +32,9 @@ function App() {
             <Route path="login" element={<LoginForm />} />
           </Route>
           <Route path="/dashboard" element={<Dashboard />}>
-            <Route path="home" element={<HomePage />} />
+            <Route index element={<HomePage />} />
             <Route path="singleAlbum/:new" element={< SingleAlbum />} />
+            <Route path="members/all" element={<AllMembersPage />} />
           </Route>
         </Routes>
       </div>

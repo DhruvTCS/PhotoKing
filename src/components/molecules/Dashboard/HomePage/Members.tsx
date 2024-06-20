@@ -99,7 +99,7 @@ const Members: React.FC = () => {
     useEffect(() => {
 
         dispatch(getAllMembers());
-    }, [])
+    }, [dispatch])
     return (
         <MembersContainer>
             <MembersHeader >

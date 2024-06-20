@@ -1,7 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { Albums, Folder } from '../../../Data/album.dto';
-import { lockFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
+import { lockMultipleFoldersAPI, unlockFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
 export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockMultipleFoldersAPI.pending, (state) => {

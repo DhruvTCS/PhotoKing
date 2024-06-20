@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import CompanyLogo from '../molecules/Logo/CompanyLogo'
 import { OptionProps, sidebarOptions } from '../../Data/SiderbarOptionsData'
-import { ReactComponent as SubscriptionIcon } from '../../assets/images/Icons/Sidebar/subscription.svg'
-
 
 const SidebarContainer = styled.div`
 width: 364px;
-height: 1080px;
+height: 1090px;
 
 background-color:white;
 z-index:1;

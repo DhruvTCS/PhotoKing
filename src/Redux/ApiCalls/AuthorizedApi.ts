@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import store from '../Store'; // Import the Redux store
-import { setToken, clearToken } from './../Slice/Auth/AuthSlice';
+import { setToken } from './../Slice/Auth/AuthSlice';
 import { refreshAccessToken } from './../ApiCalls/Auth/refreshToken'; // Assume you have a thunk for refreshing the token
 
 const api = axios.create({

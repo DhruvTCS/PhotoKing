@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import DefaultProiflePic from '../../../assets/images/DefaultProfilePic.png'
 import { Member } from '../../../../Data/member.dto';
 
 const MemberCardContainer = styled.div`
