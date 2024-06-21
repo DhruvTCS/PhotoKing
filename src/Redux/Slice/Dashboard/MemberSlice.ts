@@ -9,6 +9,8 @@ export interface MemberState {
     members: Member[] | [],
     error: Error;
     isError: boolean;
+    currentMember?: Member;
+    success: boolean;
 }
 
 // id": "19",
@@ -23,6 +25,7 @@ const initialState: MemberState = {
     loading: false,
     error: {},
     isError: false,
+    success: false,
 
 }
 
@@ -38,6 +41,15 @@ const memberSlice = createSlice({
         setMember(state, action: PayloadAction<Member[]>) {
             state.loading = false;
             state.members = action.payload;
+        },
+        clearFlagsMembers(state) {
+            state.isError = false;
+            state.success = false;
+            state.error = {};
+        },
+        clearError(state) {
+            state.error = {};
+            state.isError = false;
         }
     },
     extraReducers: (builder) => {
@@ -45,7 +57,7 @@ const memberSlice = createSlice({
     },
 });
 
-export const { setMember, setMemberLoading } = memberSlice.actions;
+export const { setMember, setMemberLoading, clearFlagsMembers, clearError } = memberSlice.actions;
 
 
 export default memberSlice.reducer;

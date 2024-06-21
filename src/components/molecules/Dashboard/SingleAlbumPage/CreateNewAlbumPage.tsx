@@ -9,7 +9,7 @@ import { NewAlbum, NewFolder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
-import { clearError, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { clearError, clearFlagAlbums, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 
 
@@ -184,6 +184,7 @@ const CreateNewAlbumPage: React.FC = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
+            alert("New Album Created");
             navigate('/dashboard/');
         }
 
@@ -194,12 +195,17 @@ const CreateNewAlbumPage: React.FC = () => {
 
     useEffect(() => {
         console.log(isError)
-        if (isError && error && error.message) {
-            alert(error.message);
+        if (isError) {
+            if (error) {
+                alert(error.message);
+            } else {
+                alert("Something went wrong! Please try again.")
+            }
         }
 
         return () => {
             dispatch(clearError());
+            dispatch(clearFlagAlbums());
         }
     }, [isError])
 

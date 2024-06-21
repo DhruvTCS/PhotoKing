@@ -12,7 +12,7 @@ line-height: 32px;
 text-align: left;
 color: #292929;
 
-
+background-color: transparent;
 &::placeholder{
 font-family: "Urbanist", sans-serif;
 font-size: 18px;
@@ -25,6 +25,7 @@ opacity:50%;
 
 &:focus{
  outline:none;
+ background-color:transparent;
 }
 `
 

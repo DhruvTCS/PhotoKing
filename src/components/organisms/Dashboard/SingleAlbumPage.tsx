@@ -12,6 +12,7 @@ margin-top:20px;
 
 `
 // 96 88 
+
 const BackButtonContainer = styled.div`
 display:flex;
 flex-direction:row;
@@ -29,7 +30,7 @@ color: #171717;
 `;
 
 const BackButtonText = styled.p`
-width: 119px;
+width: 140px;
 height: 23px;
 font-family: "Urbanist",sans-serif;
 font-size: 19px;
@@ -63,8 +64,8 @@ const SingleAlbum: React.FC = () => {
     return (
         <SingleAlbumPageContainer>
             <BackButtonContainer >
-                <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate('/dashboard/')} />
-                <BackButtonText>Create Album</BackButtonText>
+                <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
+                <BackButtonText>{params.new !== 'true' && currentAlbum ? `Update Album` : `Create Album`}</BackButtonText>
             </BackButtonContainer>
             {
                 params.new === 'true' ?

@@ -42,7 +42,7 @@ const SearchBar: React.FC = () => {
     const searchTimeout = setTimeout(async () => {
       if (inputData.length >= 4)
         await SearchData(inputData, true, true);
-    }, 2000)
+    }, 1000)
 
     return () => {
       clearTimeout(searchTimeout);

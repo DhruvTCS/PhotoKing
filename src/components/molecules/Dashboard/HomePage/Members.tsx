@@ -5,6 +5,7 @@ import MemberCard from '../../../atoms/Dashboard/HomePage/MemberCard';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { getAllMembers } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { Member } from '../../../../Data/member.dto';
+import { useNavigate } from 'react-router-dom';
 const MembersContainer = styled.div`
 height:160px;
 width:100%;
@@ -96,6 +97,7 @@ const MemberList = styled.div`
 const Members: React.FC = () => {
     const { members } = useAppSelector(state => state.member);
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     useEffect(() => {
 
         dispatch(getAllMembers());
@@ -106,12 +108,12 @@ const Members: React.FC = () => {
                 <MembersHeaderText >
                     Members
                 </MembersHeaderText>
-                <AddMemberButton>
+                <AddMemberButton onClick={() => navigate('/dashboard/members/create')}>
                     <PlusSignContainer>
                         <PlusSignIcon src={PlusSignIconPNG}>
                         </PlusSignIcon>
                     </PlusSignContainer>
-                    <ButtonText>
+                    <ButtonText >
                         ADD
                     </ButtonText>
                 </AddMemberButton>

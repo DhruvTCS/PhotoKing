@@ -11,7 +11,7 @@ import ReasonModal from './ReasonModal';
 import LockIconPng from '../../../../assets/Icons/DropDownMenu/Lock.png'
 import UnderLine from '../../Login/UnderLine';
 import { getFoldersForAlbum, lockMultipleFoldersAPI, unlockFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
-import { clearError } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { clearError, clearFlagAlbums } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 
 interface LockAlbumModalProps {
     album: Albums;
@@ -156,10 +156,16 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
         if (isError) {
             console.log("Error in lockAlbum Modal", error);
+            if (error) {
+                alert(error.message);
+            } else {
+                alert("Something went wrong! Please try again.")
+            }
 
         }
         return () => {
             dispatch(clearError());
+            dispatch(clearFlagAlbums());
         }
     }, [isError])
     useEffect(() => {

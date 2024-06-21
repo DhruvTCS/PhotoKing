@@ -8,11 +8,14 @@ import { getAllAlbums } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import { clearError } from '../../../../Redux/Slice/Auth/AuthSlice';
 import { useNavigate } from 'react-router-dom';
+import { clearFlagAlbums } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 const AblumContainer = styled.div`
 width:98%;
 margin-top:48px;
 margin-left:30px;
 position:relative;
+
+
 `;
 
 
@@ -77,6 +80,13 @@ display: grid;
 grid-template-columns: repeat(3, 1fr);
 gap: 50px;
 width: 100%;
+overflow:auto;
+ &::-webkit-scrollbar {
+     /* Chrome, Safari, and Opera */
+    height: 12px;
+    width:3px;
+    background:transparent !important;
+  }
 `
 const NoAlbumFoundContainer = styled.div`
 width: 100%;
@@ -88,7 +98,7 @@ const Albums: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const albumsPerPage = 6;
     const [totalAlbums, setTotalAlbums] = useState(0);
-    const { albums, loading, total_projects, isUpdate } = useAppSelector(state => state.album);
+    const { albums, loading, total_projects, isUpdate, isSearchData } = useAppSelector(state => state.album);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     useEffect(() => {
@@ -109,6 +119,7 @@ const Albums: React.FC = () => {
 
         return () => {
             dispatch(clearError());
+            dispatch(clearFlagAlbums());
         }
     }, [isUpdate, dispatch])
 
@@ -143,7 +154,7 @@ const Albums: React.FC = () => {
                 }
 
             </AlbumsListContainer>
-            {loading || albums.length === 0 || albums.length > 6 ? null : <Pagination currentPage={currentPage} totalPages={Math.ceil(total_projects / albumsPerPage)} onPageChange={handlePageChange} />}
+            {(loading || albums.length === 0 || albums.length > 6 || isSearchData) ? null : <Pagination currentPage={currentPage} totalPages={Math.ceil(total_projects / albumsPerPage)} onPageChange={handlePageChange} />}
         </AblumContainer>
     )
 }

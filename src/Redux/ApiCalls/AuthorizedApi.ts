@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import store from '../Store'; // Import the Redux store
-import { setToken } from './../Slice/Auth/AuthSlice';
+import { clearToken, setToken } from './../Slice/Auth/AuthSlice';
 import { refreshAccessToken } from './../ApiCalls/Auth/refreshToken'; // Assume you have a thunk for refreshing the token
 
 const api = axios.create({
@@ -35,7 +35,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
     } catch (error: any) {
         console.log("error above sending refresh token api");
         console.log(error.response);
-        if ((error.response.status === 401 || error.response.status === 400) && refreshToken) {
+        if ((error.response.status === 401) && refreshToken) {
             // Token might be expired, attempt to refresh it
             try {
                 const newAccessToken = await store.dispatch(refreshAccessToken(refreshToken)).unwrap();
@@ -61,7 +61,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
                 console.log("error in refresh token request from authAPI")
                 console.log(refreshError)
                 // If refresh fails, clear tokens and handle error appropriately;
-                // store.dispatch(clearToken());
+                store.dispatch(clearToken());
                 throw refreshError;
             }
         } else {

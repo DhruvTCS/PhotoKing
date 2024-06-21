@@ -17,6 +17,8 @@ export interface AlbumState {
     isUpdate: boolean;
     currentAlbum?: Albums;
     isFolderChange: boolean;
+    success: boolean;
+    isSearchData: boolean;
 }
 
 const initialState: AlbumState = {
@@ -29,7 +31,8 @@ const initialState: AlbumState = {
     folderLoading: false,
     isUpdate: false,
     isFolderChange: false,
-
+    success: false,
+    isSearchData: false,
 }
 
 
@@ -61,6 +64,16 @@ const albumSlice = createSlice({
         },
         setIsFolderChanged(state, action: PayloadAction<boolean>) {
             state.isFolderChange = action.payload;
+        },
+        clearFlagAlbums(state) {
+            state.success = false;
+            state.isError = false;
+            state.isFolderChange = false;
+            state.isSearchData = false;;
+
+        },
+        setSearchDataFlag(state, action: PayloadAction<boolean>) {
+            state.isSearchData = action.payload
         }
 
     },
@@ -71,7 +84,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum } = albumSlice.actions;
+export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

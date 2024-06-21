@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllMembers } from '../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { Member } from '../../../Data/member.dto';
 import LoadingDots from '../../atoms/Utlis/LoadinDots';
+import { clearError, clearFlagsMembers } from '../../../Redux/Slice/Dashboard/MemberSlice';
 const AllMembersContainer = styled.div`
 width: 100%;
 height: 100%;
@@ -74,7 +75,7 @@ const AllMembersPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { members, loading } = useAppSelector(state => state.member);
+  const { members, loading, isError, success, error } = useAppSelector(state => state.member);
   const [allMembers, setAllMembers] = useState<Member[] | []>([])
   useEffect(() => {
 
@@ -90,6 +91,20 @@ const AllMembersPage: React.FC = () => {
 
     }
   }, [members])
+  useEffect(() => {
+    if (isError) {
+      if (error) {
+        alert(error.message);
+      } else {
+        alert("Something went wrong! Please try again.")
+      }
+    }
+
+    return () => {
+      dispatch(clearError());
+      dispatch(clearFlagsMembers());
+    }
+  }, [])
 
   return (
     <AllMembersContainer>

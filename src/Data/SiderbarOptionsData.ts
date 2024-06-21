@@ -25,7 +25,7 @@ export const sidebarOptions = [
     {
         key: "Albums",
         icon: Albums,
-        redirection: "/dashboard/albums"
+        redirection: "/dashboard/albums/all"
     },
     {
         key: "Members",

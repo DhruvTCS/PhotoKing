@@ -68,6 +68,10 @@ const authSlice = createSlice({
             state.access_token = null;
             state.refresh_token = null;
             state.isAuthticated = false;
+            if (localStorage.getItem("access_token")) {
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+            }
         },
         setToken(state, action: PayloadAction<{ access_token: string, refresh_token: string }>) {
             state.access_token = action.payload.access_token;

@@ -73,12 +73,8 @@ const MenuButton = styled.button`
   align-items: center;
   width: 45px;
   height: 45px;
-  border: 1px solid;
-  border-image-source: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  // border: 1px solid white;
+  border:none;
   box-shadow: 0px 20px 20px 0px hsla(259, 49%, 33%, 0.15);
 `
 

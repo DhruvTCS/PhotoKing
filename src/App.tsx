@@ -14,12 +14,15 @@ import HomePage from './components/organisms/Dashboard/HomePage';
 import SingleAlbum from './components/organisms/Dashboard/SingleAlbumPage';
 import AllMembersPage from './components/organisms/Dashboard/AllMembersPage';
 import CreateNewMemberPage from './components/molecules/Dashboard/Member/CreateNewMember';
+import Albums from './components/molecules/Dashboard/HomePage/Albums';
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
     if (!localStorage.getItem('access_token')) {
 
-      navigate('/auth/signup');
+      navigate('/auth/login');
+    } else {
+      navigate('/dashboard/')
     }
 
   }, [])
@@ -37,6 +40,7 @@ function App() {
             <Route path="singleAlbum/:new" element={< SingleAlbum />} />
             <Route path="members/all" element={<AllMembersPage />} />
             <Route path="members/create" element={<CreateNewMemberPage />} />
+            <Route path="albums/all" element={<Albums />} />
           </Route>
         </Routes>
       </div>

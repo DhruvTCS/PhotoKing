@@ -8,14 +8,12 @@ interface PaginationProps {
 }
 
 const PaginationContainer = styled.div`
-  position: absolute;
-  top: 700px;
-  width:78%;
+  width:100%;
 
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 16px 0;
+  margin: 38px 0px 0px 0px;
 `;
 
 const ArrowButton = styled.button`
@@ -27,7 +25,6 @@ const ArrowButton = styled.button`
 
   &:disabled {
     color: #ccc;
-    display:none;
     cursor: not-allowed;
   }
 `;

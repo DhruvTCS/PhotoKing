@@ -1,7 +1,7 @@
 
 import apiCall from "../AuthorizedApi"
 import store from "../../Store"
-import { setAlbums, setError, setAlbumLoading } from "../../Slice/Dashboard/AlbumSlice"
+import { setAlbums, setError, setAlbumLoading, setSearchDataFlag } from "../../Slice/Dashboard/AlbumSlice"
 import { Albums } from "../../../Data/album.dto"
 import { Member } from "../../../Data/member.dto"
 import { setMember, setMemberLoading } from "../../Slice/Dashboard/MemberSlice"
@@ -10,6 +10,7 @@ export const SearchData = async (keyword: string, isAlbum: boolean, isMember: bo
     try {
         store.dispatch(setAlbumLoading());
         store.dispatch(setMemberLoading(true))
+        store.dispatch(setSearchDataFlag(false));
         const res = await apiCall({
             method: "GET",
             url: `/project/search-albums/?search=${keyword}`,
@@ -47,8 +48,10 @@ export const SearchData = async (keyword: string, isAlbum: boolean, isMember: bo
         console.log(albums);
         if (isMember)
             store.dispatch(setMember(members));
-        if (isAlbum)
+        if (isAlbum) {
+            store.dispatch(setSearchDataFlag(true));
             store.dispatch(setAlbums(albums))
+        }
     } catch (error: any) {
         store.dispatch(setError(error.response));
     }
