@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
+import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 const NewMemberPageContainer = styled.div`
 height:100%;
 width:100%;
@@ -227,13 +228,15 @@ const CreateNewMemberPage: React.FC = () => {
     };
     useEffect(() => {
         if (success) {
-            alert("Member added successfully");
+            showSuccessToast("Member added successfully");
             navigate('/dashboard/members/all');
         } else if (isError) {
-            if (error) {
-                alert(error.message)
+            if (error && error.message) {
+
+                showErrorToast(error.message)
+                // alert(error.message)
             } else {
-                alert("Something went wrong! Please try again later.")
+                showErrorToast("Something went wrong! Please try again later.")
             }
         }
         return () => {

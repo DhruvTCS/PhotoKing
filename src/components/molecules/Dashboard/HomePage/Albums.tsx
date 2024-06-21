@@ -78,7 +78,7 @@ COLOR: #A720B9;
 const AlbumsListContainer = styled.div`
 display: grid;
 grid-template-columns: repeat(3, 1fr);
-gap: 50px;
+gap: 63px 0px;
 width: 100%;
 overflow:auto;
  &::-webkit-scrollbar {

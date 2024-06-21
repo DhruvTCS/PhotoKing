@@ -61,7 +61,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
                 console.log("error in refresh token request from authAPI")
                 console.log(refreshError)
                 // If refresh fails, clear tokens and handle error appropriately;
-                store.dispatch(clearToken());
+                // store.dispatch(clearToken());
                 throw refreshError;
             }
         } else {

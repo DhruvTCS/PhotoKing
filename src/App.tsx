@@ -15,6 +15,8 @@ import SingleAlbum from './components/organisms/Dashboard/SingleAlbumPage';
 import AllMembersPage from './components/organisms/Dashboard/AllMembersPage';
 import CreateNewMemberPage from './components/molecules/Dashboard/Member/CreateNewMember';
 import Albums from './components/molecules/Dashboard/HomePage/Albums';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -43,6 +45,7 @@ function App() {
             <Route path="albums/all" element={<Albums />} />
           </Route>
         </Routes>
+        <ToastContainer />
       </div>
     </Provider>
   );
