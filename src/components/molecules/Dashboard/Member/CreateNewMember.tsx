@@ -234,7 +234,7 @@ const CreateNewMemberPage: React.FC = () => {
             if (error && error.message) {
 
                 showErrorToast(error.message)
-                // alert(error.message)
+
             } else {
                 showErrorToast("Something went wrong! Please try again later.")
             }

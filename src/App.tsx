@@ -9,7 +9,6 @@ import LoginForm from './components/organisms/Auth/Login/LoginForm';
 import OtplVerificationForm from './components/organisms/Auth/OtpVerification/OtpVerificationForm';
 import RegisterForm from './components/organisms/Auth/Register/RegisterForm';
 import Dashboard from './components/pages/Dashboard/Dashboard';
-import { setMember } from './Redux/Slice/Dashboard/MemberSlice';
 import HomePage from './components/organisms/Dashboard/HomePage';
 import SingleAlbum from './components/organisms/Dashboard/SingleAlbumPage';
 import AllMembersPage from './components/organisms/Dashboard/AllMembersPage';
@@ -17,6 +16,7 @@ import CreateNewMemberPage from './components/molecules/Dashboard/Member/CreateN
 import Albums from './components/molecules/Dashboard/HomePage/Albums';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import SubscriptionPage from './components/organisms/Dashboard/SubscriptionPage';
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -43,6 +43,7 @@ function App() {
             <Route path="members/all" element={<AllMembersPage />} />
             <Route path="members/create" element={<CreateNewMemberPage />} />
             <Route path="albums/all" element={<Albums />} />
+            <Route path="subscriptions" element={<SubscriptionPage />} />
           </Route>
         </Routes>
         <ToastContainer />

@@ -150,7 +150,7 @@ const Albums: React.FC = () => {
                 {loading ? <LoadingDots position={{
                     type: "absolute", top: "366px", left: "662px"
                 }} /> :
-                    (albums && albums.length !== 0 ? albums.map(album => <AlbumCard album={album} name={album.name} Date='02/04/2023' backgroundImage='' />) : <NoAlbumFoundContainer>No Album found</NoAlbumFoundContainer>)
+                    (albums && albums.length !== 0 ? albums.map(album => <AlbumCard key={album.id} album={album} name={album.name} Date='02/04/2023' />) : <NoAlbumFoundContainer>No Album found</NoAlbumFoundContainer>)
                 }
 
             </AlbumsListContainer>

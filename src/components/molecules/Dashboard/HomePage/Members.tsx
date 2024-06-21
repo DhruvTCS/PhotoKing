@@ -120,7 +120,7 @@ const Members: React.FC = () => {
             </MembersHeader>
             <MembersListConater>
                 <MemberList>
-                    {members && members.length !== 0 && members.map((member: Member) => <MemberCard member={member}></MemberCard>)}
+                    {members && members.length !== 0 && members.map((member: Member) => <MemberCard key={member.id} member={member}></MemberCard>)}
                 </MemberList>
             </MembersListConater>
         </MembersContainer>

@@ -9,7 +9,6 @@ interface PaginationProps {
 
 const PaginationContainer = styled.div`
   width:100%;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,7 +47,6 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   const pagesToShow = 3;
   const firstPageToShow = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
   const lastPageToShow = Math.min(totalPages, firstPageToShow + pagesToShow - 1);
-
   const pageNumbers = [];
   console.log(firstPageToShow, lastPageToShow)
   for (let i = firstPageToShow; i <= lastPageToShow; i++) {
