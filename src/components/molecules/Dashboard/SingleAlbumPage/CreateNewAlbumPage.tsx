@@ -5,12 +5,15 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
-import { NewAlbum, NewFolder } from '../../../../Data/album.dto';
+import { Folder, NewAlbum, NewFolder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
 import { clearError, clearFlagAlbums, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
+import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolderModal';
+import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
+import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 
 
 const AlbumPageContainer = styled.div`
@@ -156,11 +159,11 @@ const FolderHeadertext = styled.p`
 
 const FoldersHeaderText = styled.p``;
 const FolderList = styled.div`
-height:100%;
-width:100%;
-display: flex;
-align-items: center;
-justify-content: center;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 50px;
+width: 100%;
+height: 100%;
 `;
 const SubmitButtonContainer = styled.div`
 cursor:pointer;
@@ -171,20 +174,36 @@ width:418px;
 height:300px;
 border-radius:10px;
 `;
+const FolderListContainer = styled.div`
+height:100%;
+width:96%;
+margin-left:46px;
+`;
+
+const NoFolderTextContainer = styled.div`
+height:100%;
+width:100%;
+display: flex;
+align-items: center;
+justify-content: center;
+
+`;
 const CreateNewAlbumPage: React.FC = () => {
 
     const [album, setAlbum] = useState<NewAlbum>({ name: "", date: "", media_type: 1, image: "" });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [slectedImage, setSelectedImage] = useState<File | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [activeButton, setActiveButton] = useState(true);
     const [folders, setFolders] = useState<NewFolder[] | []>([]);
+    const [createFolderModal, setCreateFolderModal] = useState(false);
     const dispatch = useAppDispatch();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const { isUpdate, isError, error, loading } = useAppSelector(state => state.album)
+    const { isUpdate, isError, error, loading } = useAppSelector(state => state.album);
+    const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
-            alert("New Album Created");
+            showSuccessToast("New Album Created.");
             navigate('/dashboard/');
         }
 
@@ -196,10 +215,10 @@ const CreateNewAlbumPage: React.FC = () => {
     useEffect(() => {
         console.log(isError)
         if (isError) {
-            if (error) {
-                alert(error.message);
+            if (error && error.message) {
+                showErrorToast(error.message);
             } else {
-                alert("Something went wrong! Please try again.")
+                showErrorToast("Something went wrong! Please try again.")
             }
         }
 
@@ -212,7 +231,7 @@ const CreateNewAlbumPage: React.FC = () => {
     useEffect(() => {
         // This function will be called every time `state` changes
         isValidAlbum(album);
-    }, [slectedImage, album]);
+    }, [selectedImage, album]);
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
@@ -240,17 +259,17 @@ const CreateNewAlbumPage: React.FC = () => {
         });
     }
     const isValidAlbum = (album: NewAlbum) => {
-        console.log(isValidDate(album.date) && album.name.length > 3 && slectedImage !== null);
-        if (isValidDate(album.date) && album.name.length > 3 && slectedImage) {
+        console.log(isValidDate(album.date) && album.name.length > 3 && selectedImage !== null);
+        if (isValidDate(album.date) && album.name.length > 3 && selectedImage) {
             setActiveButton(false);
         } else {
             setActiveButton(true);
         }
     }
     const sendImageToCloudinary = async () => {
-        if (slectedImage) {
-            console.log(slectedImage);
-            const result = uploadToCloudinary1(slectedImage).then((data) => {
+        if (selectedImage) {
+            console.log(selectedImage);
+            const result = uploadToCloudinary1(selectedImage).then((data) => {
                 album.image = data;
             }).catch(err => console.log(err));
             console.log(result);
@@ -274,10 +293,50 @@ const CreateNewAlbumPage: React.FC = () => {
         fileInputRef.current?.click();
     };
     const handleSubmit = async () => {
-        dispatch(setAlbumLoading())
-        sendImageToCloudinary().then(() => dispatch(createAlbumAPI({ project: album })));
+        // dispatch(setAlbumLoading())
+        // sendImageToCloudinary().then(() => dispatch(createAlbumAPI({ project: album })));
+        if (selectedImage) {
 
+            setAlbum(album => {
+                album.folders = folders
+                return album;
+            })
+            console.log(folders);
+            const formData = new FormData();
+            formData.append('project[name]', album.name);
+            formData.append('project[date]', album.date);
+            formData.append('project[media_type]', "1");
+            // formData.append('image', JSON.stringify(form1));
+            formData.append('project_image', selectedImage);
+
+            folders.forEach((folder, folderIndex) => {
+                formData.append(`folders[${folderIndex}][name]`, folder.name);
+                folder.images.forEach((image, imageIndex) => {
+                    formData.append(`folders[${folderIndex}][images][${imageIndex}][image]`, image.image); // Assuming image is a File object
+                    formData.append(`folders[${folderIndex}][images][${imageIndex}][media_type]`, image.media_type.toString());
+                    console.log(formData.get(`folders[${folderIndex}][images][${imageIndex}][image]`));
+                    console.log(image.image);
+                });
+            });
+            console.log(folders)
+            console.log(formData.get("project_image"));
+            dispatch(createAlbumAPI(formData));
+        }
     }
+    const handleAddFolder = (folder: NewFolder) => {
+        setFolders((prevFolders) => {
+            const folderIndex = prevFolders.findIndex((f) => f.name.toLowerCase() === folder.name.toLowerCase());
+            if (folderIndex !== -1) {
+                // Update existing folder
+                const updatedFolders = [...prevFolders];
+                updatedFolders[folderIndex] = folder;
+                return updatedFolders;
+            } else {
+                // Add new folder
+                return [...prevFolders, folder];
+            }
+        });
+    };
 
     return (
         <AlbumPageContainer>
@@ -315,9 +374,10 @@ const CreateNewAlbumPage: React.FC = () => {
             </UperContainer>
             <UnderLine width={1430} />
             <FoldersContainer>
+                <AddFolderModal isOpen={createFolderModal} onRequestClose={() => { setCreateFolderModal(false); setCurrentFolder(null) }} onSubmit={handleAddFolder} currentFolder={currentFolder ? currentFolder : null} setCurrentFolder={setCurrentFolder} />
                 <FoldersHeader>
                     <FolderHeadertext>Folders</FolderHeadertext>
-                    <AddMemberButton>
+                    <AddMemberButton onClick={() => setCreateFolderModal(true)}>
                         <PlusSignContainer>
                             <PlusSignIcon src={PlusSignIconPNG}>
                             </PlusSignIcon>
@@ -327,12 +387,15 @@ const CreateNewAlbumPage: React.FC = () => {
                         </ButtonText>
                     </AddMemberButton>
                 </FoldersHeader>
-                <FolderList>
+                <FolderListContainer>
+
+
                     {
-                        folders.length > 0 ? null :
-                            `No any folder created yet!`
+                        folders.length > 0 ? <FolderList> {folders.map((folder) => <FolderCard newFolder={folder} isNew={true} onClick={() => { setCreateFolderModal(pre => { setCurrentFolder(folder); return true }); }} />)} </FolderList> :
+                            <NoFolderTextContainer>No any folder created yet!</NoFolderTextContainer>
                     }
-                </FolderList>
+
+                </FolderListContainer>
             </FoldersContainer>
             <SubmitButtonContainer>
                 {loading ? <LoadingDots /> :

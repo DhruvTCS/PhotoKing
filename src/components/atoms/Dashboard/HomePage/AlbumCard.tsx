@@ -12,8 +12,6 @@ import { useAppDispatch } from '../../../../Redux/Hooks'
 import { setCurrentAlbum } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
 import { useNavigate } from 'react-router-dom'
 interface CardProps {
-  name: string
-  Date: string,
   album: Albums
 }
 
@@ -154,7 +152,7 @@ const LockIconImg = styled.img`
 height:17px;
 width: 15px;
 `
-const AlbumCard: React.FC<CardProps> = ({ name, Date, album }) => {
+const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useAppDispatch();
@@ -187,14 +185,15 @@ const AlbumCard: React.FC<CardProps> = ({ name, Date, album }) => {
     }
   }, [menuOpen, showModal])
   return (
-    <AlbumCardContainer backgroundImage={album.image ? album.image : AlbumBackImage}>
+    // album.image ? album.image :
+    <AlbumCardContainer backgroundImage={album.image}>
       <CardContent>
         <CardName onClick={() => {
           dispatch(setCurrentAlbum(album))
           navigate(`/dashboard/singleAlbum/${album.id}`)
         }
-        }>{name}</CardName>
-        <CardDate>{Date}</CardDate>
+        }>{album.name}</CardName>
+        <CardDate>{album.date}</CardDate>
       </CardContent>
       {album.is_locked ?
         <AlbumLockButton>

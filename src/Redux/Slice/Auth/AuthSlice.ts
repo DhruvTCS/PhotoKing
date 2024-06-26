@@ -27,6 +27,7 @@ export interface UserState {
         phone_number: string;
         country_code: string;
     } | null;
+    subscription_plans?: any;
 }
 
 const initialState: UserState = {
@@ -44,6 +45,7 @@ const initialState: UserState = {
     remeberMe: false,
     isRegister: false,
     temp_user: null,
+
 };
 
 

@@ -83,7 +83,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(getFoldersForAlbum.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.folderLoading = false;
-            if (action.payload.status === 404) {
+            if (action.payload.status === 404 || action.payload.status === 401) {
 
             } else {
                 state.isError = true;

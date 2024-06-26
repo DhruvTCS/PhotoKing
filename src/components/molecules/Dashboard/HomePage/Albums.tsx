@@ -77,7 +77,8 @@ COLOR: #A720B9;
 `
 const AlbumsListContainer = styled.div`
 display: grid;
-grid-template-columns: repeat(3, 1fr);
+// grid-template-columns: repeat(3, 1fr);
+grid-template-columns: repeat(auto-fit, 490px);
 gap: 63px 0px;
 width: 100%;
 overflow:auto;
@@ -87,6 +88,8 @@ overflow:auto;
     width:3px;
     background:transparent !important;
   }
+align-items: center;
+justify-content:center;
 `
 const NoAlbumFoundContainer = styled.div`
 width: 100%;
@@ -150,7 +153,7 @@ const Albums: React.FC = () => {
                 {loading ? <LoadingDots position={{
                     type: "absolute", top: "366px", left: "662px"
                 }} /> :
-                    (albums && albums.length !== 0 ? albums.map(album => <AlbumCard key={album.id} album={album} name={album.name} Date='02/04/2023' />) : <NoAlbumFoundContainer>No Album found</NoAlbumFoundContainer>)
+                    (albums && albums.length !== 0 ? albums.map(album => <AlbumCard key={album.id} album={album} />) : <NoAlbumFoundContainer>No Album found</NoAlbumFoundContainer>)
                 }
 
             </AlbumsListContainer>

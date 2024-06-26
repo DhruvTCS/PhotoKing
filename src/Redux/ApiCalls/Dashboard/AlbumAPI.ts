@@ -64,10 +64,13 @@ export const unlockAlbum = createAsyncThunk(
 
 export const createAlbumAPI = createAsyncThunk(
     'album/createAlbumAPI',
-    async (data: { project: NewAlbum }, { rejectWithValue }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
                 url: `/project/user/create-project/`,
                 data
             })

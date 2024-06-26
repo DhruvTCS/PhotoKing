@@ -4,6 +4,8 @@ import { createNewMemberAPI, getAllMembers } from '../../ApiCalls/Dashboard/Memb
 export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => {
     builder.addCase(getAllMembers.pending, (state) => {
         state.loading = true;
+        state.isError = false;
+        state.error = {};
     })
         .addCase(getAllMembers.fulfilled, (state, action: PayloadAction<[{
             id: string,

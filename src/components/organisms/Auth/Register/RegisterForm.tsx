@@ -12,6 +12,7 @@ import LoadingDots from '../../../atoms/Utlis/LoadinDots'
 import SubmitButton from '../../../atoms/Login/SubmitButton'
 import { clearError, setIsRegister, setRemeberMe } from '../../../../Redux/Slice/Auth/AuthSlice'
 import { loginUser } from '../../../../Redux/ApiCalls/Auth/login'
+import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast'
 
 
 const RegisterFormContainer = styled.div`
@@ -246,6 +247,7 @@ const RegisterForm: React.FC = () => {
     useEffect(() => {
 
         if (apiStatus === true) {
+            showSuccessToast("Otp sent successfully.")
             navigate('/auth/otp')
         }
         return () => {
@@ -258,8 +260,10 @@ const RegisterForm: React.FC = () => {
             if (error.status === 402) {
                 alert("Please Register first");
             }
-            else {
-                alert(error.message)
+            else if (error.message) {
+                showSuccessToast(error.message);
+            } else {
+                showErrorToast("something went wrong! Please try again.")
             }
         }
 

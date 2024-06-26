@@ -5,7 +5,7 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
-import { Folder, NewAlbum } from '../../../../Data/album.dto';
+import { Folder, NewAlbum, NewFolder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { clearError, clearFlagAlbums, setAlbumLoading } from '../../../../Redux/
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import { getFoldersForAlbum } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
+import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolderModal';
+
 
 
 const AlbumPageContainer = styled.div`
@@ -224,7 +226,9 @@ const EditAlbumPage: React.FC = () => {
     const [folders, setFolders] = useState<Folder[] | []>([]);
     const dispatch = useAppDispatch();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
     const { isUpdate, isError, error, loading, currentAlbum, folderLoading } = useAppSelector(state => state.album)
+    const [createFolderModal, setCreateFolderModal] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
@@ -355,6 +359,9 @@ const EditAlbumPage: React.FC = () => {
         }
 
     }
+    const handleFolderCreation = (folder: NewFolder) => {
+        console.log(folder);
+    }
     const removeImageandPreview = () => {
         setImagePreview(null)
         setAlbum(album => {
@@ -408,9 +415,10 @@ const EditAlbumPage: React.FC = () => {
             </UperContainer>
             <UnderLine width={1430} />
             <FoldersContainer>
+                <AddFolderModal isOpen={createFolderModal} onRequestClose={() => setCreateFolderModal(false)} currentFolder={null} setCurrentFolder={setCurrentFolder} onSubmit={handleFolderCreation} />
                 <FoldersHeader>
                     <FolderHeadertext>Folders</FolderHeadertext>
-                    <AddMemberButton>
+                    <AddMemberButton onClick={() => setCreateFolderModal(true)}>
                         <PlusSignContainer>
                             <PlusSignIcon src={PlusSignIconPNG}>
                             </PlusSignIcon>
@@ -423,7 +431,8 @@ const EditAlbumPage: React.FC = () => {
                 <FolderListContainer>
                     {folderLoading ? <LoadingDots ></LoadingDots> :
                         folders.length > 0 ? <FolderList>
-                            {folders.map((folder: Folder) => <FolderCard folder={folder} />)}
+
+                            {folders.map((folder: Folder) => <>  <FolderCard folder={folder} isNew={false} /></>)}
 
                         </FolderList> :
                             <NoFolderTextContainer>`No any folder created yet!`</NoFolderTextContainer>

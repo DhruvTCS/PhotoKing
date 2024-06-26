@@ -23,15 +23,15 @@ export interface Folder {
     is_locked: boolean;
     is_hide?: boolean;
     total_images: number;
-    images?: [{
+    images: {
 
         id: string;
         projectId: string;
         image: string;
         media_type: string;
-    }
+    }[]
 
-    ]
+
 
 }
 
@@ -40,23 +40,15 @@ export interface NewAlbum {
     date: string,
     image: string,
     media_type: number
-    folders?: [{
-        name: string,
-        images: [
-            {
-                image: string,
-                media_type: number,
-            }
-        ]
-    }
-    ] | []
+    folders?: NewFolder[]
 }
 export interface NewFolder {
     name: string;
-    images: [
-        {
-            image: string,
-            media_type: number,
-        }
-    ]
+    images:
+    {
+        image: File,
+        image_blob: string,
+        media_type: number,
+    }[]
+
 }

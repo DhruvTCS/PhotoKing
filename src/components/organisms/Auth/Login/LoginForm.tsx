@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { setContactNumber, clearError, setRemeberMe } from '../../../../Redux/Slice/Auth/AuthSlice'
 import { loginUser } from '../../../../Redux/ApiCalls/Auth/login'
 import LoadingDots from '../../../atoms/Utlis/LoadinDots'
+import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast'
 
 
 const LoginFormContainer = styled.div`
@@ -167,6 +168,7 @@ const LoginForm: React.FC = () => {
     useEffect(() => {
 
         if (apiStatus === true) {
+            showSuccessToast("OTP sent successfully.")
             navigate('/auth/otp')
         }
         return () => {
@@ -177,10 +179,13 @@ const LoginForm: React.FC = () => {
 
         if (isError) {
             if (error.status === 402) {
-                alert("Please Register first");
+                showErrorToast("Please Register first");
+                navigate('/auth/signup')
             }
-            else {
-                alert(error.message)
+            else if (error && error.message) {
+                showErrorToast(error.message)
+            } else {
+                showErrorToast("Something went wrong! Please try again.")
             }
         }
 

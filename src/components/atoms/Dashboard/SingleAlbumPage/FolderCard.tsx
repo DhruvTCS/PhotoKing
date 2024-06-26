@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Folder } from '../../../../Data/album.dto';
+import { Folder, NewFolder } from '../../../../Data/album.dto';
 import TestImageIcon from '../../../../assets/images/Extra/folderIconImage.png'
+import UpdateFolderModal from './UpdateFolderModal';
 interface FolderCardProps {
-    folder: Folder
+    folder?: Folder,
+    newFolder?: NewFolder,
+    onClick?: () => void;
+    isNew: boolean;
 }
 const CardContainer = styled.div`
 width: 400px;
@@ -21,6 +25,9 @@ font-weight: 600;
 padding-left:20px;
 line-height: 25.6px;
 text-align: left;
+margin:0;
+padding:20px;
+cursor:pointer;
 
 `;
 const ImageContainer = styled.div`
@@ -79,28 +86,58 @@ text-align: left;
 color: #FFFFFF;
 
 `;
-const FolderCard: React.FC<FolderCardProps> = ({ folder }) => {
+const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isNew }) => {
+    const [updateFolderModal, setUpdateFolderModal] = useState(false);
+
     return (
-        <CardContainer>
-            <FolderName>
-                {folder.name}
-            </FolderName>
-            <ImageContainer>
-                {folder.images ?
-                    <Images>
-                        <Image1 src={TestImageIcon} />
-                        {folder.images.length >= 2 ? <Image2 src={TestImageIcon} /> : null}
-                        {folder.images.length >= 3 ? <Image3 src={TestImageIcon} /> : null}
-                        {folder.images.length >= 4 ? <RemainingImageCountContainer >
-                            <RemainigImagesText>+{folder.images.length - 3}</RemainigImagesText>
+        <div>
+            {folder ?
+                <CardContainer>
+                    <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} />
+                    <FolderName onClick={() => setUpdateFolderModal(true)}>
+                        {folder.name}
+                    </FolderName>
+                    <ImageContainer>
+                        {folder.images ?
+                            <Images>
+                                <Image1 src={folder.images[0].image} />
+                                {folder.images.length >= 2 ? <Image2 src={folder.images[1].image} /> : null}
+                                {folder.images.length >= 3 ? <Image3 src={folder.images[2].image} /> : null}
+                                {folder.images.length >= 4 ? <RemainingImageCountContainer >
+                                    <RemainigImagesText>+{folder.images.length - 3}</RemainigImagesText>
 
-                        </RemainingImageCountContainer> : null}
-                    </Images>
-                    :
-                    ' No images are in Folder'}
+                                </RemainingImageCountContainer> : null}
+                            </Images>
+                            :
+                            ' No images are in Folder'}
 
-            </ImageContainer>
-        </CardContainer>
+                    </ImageContainer>
+                </CardContainer>
+                : null}
+            {newFolder ?
+                <CardContainer>
+
+                    <FolderName onClick={onClick}>
+                        {newFolder.name}
+                    </FolderName>
+                    <ImageContainer>
+                        {newFolder.images ?
+                            <Images>
+                                <Image1 src={newFolder.images[0].image_blob} />
+                                {newFolder.images.length >= 2 ? <Image2 src={newFolder.images[1].image_blob} /> : null}
+                                {newFolder.images.length >= 3 ? <Image3 src={newFolder.images[2].image_blob} /> : null}
+                                {newFolder.images.length >= 4 ? <RemainingImageCountContainer >
+                                    <RemainigImagesText>+{newFolder.images.length - 3}</RemainigImagesText>
+
+                                </RemainingImageCountContainer> : null}
+                            </Images>
+                            :
+                            ' No images are in Folder'}
+
+                    </ImageContainer>
+                </CardContainer>
+                : null}
+        </div>
     )
 }
 

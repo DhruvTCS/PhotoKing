@@ -12,6 +12,7 @@ import LockIconPng from '../../../../assets/Icons/DropDownMenu/Lock.png'
 import UnderLine from '../../Login/UnderLine';
 import { getFoldersForAlbum, lockMultipleFoldersAPI, unlockFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import { clearError, clearFlagAlbums } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { showErrorToast, showSuccessToast } from '../../Utlis/Toast';
 
 interface LockAlbumModalProps {
     album: Albums;
@@ -156,10 +157,10 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
         if (isError) {
             console.log("Error in lockAlbum Modal", error);
-            if (error) {
-                alert(error.message);
+            if (error && error.message) {
+                showErrorToast(error.message);
             } else {
-                alert("Something went wrong! Please try again.")
+                showErrorToast("Something went wrong! Please try again.")
             }
 
         }
@@ -219,6 +220,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
                 dispatch(lockAlbum({ project_id: album.id, reason: selectedReason }))
             }
+            showSuccessToast("Your Album has been locked");
 
         } else {
             console.log(selectedFolders);
@@ -229,6 +231,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
                 // dispatch(lockFolderAPI({ project_id: album.id, reason: selectedReason }))
             }
+            showSuccessToast("Folder has been lo0cked.")
         }
         // dispatch(lockAlbum({ albumName, selectedFolders, reason: finalReason }));
 

@@ -5,7 +5,7 @@ export interface Error {
     status?: number;
     message?: string;
     error?: {
-        message?: string;
-        stringify_error?: string | null;
+        message: string;
+        stringify_error: string | null;
     }
-}
+} 

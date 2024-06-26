@@ -8,6 +8,7 @@ import { clearError } from "../../../../Redux/Slice/Auth/AuthSlice";
 import { resendOTP, verifyOTP } from "../../../../Redux/ApiCalls/Auth/login";
 import LoadingDots from "../../../atoms/Utlis/LoadinDots";
 import { registerUser } from "../../../../Redux/ApiCalls/Auth/signup";
+import { showErrorToast, showSuccessToast } from "../../../atoms/Utlis/Toast";
 
 interface otpTextProps {
   isActivated: boolean;
@@ -172,14 +173,17 @@ const OtplVerificationForm: React.FC = () => {
 
     if (isError) {
       if (error.status === 401) {
-        alert("Please Register first");
+        showErrorToast("Please Register first");
 
       }
-      else {
-        alert(error.message)
+      else if (error.message) {
+        showErrorToast(error.message)
+      } else {
+        showErrorToast("Something went wrong! Please try again later.");
       }
     }
     if (isAuthticated === true && user && Object.keys(user).length !== 0) {
+      showSuccessToast("User verfied.");
       navigate('/dashboard');
 
     }

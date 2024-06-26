@@ -45,7 +45,7 @@ const PageNumber = styled.button<{ isActive: boolean }>`
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   const pagesToShow = 3;
-  const firstPageToShow = Math.max(1, currentPage - Math.floor(pagesToShow / 2));
+  const firstPageToShow = Math.max(1, currentPage - pagesToShow);
   const lastPageToShow = Math.min(totalPages, firstPageToShow + pagesToShow - 1);
   const pageNumbers = [];
   console.log(firstPageToShow, lastPageToShow)

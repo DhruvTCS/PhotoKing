@@ -34,7 +34,7 @@ const TextContainer = styled.div`
 const CompanyLogo: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <LogoContainer onClick={() => navigate('/')}>
+    <LogoContainer onClick={() => navigate('/dashboard/')}>
       <LogoImage />
 
       <TextContainer>Photo King</TextContainer>
