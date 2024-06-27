@@ -94,6 +94,11 @@ const MemberList = styled.div`
   color: red !important;
 }
 `
+const NoMemberCOnatiner = styled.div`
+display:flex;
+align-items: center;
+justify-content: center;
+`;
 const Members: React.FC = () => {
     const { members } = useAppSelector(state => state.member);
     const dispatch = useAppDispatch();
@@ -120,7 +125,7 @@ const Members: React.FC = () => {
             </MembersHeader>
             <MembersListConater>
                 <MemberList>
-                    {members && members.length !== 0 && members.map((member: Member) => <MemberCard key={member.id} member={member}></MemberCard>)}
+                    {(members && members.length !== 0) ? members.map((member: Member) => <MemberCard key={member.id} member={member}></MemberCard>) : <NoMemberCOnatiner>No Member Found</NoMemberCOnatiner>}
                 </MemberList>
             </MembersListConater>
         </MembersContainer>

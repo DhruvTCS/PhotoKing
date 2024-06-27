@@ -321,7 +321,7 @@ const CreateNewMemberPage: React.FC = () => {
                         <div style={{ "display": "flex" }}>
                             <JobTypeSelect onChange={(e) => { setJobType(e.target.value) }} >
                                 <SelectionOption value="Job Type" selected disabled >Job Type</SelectionOption>
-                                <SelectionOption value="Cemera Man" >Cemera Man</SelectionOption>
+                                <SelectionOption value="Camera Man" >Cemera Man</SelectionOption>
                                 <SelectionOption value="Studio Manager" >Studio Manager</SelectionOption>
                                 <SelectionOption value="Studio Owner" >Studio Owner</SelectionOption>
                             </JobTypeSelect>
