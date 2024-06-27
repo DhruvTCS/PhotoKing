@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Folder, NewFolder } from '../../../../Data/album.dto';
 import TestImageIcon from '../../../../assets/images/Extra/folderIconImage.png'
-import UpdateFolderModal from './UpdateFolderModal';
+import { useAppDispatch } from '../../../../Redux/Hooks';
+import { setCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { useNavigate } from 'react-router-dom';
 interface FolderCardProps {
     folder?: Folder,
     newFolder?: NewFolder,
@@ -28,6 +30,7 @@ text-align: left;
 margin:0;
 padding:20px;
 cursor:pointer;
+text-decoration: underline;
 
 `;
 const ImageContainer = styled.div`
@@ -87,18 +90,23 @@ color: #FFFFFF;
 
 `;
 const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isNew }) => {
-    const [updateFolderModal, setUpdateFolderModal] = useState(false);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     return (
         <div>
             {folder ?
                 <CardContainer>
-                    <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} />
-                    <FolderName onClick={() => setUpdateFolderModal(true)}>
+                    {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
+                    <FolderName onClick={() => {
+                        dispatch(setCurrentFolder(folder));
+                        navigate(`/dashboard/albums/folder/${folder.id}`)
+
+                    }}>
                         {folder.name}
                     </FolderName>
                     <ImageContainer>
-                        {folder.images ?
+                        {folder.images.length !== 0 ?
                             <Images>
                                 <Image1 src={folder.images[0].image} />
                                 {folder.images.length >= 2 ? <Image2 src={folder.images[1].image} /> : null}

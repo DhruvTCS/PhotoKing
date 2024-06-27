@@ -11,10 +11,11 @@ import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import { useNavigate } from 'react-router-dom';
 import { clearError, clearFlagAlbums, setAlbumLoading } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
-import { getFoldersForAlbum } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
+import { createFolderAPI, getFoldersForAlbum } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
 import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolderModal';
-
+import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
+import { showErrorToast } from '../../../atoms/Utlis/Toast';
 
 
 const AlbumPageContainer = styled.div`
@@ -192,30 +193,27 @@ width:418px;
 height:300px;
 border-radius:10px;
 `;
-const CancleButtonContainer = styled.div`
-background: #FF3333;
-box-shadow: 0px 4px 14px 0px #86169680;
-height:26px;
-width:25px;
-border-radius:50%;
-display:flex;
-justify-content: center;
-align-items: center;
-position: absolute;
-left:370px;
-top:15px;
-z-index: 1000;
-`;
 
-const CancleButton = styled.p`
-background: transparent;
-    color: white;
-    font-size: 26px;
-    margin: 0px;
-transform: rotate(-45deg);
-margin-bottom:2px;
-line-height:0px;
+const RemoveButtonConatiner = styled.div`
+  position: absolute;
+  top: 13px;
+  right:11px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #FF3333;
+  box-shadow: 0px 4px 14px 0px #00000080;
+
+
+height:19px;
+width:21px;
+`;
+const CancleIcon = styled.img`
+height:10px;
+width:12px;
 `
+
 const EditAlbumPage: React.FC = () => {
 
     const [album, setAlbum] = useState<NewAlbum>({ name: "", date: "", media_type: 1, image: "" });
@@ -227,7 +225,7 @@ const EditAlbumPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
-    const { isUpdate, isError, error, loading, currentAlbum, folderLoading } = useAppSelector(state => state.album)
+    const { isUpdate, isError, error, loading, currentAlbum, folderLoading, isFolderChange } = useAppSelector(state => state.album)
     const [createFolderModal, setCreateFolderModal] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
@@ -262,7 +260,12 @@ const EditAlbumPage: React.FC = () => {
 
         }
     }, [currentAlbum])
+    useEffect(() => {
+        if (currentAlbum && isFolderChange) {
+            dispatch(getFoldersForAlbum(currentAlbum.id));
 
+        }
+    }, [isFolderChange])
     useEffect(() => {
         if (isError) {
             if (error) {
@@ -361,6 +364,19 @@ const EditAlbumPage: React.FC = () => {
     }
     const handleFolderCreation = (folder: NewFolder) => {
         console.log(folder);
+        if (folder.name.trim().length === 0) {
+            showErrorToast("Please enter folder name");
+
+        } else {
+            const formData = new FormData();
+            formData.append("project_id", `${currentAlbum?.id}`);
+            formData.append("name", folder.name);
+            folder.images.forEach(image => {
+                formData.append('files', image.image);
+                formData.append('media_types', "1");
+            })
+            dispatch(createFolderAPI(formData));
+        }
     }
     const removeImageandPreview = () => {
         setImagePreview(null)
@@ -379,9 +395,12 @@ const EditAlbumPage: React.FC = () => {
             <UperContainer>
                 <UploadImageContainer >
                     {imagePreview ? <div>
-                        <CancleButtonContainer onClick={() => removeImageandPreview()}>
+                        {/* <CancleButtonContainer onClick={() => removeImageandPreview()}>
                             <CancleButton>+</CancleButton>
-                        </CancleButtonContainer>
+                        </CancleButtonContainer> */}
+                        <RemoveButtonConatiner onClick={() => removeImageandPreview()}>
+                            <CancleIcon src={CancleIconPNG} />
+                        </RemoveButtonConatiner>
                         <CoverImagePreview src={imagePreview} onClick={() => handleDivClick()} />
                     </div> : (< div onClick={() => handleDivClick()}>
                         <UploadImageText>Cover Photo</UploadImageText>

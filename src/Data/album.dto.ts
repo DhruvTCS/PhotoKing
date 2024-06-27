@@ -23,12 +23,12 @@ export interface Folder {
     is_locked: boolean;
     is_hide?: boolean;
     total_images: number;
+    custom_reason?: string;
     images: {
-
-        id: string;
-        projectId: string;
+        id: number;
+        project_id: number;
         image: string;
-        media_type: string;
+        media_type: number;
     }[]
 
 

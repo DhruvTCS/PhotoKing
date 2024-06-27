@@ -50,7 +50,7 @@ export const sidebarOptions = [
     {
         key: "Privacy Policy",
         icon: Privacy,
-        redirection: "/dashboard/privacy"
+        redirection: "/dashboard/sharecode"
     },
     {
         key: "Terms and Conditions",

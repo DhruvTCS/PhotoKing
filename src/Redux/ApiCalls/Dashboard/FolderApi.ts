@@ -14,6 +14,60 @@ export const getFoldersForAlbum = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     });
+export const createFolderAPI = createAsyncThunk(
+    'album/createFolderAPI',
+    async (data: any, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'POST',
+                url: `/project/user/project/create-folder/`,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+                data: data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+export const updateFolderAPI = createAsyncThunk(
+    'album/updateFolderAPI',
+    async (data: any, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'POST',
+                url: `/project/user/upload-image/`,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                },
+                data: data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+
+export const getSingleFolderAPI = createAsyncThunk(
+    'album/getSingleFolderAPI',
+    async (data: { folder_id: number }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'GET',
+                url: `/project/user/folder-detail/?folder_id=${data.folder_id}&media_type=1&page=1`,
+            })
+            let folder = response.data["folder data"]
+            folder.total_images = response.data.results.length;
+            folder.images = response.data.results;
+            console.log(folder)
+            return folder;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
 export const lockFolderAPI = createAsyncThunk(
     'album/lockFolderAPI',
     async (data: { project_id: number, folder_id: number, reason?: number, lock_type: string, custom_reason?: string }, { rejectWithValue }) => {

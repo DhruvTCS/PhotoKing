@@ -17,6 +17,8 @@ import Albums from './components/molecules/Dashboard/HomePage/Albums';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import SubscriptionPage from './components/organisms/Dashboard/SubscriptionPage';
+import ShareCodePage from './components/organisms/Dashboard/ShareCodePage';
+import UpdateFolderPage from './components/molecules/Dashboard/SingleAlbumPage/UpdateFolderPage';
 function App() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -43,7 +45,9 @@ function App() {
             <Route path="members/all" element={<AllMembersPage />} />
             <Route path="members/create" element={<CreateNewMemberPage />} />
             <Route path="albums/all" element={<Albums />} />
+            <Route path="albums/folder/:id" element={<UpdateFolderPage />} />
             <Route path="subscriptions" element={<SubscriptionPage />} />
+            <Route path="sharecode" element={<ShareCodePage />} />
           </Route>
         </Routes>
         <ToastContainer />

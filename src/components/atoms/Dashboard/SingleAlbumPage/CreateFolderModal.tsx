@@ -9,6 +9,7 @@ import SubmitButton from '../../Login/SubmitButton';
 import UnderLine from '../../Login/UnderLine';
 import { NewFolder } from '../../../../Data/album.dto';
 import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
+import LoadingDots from '../../Utlis/LoadinDots';
 
 interface AddFolderModalProps {
     isOpen: boolean;
@@ -23,6 +24,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
     const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
     const [previewImageString, setPreviewImageString] = useState<string[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [compresedImageLoading, setCompresedImageLoading] = useState(false);
     useEffect(() => {
         console.log(currentFolder);
         if (currentFolder) {
@@ -59,6 +61,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
         }
     };
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCompresedImageLoading(true);
         const files = event.target.files;
         if (!files) return;
 
@@ -82,7 +85,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
 
         // Filter out any undefined values
         const validCompressedFiles = compressedFiles.filter((file): file is File => file !== undefined);
-
+        setCompresedImageLoading(false);
         if (validCompressedFiles.length + newFolderImages.length > 20) {
             showErrorToast('You can only upload up to 20 images at Folder creation time later you can upload more images.');
             return;
@@ -112,7 +115,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
         onRequestClose();
         setFolderName('');
         setNewFolderImages([]);
-        showSuccessToast('Folder added successfully.');
+
 
     };
 
@@ -162,15 +165,20 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
                                     style={{ display: 'none' }}
                                 />
                             </ImageUploadContainer>
+                            {compresedImageLoading ? <LoadingDots /> :
+                                <>{
+                                    newFolderImages.map((file, index) => (
+                                        <ImagePreview key={index}>
+                                            <PreviewImage src={URL.createObjectURL(file)} alt="preview" />
+                                            <RemoveButtonConatiner onClick={() => handleRemoveImage(index)}>
+                                                <CancleIcon src={CancleIconPNG} />
+                                            </RemoveButtonConatiner>
+                                        </ImagePreview>
+                                    ))
+                                }
+                                </>
+                            }
 
-                            {newFolderImages.map((file, index) => (
-                                <ImagePreview key={index}>
-                                    <PreviewImage src={URL.createObjectURL(file)} alt="preview" />
-                                    <RemoveButtonConatiner onClick={() => handleRemoveImage(index)}>
-                                        <CancleIcon src={CancleIconPNG} />
-                                    </RemoveButtonConatiner>
-                                </ImagePreview>
-                            ))}
 
                         </ImageConatiner>
                     </PhotContainer>
@@ -330,7 +338,6 @@ const ImagePreviewContainer = styled.div`
 
 const ImagePreview = styled.div`
   position: relative;
-  border: 1px solid #d7d2d2
 `;
 const PreviewImage = styled.img`
 height:100px;

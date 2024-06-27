@@ -1,8 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { UserState } from '../../Slice/Auth/AuthSlice';
 import { loginUser } from '../../ApiCalls/Auth/login';
-import store from '../../Store';
-import { setGlobalError } from '../../Slice/ErrorSlice';
 export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -37,7 +35,10 @@ export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
         })
         .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
-            store.dispatch(setGlobalError(action.payload));
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
         })
 
 };

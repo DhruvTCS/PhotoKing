@@ -336,6 +336,7 @@ const CreateNewAlbumPage: React.FC = () => {
                 return [...prevFolders, folder];
             }
         });
+        showSuccessToast('Folder added successfully.');
     };
 
     return (

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { Error } from '../../../Data/error.dto';
 import { AlbumReducer } from '../../Reducers/Dashboard/AlbumReducer';
-import { Albums } from '../../../Data/album.dto';
+import { Albums, Folder } from '../../../Data/album.dto';
 import { AlbumOptionReducer } from '../../Reducers/Dashboard/AlbumOptionReducer';
 import { FolderReducer } from '../../Reducers/Dashboard/FolderReducer';
 
@@ -16,6 +16,7 @@ export interface AlbumState {
     folderLoading: boolean;
     isUpdate: boolean;
     currentAlbum?: Albums;
+    currentFolder?: Folder;
     isFolderChange: boolean;
     success: boolean;
     isSearchData: boolean;
@@ -74,6 +75,9 @@ const albumSlice = createSlice({
         },
         setSearchDataFlag(state, action: PayloadAction<boolean>) {
             state.isSearchData = action.payload
+        },
+        setCurrentFolder(state, action: PayloadAction<Folder>) {
+            state.currentFolder = action.payload;
         }
 
     },
@@ -84,7 +88,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag } = albumSlice.actions;
+export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setCurrentFolder } = albumSlice.actions;
 
 
 export default albumSlice.reducer;
