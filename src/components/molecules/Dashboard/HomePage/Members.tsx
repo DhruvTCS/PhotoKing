@@ -98,6 +98,7 @@ const NoMemberCOnatiner = styled.div`
 display:flex;
 align-items: center;
 justify-content: center;
+width: 100%;
 `;
 const Members: React.FC = () => {
     const { members } = useAppSelector(state => state.member);
