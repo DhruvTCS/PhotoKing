@@ -178,14 +178,16 @@ const LoginForm: React.FC = () => {
     useEffect(() => {
 
         if (isError) {
-            if (error.status === 402) {
-                showErrorToast("Please Register first");
-                navigate('/auth/signup')
-            }
-            else if (error && error.message) {
-                showErrorToast(error.message)
+            if (error) {
+                if (error.status === 402) {
+                    showErrorToast("Please Register first");
+                    navigate('/auth/signup')
+                }
+                else if (error && error.message) {
+                    showErrorToast(error.message)
+                }
             } else {
-                showErrorToast("Something went wrong! Please try again.")
+                // showErrorToast("Something went wrong! Please try again.")
             }
         }
 

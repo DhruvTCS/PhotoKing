@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { createFolderAPI, getSingleFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
+import { createFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
 import { Folder } from '../../../Data/album.dto';
 export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
@@ -58,6 +58,8 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(updateFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            if (state.currentAlbum)
+                state.currentAlbum.folders = []
 
 
         })
@@ -75,8 +77,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.isFolderChange = false;
             state.folderLoading = false;
             state.currentFolder = action.payload;
-            if (state.currentAlbum)
-                state.currentAlbum.folders = []
+
 
             // state.currentFolder=action.payload.folder_data;
             // state.currentFolder?.total_images=action.payload.total_images;
@@ -85,6 +86,28 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
         })
         .addCase(getSingleFolderAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.folderLoading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(deleteFolderImagesAPI.pending, (state) => {
+            state.folderLoading = true;
+
+        })
+        .addCase(deleteFolderImagesAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
+            state.isFolderChange = true;
+            state.folderLoading = false;
+
+
+            // state.currentFolder=action.payload.folder_data;
+            // state.currentFolder?.total_images=action.payload.total_images;
+
+
+
+        })
+        .addCase(deleteFolderImagesAPI.rejected, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
             state.isError = true;
 

@@ -126,3 +126,19 @@ export const lockMultipleFoldersAPI = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     });
+export const deleteFolderImagesAPI = createAsyncThunk(
+    'album/deleteFolderImagesAPI',
+    async (data: { media_ids: number[] }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/user/delete-media/`,
+                data: data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+

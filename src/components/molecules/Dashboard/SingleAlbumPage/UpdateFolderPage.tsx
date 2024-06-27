@@ -12,7 +12,7 @@ import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import SelectedIconPNG from '../../../../assets/Icons/tick.png'
 import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup';
-import { getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
+import { deleteFolderImagesAPI, getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 const PageConatiner = styled.div`
 margin-left: 30px;
 `;
@@ -248,6 +248,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
+      setSelectedFolderImages([])
     }
   }, [currentFolder]);
   useEffect(() => {
@@ -263,6 +264,8 @@ const UpdateFolderPage = () => {
   }, [newFolderImages, folderName])
   useEffect(() => {
     if (isFolderChange && currentFolder) {
+
+      setSelectedFolderImages([])
       dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
     }
   }, [isFolderChange])
@@ -349,6 +352,10 @@ const UpdateFolderPage = () => {
     })
     dispatch(updateFolderAPI(formData));
   }
+  const deleteFolderImages = () => {
+    dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages }));
+    setDeleteModal(false);
+  }
   return (
     <PageConatiner>
       <PageHeader>
@@ -358,7 +365,7 @@ const UpdateFolderPage = () => {
       {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
         <PageBoady>
           <Conatiner1>
-            {deletModal && <DeletePopup cancel={() => setDeleteModal(false)} Delete={() => console.log("delete")} />}
+            {deletModal && <DeletePopup cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} />}
             <InputNameConatiner >
               <InputFolderLabel>Folder</InputFolderLabel>
               <InputName type='text' value={folderName} onChange={(e) => setFolderName(e.target.value)} />
