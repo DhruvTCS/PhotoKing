@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.7eee306d.css",
+    "main.js": "/static/js/main.6d4b5d00.js",
+    "static/js/453.ed3810f9.chunk.js": "/static/js/453.ed3810f9.chunk.js",
+    "static/media/topLeft.png": "/static/media/topLeft.bfcc6af71383ce8d6e58.png",
+    "static/media/center.png": "/static/media/center.d661281fb243dbf4080f.png",
+    "static/media/topRight.png": "/static/media/topRight.7f88c3fa45d6e2eb1088.png",
+    "static/media/bottomRight.png": "/static/media/bottomRight.dd8ef492f19ad54329f7.png",
+    "static/media/bottomLeft.png": "/static/media/bottomLeft.ed61e61a7a97fa7c3a7c.png",
+    "static/media/footerImage.png": "/static/media/footerImage.f8158d15b7f91b1af28d.png",
+    "static/media/delete.png": "/static/media/delete.7dc5e183a6f9328c4775.png",
+    "static/media/addFolderIcon.png": "/static/media/addFolderIcon.9bc42f99fb8115136c40.png",
+    "static/media/members.svg": "/static/media/members.45e7a44a308f8129734fd89bd685dde1.svg",
+    "static/media/albums.svg": "/static/media/albums.abee70fed703e52f8e4ef917f534f1cf.svg",
+    "static/media/TandC.svg": "/static/media/TandC.e4251d50af90ec8eeb2a5d3ce653ca29.svg",
+    "static/media/aboutus.svg": "/static/media/aboutus.15799f54d09be425e61c2817c4cc7472.svg",
+    "static/media/subscription.svg": "/static/media/subscription.8e9f45988ee3331935eeaee4832a3f50.svg",
+    "static/media/phone.svg": "/static/media/phone.11a1f8ea3c91c0b6f4986b407ddea42c.svg",
+    "static/media/privacy.svg": "/static/media/privacy.ffd7c52e4e02eb7dd52d27acb418f690.svg",
+    "static/media/contactus.svg": "/static/media/contactus.8bb35385c5675aaf90751023ed2aa025.svg",
+    "index.html": "/index.html",
+    "static/media/mobile.svg": "/static/media/mobile.e95d9f9a8a3083c250a282d6f33b1a46.svg",
+    "main.7eee306d.css.map": "/static/css/main.7eee306d.css.map",
+    "main.6d4b5d00.js.map": "/static/js/main.6d4b5d00.js.map",
+    "453.ed3810f9.chunk.js.map": "/static/js/453.ed3810f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7eee306d.css",
+    "static/js/main.6d4b5d00.js"
+  ]
+}
