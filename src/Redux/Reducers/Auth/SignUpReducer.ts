@@ -41,6 +41,7 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
             state.loading = false;
             state.isAuthticated = true;
             state.apiStatus = true;
+            state.isError = false;
             console.log(state.user);
             // state.user=action.payload;
 

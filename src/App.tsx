@@ -47,7 +47,7 @@ function App() {
             <Route path="albums/all" element={<Albums />} />
             <Route path="albums/folder/:id" element={<UpdateFolderPage />} />
             <Route path="subscriptions" element={<SubscriptionPage />} />
-            <Route path="sharecode" element={<ShareCodePage />} />
+            <Route path="albums/share/:code" element={<ShareCodePage />} />
           </Route>
         </Routes>
         <ToastContainer />

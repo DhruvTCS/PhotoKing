@@ -257,14 +257,16 @@ const RegisterForm: React.FC = () => {
     useEffect(() => {
 
         if (isError) {
-            if (error.status === 402) {
-                alert("Please Register first");
+            if (error && error.message) {
+
+
+                if (error.message) {
+                    showSuccessToast(error.message);
+                } else {
+                    showErrorToast("something went wrong! Please try again.")
+                }
             }
-            else if (error.message) {
-                showSuccessToast(error.message);
-            } else {
-                showErrorToast("something went wrong! Please try again.")
-            }
+            console.log(error)
         }
 
         return () => {

@@ -182,6 +182,8 @@ const LoginForm: React.FC = () => {
                 if (error.status === 402) {
                     showErrorToast("Please Register first");
                     navigate('/auth/signup')
+                } else if (error.status == 401) {
+
                 }
                 else if (error && error.message) {
                     showErrorToast(error.message)

@@ -99,6 +99,8 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(deleteFolderImagesAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            if (state.currentAlbum)
+                state.currentAlbum.folders = []
 
 
             // state.currentFolder=action.payload.folder_data;

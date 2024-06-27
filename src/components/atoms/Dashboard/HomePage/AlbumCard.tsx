@@ -213,9 +213,12 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
           </MenuItem>
           <Hr />
 
-          <MenuItem>
+          <MenuItem onClick={() => {
+            navigate(`/dashboard/albums/share/${album.project_code}`);
+            dispatch(setCurrentAlbum(album))
+          }}>
             <ItemIcon src={ShareAlbumIcon} />
-            <ItemName>Sahre Album Code</ItemName>
+            <ItemName>Share Album Code</ItemName>
           </MenuItem>
           <Hr />
 

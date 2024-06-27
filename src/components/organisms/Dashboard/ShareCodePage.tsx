@@ -4,6 +4,7 @@ import BackIconPNG from '../../../assets/Icons/SingleAlbum/back.png'
 import UnderLine from '../../atoms/Login/UnderLine';
 import ShareButton from '../../atoms/Dashboard/ShareCode/ShareButtonModal';
 import QRCode from 'qrcode.react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ShareCodeContainer = styled.div`
 margin-left:35px;
@@ -62,19 +63,22 @@ const EventCodeText = styled.p``;
 const CopyButton = styled.img``;
 
 const ShareCodePage: React.FC = () => {
+    const params = useParams();
+    const navigate = useNavigate();
+    console.log();
     return (
         <ShareCodeContainer>
             <ShareCodeHeader>
-                <BackIcon src={BackIconPNG} />
-                <Text1>Dashboard</Text1>
+                <BackIcon src={BackIconPNG} onClick={() => navigate(-1)} />
+                <Text1 onClick={() => navigate('/dashboard/')}>Dashboard</Text1>
                 <Text2>Generate Event Code</Text2>
             </ShareCodeHeader>
             <MainContainer>
                 <QrCodeConatiner>
                     <QrCodeDiv>
-                        <QRCode value={"http://localhost:3000/dashboard/sharecode"} size={240} />
+                        <QRCode value={`http://localhost:3000/dashboard/sharecode/${params["code"]}`} size={240} />
                     </QrCodeDiv>
-                    <ShareButton shareUrl='' />
+                    <ShareButton shareUrl='http://localhost:3000/dashboard/sharecode/${params["code"]}' />
 
                 </QrCodeConatiner>
                 <EventCodeConatiner>

@@ -71,10 +71,14 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
             acceptedFiles.map(async (file) => {
 
                 try {
-                    const compressedBlob = await compressImage(file); // Your image compression function
-                    const compressedFile = blobToFile(compressedBlob, file.name);
-                    console.log("compressed")
-                    return compressedFile;
+                    if (file.size / 1024 / 1024 > 3) {
+                        const compressedBlob = await compressImage(file); // Your image compression function
+                        const compressedFile = blobToFile(compressedBlob, file.name);
+                        return compressedFile;
+                    } else {
+                        return file;
+                    }
+
                 } catch (error) {
                     console.error('Error compressing file:', error);
                     showErrorToast('Error compressing file');
