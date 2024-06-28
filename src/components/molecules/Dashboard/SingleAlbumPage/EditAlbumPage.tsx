@@ -432,7 +432,7 @@ const EditAlbumPage: React.FC = () => {
                     </InputContainer>
                 </UplaodDataContainer>
             </UperContainer>
-            <UnderLine width={1430} />
+            <UnderLine width={98} isPercent={true} />
             <FoldersContainer>
                 <AddFolderModal isOpen={createFolderModal} onRequestClose={() => setCreateFolderModal(false)} currentFolder={null} setCurrentFolder={setCurrentFolder} onSubmit={handleFolderCreation} />
                 <FoldersHeader>

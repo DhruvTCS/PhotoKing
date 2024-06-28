@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components';
 const UnderLineStyle = styled.hr< UnderLineProps>`
-width: ${(props) => props.width}px;
+width: ${(props) => props.isPercent ? `${props.width}%` : `${props.width}px`};
 height: 1px;
 background: #CECECE;
  ${(props) =>
@@ -17,6 +17,7 @@ background: #CECECE;
 
 interface UnderLineProps {
     width: number,
+    isPercent?: boolean,
     position?: {
         type?: string;
         top?: number;
@@ -28,9 +29,9 @@ interface UnderLineProps {
 const UnderLine: React.FC<UnderLineProps> = (props) => {
     return (
         props.position ?
-            <UnderLineStyle position={props.position} width={props.width} ></UnderLineStyle>
+            <UnderLineStyle position={props.position} width={props.width} isPercent={props.isPercent} ></UnderLineStyle>
             :
-            <UnderLineStyle width={props.width} />
+            <UnderLineStyle width={props.width} isPercent={props.isPercent} />
     )
 }
 

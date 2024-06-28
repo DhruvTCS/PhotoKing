@@ -275,8 +275,8 @@ const RegisterForm: React.FC = () => {
     }, [isError])
 
     const handlePhone = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setActiveButtonSatus(event.target.value, name, email, countryCode);
-        setContact(event.target.value);
+        if (event.target.value.length <= 10) setActiveButtonSatus(event.target.value, name, email, countryCode);
+        if (event.target.value.length <= 10) setContact(event.target.value);
 
 
     }

@@ -1,76 +1,97 @@
-import { ReactComponent as TandC } from '../assets/Icons/Sidebar/TandC.svg'
-import { ReactComponent as Aboutus } from '../assets/Icons/Sidebar/aboutus.svg'
-import { ReactComponent as Albums } from '../assets/Icons/Sidebar/albums.svg'
-import { ReactComponent as ContactUs } from '../assets/Icons/Sidebar/contactus.svg'
-import { ReactComponent as Delete } from '../assets/Icons/Sidebar/delete.svg'
-import { ReactComponent as Logout } from '../assets/Icons/Sidebar/logout.svg'
-import { ReactComponent as Members } from '../assets/Icons/Sidebar/members.svg'
-import { ReactComponent as Mobile } from '../assets/Icons/Sidebar/mobile.svg'
-import { ReactComponent as Privacy } from '../assets/Icons/Sidebar/privacy.svg'
-import { ReactComponent as Subscriptions } from '../assets/Icons/Sidebar/subscription.svg'
-import DeletePng from '../assets/Icons/Sidebar/DeleteAcc.png'
-import LogoutPNG from '../assets/Icons/Sidebar/Logout.png'
+import DashboardIcon from '../assets/Icons/Sidebar/dashboard.png'
+import DashboardWhite from '../assets/Icons/Sidebar/dashboardwhite.png'
+import Subscription from '../assets/Icons/Sidebar/subscription.png'
+import SubscriptionWhite from '../assets/Icons/Sidebar/subscription_white.png'
+import Album from '../assets/Icons/Sidebar/album.png'
+import AlbumWhite from '../assets/Icons/Sidebar/album_white.png'
+import Member from '../assets/Icons/Sidebar/members.png'
+import MemberWhite from '../assets/Icons/Sidebar/members_white.png'
+import Mobile from '../assets/Icons/Sidebar/changepassword.png'
+import MobileWhite from '../assets/Icons/Sidebar/changepassword_white.png'
+import AboutUs from '../assets/Icons/Sidebar/aboutus.png'
+import AboutUsWhite from '../assets/Icons/Sidebar/aboutus_white.png'
+import ContactUs from '../assets/Icons/Sidebar/contactus.png'
+import ContactUsWhite from '../assets/Icons/Sidebar/contactus_white.png'
+import Privacy from '../assets/Icons/Sidebar/privacypolicy.png'
+import PrivacyWhite from '../assets/Icons/Sidebar/privacypolicy_white.png'
+import TnC from '../assets/Icons/Sidebar/termsandconditions.png'
+import TnCWhite from '../assets/Icons/Sidebar/termsandconditions_white.png'
+import Delete from '../assets/Icons/Sidebar/deleteaccount.png'
+import DeleteWhite from '../assets/Icons/Sidebar/deleteaccount_white.png'
+import Logout from '../assets/Icons/Sidebar/logout.png'
+import LogOutWhite from '../assets/Icons/Sidebar/logout_white.png'
 
 export const sidebarOptions = [
     {
         key: "Dashboard",
-        icon: Subscriptions,
+        icon: DashboardIcon,
+        whiteIcon: DashboardWhite,
         redirection: "/dashboard/"
     },
     {
         key: "Subscriptions",
-        icon: Subscriptions,
+        icon: Subscription,
+        whiteIcon: SubscriptionWhite,
         redirection: "/dashboard/subscriptions"
     },
     {
         key: "Albums",
-        icon: Albums,
+        icon: Album,
+        whiteIcon: AlbumWhite,
         redirection: "/dashboard/albums/all"
     },
     {
         key: "Members",
-        icon: Members,
+        icon: Member,
+        whiteIcon: MemberWhite,
         redirection: "/dashboard/members/all"
     },
     {
         key: "Change Password",
         icon: Mobile,
+        whiteIcon: MobileWhite,
         redirection: "/dashboard/chnagepassword"
     },
     {
         key: "About Us",
-        icon: Aboutus,
+        icon: AboutUs,
+        whiteIcon: AboutUsWhite,
         redirection: "/dashboard/aboutus"
     },
     {
         key: "Contact Us",
         icon: ContactUs,
+        whiteIcon: ContactUsWhite,
         redirection: "/dashboard/contactus"
     },
     {
         key: "Privacy Policy",
         icon: Privacy,
-        redirection: "/dashboard/sharecode"
+        whiteIcon: PrivacyWhite,
+        redirection: "/dashboard/privacy"
     },
     {
         key: "Terms and Conditions",
-        icon: TandC,
+        icon: TnC,
+        whiteIcon: TnCWhite,
         redirection: "/dashboard/terms"
     },
     {
         key: "Delete Account",
-        icon: DeletePng,
-        isPng: true,
-        redirection: "/dashboard/deletAcc"
+        icon: Delete,
+        whiteIcon: DeleteWhite,
+        redirection: "/dashboard/delete/account"
     },
     {
         key: "Logout",
         isPng: true,
-        icon: LogoutPNG,
+        icon: Logout,
+        whiteIcon: LogOutWhite,
         redirection: "/dashboard/logout"
     }
 ]
 
 export interface OptionProps {
     isActive: boolean;
+    isExpanded: boolean;
 }

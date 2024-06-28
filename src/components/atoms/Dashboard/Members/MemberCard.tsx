@@ -9,6 +9,7 @@ interface MembercardProps {
 const MemberCardContainer = styled.div`
 width: 347px;
 height: 311px;
+cursor: pointer;
 border-radius: 35px;
 background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0.2) 100%);
 
@@ -59,7 +60,7 @@ margin-top:3px;
 `;
 const MemberCard: React.FC<MembercardProps> = ({ member }) => {
     return (
-        <MemberCardContainer>
+        <MemberCardContainer >
             <MemberImageContainer>
                 <MemberImage src={member.profile_image} />
             </MemberImageContainer>

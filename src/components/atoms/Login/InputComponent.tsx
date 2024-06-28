@@ -11,6 +11,11 @@ font-weight: 600;
 line-height: 32px;
 text-align: left;
 color: #292929;
+&::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
 background-color: transparent;
 &::placeholder{

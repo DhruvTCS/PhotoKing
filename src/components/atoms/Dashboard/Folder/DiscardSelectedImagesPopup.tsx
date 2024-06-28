@@ -93,7 +93,7 @@ margin-left:10px;
 
 cursor:pointer;
 `;
-const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel }) => {
+const DiscardPopUp: React.FC<PopupProps> = ({ Delete, cancel }) => {
     return (
         <Container>
             <Popup>
@@ -102,15 +102,15 @@ const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel }) => {
                 </IconContainer>
                 <PopUpText>
                     Are you sure you want to
-                    remove from favorites?
+                    Discard changes?
                 </PopUpText>
                 <ButtonConatiner>
                     <CancleButton onClick={() => cancel()}>Cancel</CancleButton>
-                    <DeleteButton onClick={() => Delete()}>Delete</DeleteButton>
+                    <DeleteButton onClick={() => Delete()}>Discard</DeleteButton>
                 </ButtonConatiner>
             </Popup>
         </Container>
     )
 }
 
-export default DeletePopup
+export default DiscardPopUp

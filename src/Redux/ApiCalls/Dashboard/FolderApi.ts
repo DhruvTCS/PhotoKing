@@ -57,9 +57,9 @@ export const getSingleFolderAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: `/project/user/folder-detail/?folder_id=${data.folder_id}&media_type=1&page=1`,
+                url: `/project/user/folder-detail/?folder_id=${data.folder_id}&media_type=1`,
             })
-            let folder = response.data["folder data"]
+            let folder = response.data["folder_data"]
             folder.total_images = response.data.results.length;
             folder.images = response.data.results;
             console.log(folder)

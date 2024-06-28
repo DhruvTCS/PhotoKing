@@ -12,6 +12,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(getAllAlbums.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
             console.log(action.payload);
+            state.isSearchData = false;
             state.total_projects = action.payload.count;
             state.albums = action.payload.results;
             state.currentPage = action.payload.page;

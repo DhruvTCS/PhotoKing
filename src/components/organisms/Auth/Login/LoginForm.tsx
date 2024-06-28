@@ -202,15 +202,16 @@ const LoginForm: React.FC = () => {
         setIsChecked(event.target.checked);
     };
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setContact(event.target.value);
+        if (event.target.value.length <= 10) {
+            setContact(event.target.value);
 
-        if (event.target.value.length === 10) {
-            setActiveButton(true);
+            if (event.target.value.length === 10) {
+                setActiveButton(true);
 
-        } else {
-            setActiveButton(false);
+            } else {
+                setActiveButton(false);
+            }
         }
-
     }
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -244,14 +245,14 @@ const LoginForm: React.FC = () => {
                             <CountryCode>
                                 <PhoneImage src={phoneIcon} />
                                 <CountryCodeText >
-                                    <InputComponent id="countryCode" width={60} value={countryCode} onChange={(e) => setCountryCode(e.target.value)} name='countryCode' placeholder='' type='text' />
+                                    <InputComponent id="countryCode" width={60} value={countryCode} onChange={(e) => { if (e.target.value.length <= 4) setCountryCode(e.target.value) }} name='countryCode' placeholder='' type='text' />
                                 </CountryCodeText>
                             </CountryCode>
                             <UnderLine width={111} position={{ type: "absolute", top: 30, left: 0 }} />
                         </CountryCodeContainer>
 
                         <Input>
-                            <InputComponent id="contactNo" width={314} value={contact} onChange={handleChange} name='contact' placeholder='123456789' type='text' />
+                            <InputComponent id="contactNo" width={314} value={contact} onChange={handleChange} name='contact' placeholder='123456789' type='number' />
                             <UnderLine width={314} />
                         </Input>
                     </InputContainer>

@@ -15,6 +15,7 @@ border-radius:16px;
 background: linear-gradient(90deg, #FFFFFF 0%, rgba(255, 255, 255, 0.2) 73.68%);
 border:none;
 box-shadow: 0px 4px 24px 0px hsla(0, 0%, 0%, 0.05);
+cursor:pointer;
 `;
 
 const ProfileImageContainer = styled.div`

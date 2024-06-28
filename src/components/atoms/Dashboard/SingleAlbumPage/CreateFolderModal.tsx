@@ -188,7 +188,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
                     </PhotContainer>
                 </ModalBody>
                 <ButtonContainer>
-                    <SubmitButton text={'Create'} width={70} height={40} needArrow={false} onClick={() => handleCreateFolder()} active={!(newFolderImages.length > 0)} />
+                    <SubmitButton text={'Create'} width={100} height={56} needArrow={false} onClick={() => handleCreateFolder()} active={!(newFolderImages.length > 0)} />
                     <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
                 </ButtonContainer>
             </ModalContent>
@@ -259,6 +259,7 @@ height: 61.04px;
 
 const PhotContainer = styled.div`
 margin-top:30px;
+min-height:400px;
 `;
 const ModalBody = styled.div`
 display:flex;
@@ -369,20 +370,22 @@ height:10px;
 width:12px;
 `
 const ButtonContainer = styled.div`
-
+button{
+font-size:22px;
+}
 `
 const CancelButton = styled.button`
-width: 70px;
+width: 100px;
     border: none;
     border-radius: 16px 16px 16px 16px;
     font-family: "Urbanist", sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 500;
     line-height: 19.2px;
     text-align: center;
-    height: 40px;
+    height: 56px;
     color: #FFFFFF;
     background-color: #bcbaba;
     color: black;
-    margin-left:10px;
+    margin-left:30px;
 `;

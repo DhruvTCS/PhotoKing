@@ -55,6 +55,8 @@ display:flex;
 align-items: center;
 justify-content: center;
 border-radius:14%;
+display: flex;
+flex-direction:column;
 `;
 const AddMemberIconDiv = styled.div`
 width: 163px;
@@ -69,6 +71,15 @@ justify-content:center;
 const AddMemberIcon = styled.img`
 width: 60px;
 height: 60px;
+
+`;
+const AddMemberText = styled.p`
+font-family: Urbanist;
+font-size: 23px;
+font-weight: 600;
+line-height: 27.6px;
+text-align: center;
+color: #171717;
 
 `;
 const AllMembersPage: React.FC = () => {
@@ -115,7 +126,11 @@ const AllMembersPage: React.FC = () => {
         <AddMemeberCard onClick={() => navigate('/dashboard/members/create')}>
           <AddMemberIconDiv>
             <AddMemberIcon src={AddMemberIconPNG}></AddMemberIcon>
+
           </AddMemberIconDiv>
+          <AddMemberText>
+            Add Member
+          </AddMemberText>
         </AddMemeberCard>
         {loading ? <LoadingDots /> : (allMembers && allMembers.map(member => <MemberCard member={member} />))}
       </MembersCardContainer>

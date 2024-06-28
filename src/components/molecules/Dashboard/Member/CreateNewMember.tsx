@@ -313,7 +313,7 @@ const CreateNewMemberPage: React.FC = () => {
                     <NameDataContainer>
                         <div style={{ "display": "flex" }}>
                             {/* <NameLabel >Name</NameLabel> */}
-                            <Input onChange={(e) => setName(e.target.value)} placeholder='Name' />
+                            <Input onChange={(e) => { if (e.target.value.length <= 20) setName(e.target.value) }} value={name} placeholder='Name' />
                         </div>
                         <UnderLine width={478} />
                     </NameDataContainer>
@@ -321,7 +321,7 @@ const CreateNewMemberPage: React.FC = () => {
                         <div style={{ "display": "flex" }}>
                             <JobTypeSelect onChange={(e) => { setJobType(e.target.value) }} >
                                 <SelectionOption value="Job Type" selected disabled >Job Type</SelectionOption>
-                                <SelectionOption value="Camera Man" >Cemera Man</SelectionOption>
+                                <SelectionOption value="Camera Man" >Camera Man</SelectionOption>
                                 <SelectionOption value="Studio Manager" >Studio Manager</SelectionOption>
                                 <SelectionOption value="Studio Owner" >Studio Owner</SelectionOption>
                             </JobTypeSelect>
@@ -337,14 +337,14 @@ const CreateNewMemberPage: React.FC = () => {
                                 <CountryCode>
                                     <PhoneImage src={phoneIcon} />
                                     <CountryCodeText >
-                                        <InputComponent id="countryCode" width={60} value={countryCode} onChange={(e) => setCountryCode(e.target.value)} name='countryCode' placeholder='' type='text' />
+                                        <InputComponent id="countryCode" width={60} value={countryCode} onChange={(e) => { if (e.target.value.length <= 4) setCountryCode(e.target.value) }} name='countryCode' placeholder='' type='text' />
                                     </CountryCodeText>
                                 </CountryCode>
                                 <UnderLine width={80} />
                             </CountryCodeContainer>
 
                             <InputContact>
-                                <InputComponent id="contactNo" width={370} value={contact} onChange={(e) => setContact(e.target.value)} name='contact' placeholder='123456789' type='text' />
+                                <InputComponent id="contactNo" width={370} value={contact} onChange={(e) => { if (e.target.value.length <= 10) setContact(e.target.value) }} name='contact' placeholder='123456789' type='number' />
                                 <UnderLine width={402} />
                             </InputContact>
                         </InputContainerContact>

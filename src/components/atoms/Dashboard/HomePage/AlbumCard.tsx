@@ -28,6 +28,7 @@ const AlbumCardContainer = styled.div<{ backgroundImage: string }>`
   flex-direction: column;
   justify-content: space-between;
   color: white;
+  cursor: pointer;
 `
 
 const CardContent = styled.div`
@@ -71,6 +72,7 @@ const MenuButton = styled.button`
   width: 45px;
   height: 45px;
   // border: 1px solid white;
+  cursor: pointer;
   border:none;
   box-shadow: 0px 20px 20px 0px hsla(259, 49%, 33%, 0.15);
 `
@@ -163,6 +165,10 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
     console.log('calling')
     setMenuOpen(menuOpen => !menuOpen)
   }
+  const openMenu = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleMenu();
+  }
   const handleClickOutside = (event: MouseEvent) => {
     if (
       menuRef.current &&
@@ -186,34 +192,35 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
   }, [menuOpen, showModal])
   return (
     // album.image ? album.image :
-    <AlbumCardContainer backgroundImage={album.image}>
+    <AlbumCardContainer backgroundImage={album.image} onClick={() => {
+      dispatch(setCurrentAlbum(album))
+      navigate(`/dashboard/singleAlbum/${album.id}`)
+    }
+    }>
       <CardContent>
-        <CardName onClick={() => {
-          dispatch(setCurrentAlbum(album))
-          navigate(`/dashboard/singleAlbum/${album.id}`)
-        }
-        }>{album.name}</CardName>
+        <CardName >{album.name}</CardName>
         <CardDate>{album.date}</CardDate>
       </CardContent>
       {album.is_locked ?
         <AlbumLockButton>
           <LockIconImg src={LockIcon}></LockIconImg>
         </AlbumLockButton> : null}
-      <MenuButton ref={buttonRef} onClick={toggleMenu}>
+      <MenuButton ref={buttonRef} onClick={openMenu}>
         <Dot>.</Dot>
         <Dot>.</Dot>
         <Dot>.</Dot>
       </MenuButton>
       {menuOpen && (
-        <DropdownMenu ref={menuRef}>
-          <MenuItem onClick={() => setShowModal(true)}>
+        <DropdownMenu ref={menuRef} onClick={(e) => e.stopPropagation()}>
+          <MenuItem onClick={(e) => { setShowModal(true) }}>
             <ItemIcon src={LockIcon} />
             <ItemName>{album.is_locked ? `Unlock Album` : `Lock Album`}</ItemName>
 
           </MenuItem>
           <Hr />
 
-          <MenuItem onClick={() => {
+          <MenuItem onClick={(e) => {
+            e.stopPropagation();
             navigate(`/dashboard/albums/share/${album.project_code}`);
             dispatch(setCurrentAlbum(album))
           }}>

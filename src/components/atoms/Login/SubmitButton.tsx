@@ -6,10 +6,11 @@ width: ${props => props.width}px;
 border:none;
 border-radius: 16px 16px 16px 16px;
 font-family: "Urbanist", sans-serif;
-font-size: 16px;
-font-weight: 500;
+font-size: 20px;
+font-weight: 600;
 line-height: 19.2px;
 text-align: center;
+cursor: pointer;
 
 height: ${props => props.height ? props.height : 54}px;
 color: #FFFFFF;

@@ -70,6 +70,7 @@ const authSlice = createSlice({
             state.access_token = null;
             state.refresh_token = null;
             state.isAuthticated = false;
+            state.user = null;
             if (localStorage.getItem("access_token")) {
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
