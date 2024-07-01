@@ -70,6 +70,7 @@ font-weight: 600;
 line-height: 24px;
 text-align: center;
 color:black;
+cursor: pointer;
 `;
 const DeleteButton = styled.button`
 width:110px;
@@ -86,6 +87,7 @@ line-height: 24px;
 text-align: center;
 color:white;
 margin-left:10px;
+cursor:pointer;
 `;
 const LogoutPopup: React.FC<PopupProps> = ({ Delete, cancel }) => {
     return (

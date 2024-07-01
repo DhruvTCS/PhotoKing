@@ -4,7 +4,7 @@ import CompanyLogo from '../molecules/Logo/CompanyLogo'
 import { OptionProps, sidebarOptions } from '../../Data/SiderbarOptionsData'
 import { useLocation, useNavigate } from 'react-router-dom'
 import CompanyLogoPNG from '../../assets/images/Logo.png'
-import CancelSidebarPNG from '../../assets/Icons/Sidebar/cancleSidebar.png'
+import CancelSidebarPNG from '../../assets/Icons/Sidebar/closeSidebar.png'
 import openSidebarImage from '../../assets/Icons/Sidebar/openSidebarArrow.png'
 import { useAppDispatch } from '../../Redux/Hooks'
 import { clearToken } from '../../Redux/Slice/Auth/AuthSlice'
@@ -31,7 +31,10 @@ const ActionSidebarconatiner = styled.div<{ isExpand: boolean }>`
             `}
 `
 
-const CancleSidebar = styled.img``
+const CancleSidebar = styled.img`
+height:24px;
+width: 24px;
+`
 const OpenSidebar = styled.img`
   height: 24px;
   width: 24px;

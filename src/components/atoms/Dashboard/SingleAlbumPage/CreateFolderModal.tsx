@@ -188,7 +188,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
                     </PhotContainer>
                 </ModalBody>
                 <ButtonContainer>
-                    <SubmitButton text={'Create'} width={100} height={56} needArrow={false} onClick={() => handleCreateFolder()} active={!(newFolderImages.length > 0)} />
+                    <SubmitButton text={'Create'} width={200} height={56} needArrow={false} onClick={() => handleCreateFolder()} active={!(newFolderImages.length > 0)} />
                     <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
                 </ButtonContainer>
             </ModalContent>
@@ -254,6 +254,7 @@ text-align: center;
 const HerderIcon = styled.img`
 width: 61px;
 height: 61.04px;
+cursor: pointer;
 
 `;
 
@@ -375,12 +376,12 @@ font-size:22px;
 }
 `
 const CancelButton = styled.button`
-width: 100px;
+width: 200px;
     border: none;
     border-radius: 16px 16px 16px 16px;
     font-family: "Urbanist", sans-serif;
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 19.2px;
     text-align: center;
     height: 56px;
@@ -388,4 +389,5 @@ width: 100px;
     background-color: #bcbaba;
     color: black;
     margin-left:30px;
+    cursor: pointer;
 `;

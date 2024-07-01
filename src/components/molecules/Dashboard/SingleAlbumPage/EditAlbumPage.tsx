@@ -15,7 +15,7 @@ import { createFolderAPI, getFoldersForAlbum } from '../../../../Redux/ApiCalls/
 import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard';
 import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolderModal';
 import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
-import { showErrorToast } from '../../../atoms/Utlis/Toast';
+import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 
 
 const AlbumPageContainer = styled.div`
@@ -100,7 +100,7 @@ font-size: 16px;
 font-weight: 500;
 line-height: 19.5px;
 text-align: left;
-
+cursor: pointer;
 border:none;
 &:focus{
 outline:none;
@@ -189,8 +189,8 @@ cursor:pointer;
 
 `;
 const CoverImagePreview = styled.img`
-width:418px;
-height:300px;
+width:384px;
+height:225px;
 border-radius:10px;
 `;
 
@@ -213,6 +213,9 @@ const CancleIcon = styled.img`
 height:10px;
 width:12px;
 `
+const ImagePreviewConatiner = styled.div`
+position: relative;
+`;
 
 const EditAlbumPage: React.FC = () => {
 
@@ -223,6 +226,7 @@ const EditAlbumPage: React.FC = () => {
     const [activeButton, setActiveButton] = useState(true);
     const [folders, setFolders] = useState<Folder[] | []>([]);
     const dispatch = useAppDispatch();
+    const dateRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
     const { isUpdate, isError, error, loading, currentAlbum, folderLoading, isFolderChange } = useAppSelector(state => state.album)
@@ -230,7 +234,7 @@ const EditAlbumPage: React.FC = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
-            alert("Album Edited.");
+            showSuccessToast("Album Edited.");
             navigate('/dashboard/');
         }
 
@@ -268,10 +272,10 @@ const EditAlbumPage: React.FC = () => {
     }, [isFolderChange])
     useEffect(() => {
         if (isError) {
-            if (error) {
-                alert(error.message);
+            if (error && error.message) {
+                showErrorToast(error.message);
             } else {
-                alert("Something went wrong! Please try again.")
+                showErrorToast("Something went wrong! Please try again.")
             }
         }
         return () => {
@@ -308,14 +312,18 @@ const EditAlbumPage: React.FC = () => {
         setLoadingFirstTime(false)
         // isValidAlbum(album);
         setAlbum(album => {
-            album = { ...album, [name]: value }
-            isValidAlbum(album);
+            // album = { ...album, [name]: value }
+            if (name == "date" || (name == 'name' && value.length < 25)) {
+                // console.log(name == "date" || (name == 'name' && value.length < 25 && value !== album.name))
+                album = { ...album, [name]: value }
+            }
+            // isValidAlbum(album);
             return album;
         });
     }
     const isValidAlbum = (album: NewAlbum) => {
-        console.log(isValidDate(album.date) && album.name.length > 3);
-        if (isValidDate(album.date) && album.name.length > 3 && (album.image.length !== 0 || slectedImage)) {
+        // console.log(isValidDate(album.date));
+        if ((isValidDate(album.date) || (album.name.length > 3 && album.name !== currentAlbum?.name)) && (album.image.length !== 0 || slectedImage)) {
             setActiveButton(false);
         } else {
             setActiveButton(true);
@@ -323,7 +331,7 @@ const EditAlbumPage: React.FC = () => {
     }
     const sendImageToCloudinary = async () => {
         if (slectedImage) {
-            console.log(slectedImage);
+            // console.log(slectedImage);
             const result = uploadToCloudinary1(slectedImage).then((data) => {
                 album.image = data;
             }).catch(err => console.log(err));
@@ -336,8 +344,9 @@ const EditAlbumPage: React.FC = () => {
         // Check the format with a regular expression
         const regex = /^(\d{4})\-(\d{2})\-(\d{2})$/;
         const match = dateString.match(regex);
-        console.log(dateString)
-        if (!match) {
+
+        console.log(dateString === currentAlbum?.date)
+        if (!match || currentAlbum?.date === dateString) {
             return false;
         }
 
@@ -363,7 +372,7 @@ const EditAlbumPage: React.FC = () => {
 
     }
     const handleFolderCreation = (folder: NewFolder) => {
-        console.log(folder);
+        // console.log(folder);
         if (folder.name.trim().length === 0) {
             showErrorToast("Please enter folder name");
 
@@ -394,7 +403,8 @@ const EditAlbumPage: React.FC = () => {
         <AlbumPageContainer>
             <UperContainer>
                 <UploadImageContainer >
-                    {imagePreview ? <div>
+                    <UploadImageText>Cover Photo</UploadImageText>
+                    {imagePreview ? <ImagePreviewConatiner>
                         {/* <CancleButtonContainer onClick={() => removeImageandPreview()}>
                             <CancleButton>+</CancleButton>
                         </CancleButtonContainer> */}
@@ -402,8 +412,7 @@ const EditAlbumPage: React.FC = () => {
                             <CancleIcon src={CancleIconPNG} />
                         </RemoveButtonConatiner>
                         <CoverImagePreview src={imagePreview} onClick={() => handleDivClick()} />
-                    </div> : (< div onClick={() => handleDivClick()}>
-                        <UploadImageText>Cover Photo</UploadImageText>
+                    </ImagePreviewConatiner> : (< div onClick={() => handleDivClick()}>
                         <UploadImageIconContainer >
 
                             <UploadImageIcon src={AddCoverImageIconPng} />
@@ -425,9 +434,9 @@ const EditAlbumPage: React.FC = () => {
                         <Input type="text" name="name" placeholder='Photo King' onChange={onChange} value={album.name} />
                         <UnderLine width={478} />
                     </InputContainer>
-                    <InputContainer>
+                    <InputContainer onClick={() => { dateRef.current?.showPicker() }}>
                         <InputLabel>Creation Date</InputLabel>
-                        <Input type="date" name='date' placeholder='dd/mm/yyyy' onChange={onChange} value={album.date} />
+                        <Input type="date" name='date' ref={dateRef} placeholder='dd/mm/yyyy' onChange={onChange} value={album.date} />
                         <UnderLine width={478} />
                     </InputContainer>
                 </UplaodDataContainer>
@@ -461,7 +470,7 @@ const EditAlbumPage: React.FC = () => {
             </FoldersContainer>
             <SubmitButtonContainer>
                 {loading ? <LoadingDots /> :
-                    <SubmitButton width={110} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={activeButton} ></SubmitButton>
+                    <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={activeButton} ></SubmitButton>
                 }
             </SubmitButtonContainer>
         </AlbumPageContainer>

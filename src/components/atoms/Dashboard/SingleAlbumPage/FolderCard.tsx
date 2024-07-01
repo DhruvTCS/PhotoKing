@@ -17,7 +17,7 @@ height: 165px;
 border-radius: 30px;
 background: #FFFFFF;
 box-shadow: 0px 10px 34px 0px #0000001A;
-
+cursor: pointer;
 
 `;
 const FolderName = styled.p`
@@ -96,13 +96,13 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
     return (
         <div>
             {folder ?
-                <CardContainer>
-                    {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
-                    <FolderName onClick={() => {
-                        dispatch(setCurrentFolder(folder));
-                        navigate(`/dashboard/albums/folder/${folder.id}`)
+                <CardContainer onClick={() => {
+                    dispatch(setCurrentFolder(folder));
+                    navigate(`/dashboard/albums/folder/${folder.id}`)
 
-                    }}>
+                }}>
+                    {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
+                    <FolderName >
                         {folder.name}
                     </FolderName>
                     <ImageContainer>
@@ -123,9 +123,9 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
                 </CardContainer>
                 : null}
             {newFolder ?
-                <CardContainer>
+                <CardContainer onClick={onClick}>
 
-                    <FolderName onClick={onClick}>
+                    <FolderName >
                         {newFolder.name}
                     </FolderName>
                     <ImageContainer>

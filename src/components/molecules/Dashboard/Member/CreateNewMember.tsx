@@ -152,7 +152,8 @@ line-height: 17.07px;
 `
 const SubmitButtonContainer = styled.div`
 display:flex;
-align-tems: left;
+align-tems: center;
+justify-content: center;
 margin-top:30px;
 margin-left:30px;
 `
@@ -353,7 +354,7 @@ const CreateNewMemberPage: React.FC = () => {
                 <SubmitButtonContainer>
                     {loading ? <LoadingDots /> :
 
-                        <SubmitButton width={100} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={!activeButton} />
+                        <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={!activeButton} />
                     }
                 </SubmitButtonContainer>
             </BoadyContainer>

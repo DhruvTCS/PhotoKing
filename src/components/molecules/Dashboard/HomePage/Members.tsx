@@ -91,6 +91,7 @@ const NoMemberCOnatiner = styled.div`
   display: flex;
   align-items: center;
 //   justify-content: center;
+cursor: pointer;
 `
 
 const MemberCardContainer = styled.div`
@@ -137,47 +138,47 @@ border-radius:50%;
 `;
 
 const Members: React.FC = () => {
-    const { members } = useAppSelector((state) => state.member)
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    useEffect(() => {
-        dispatch(getAllMembers())
-    }, [dispatch])
-    return (
-        <MembersContainer>
-            <MembersHeader>
-                <MembersHeaderText>Members</MembersHeaderText>
-                <AddMemberButton onClick={() => navigate('/dashboard/members/create')}>
-                    <PlusSignContainer>
-                        <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
-                    </PlusSignContainer>
-                    <ButtonText>ADD</ButtonText>
-                </AddMemberButton>
-            </MembersHeader>
-            <MembersListConater>
-                <MemberList>
-                    {members && members.length !== 0 ? (
-                        members.map((member: Member) => (
-                            <MemberCard key={member.id} member={member}></MemberCard>
-                        ))
-                    ) : (
-                        <NoMemberCOnatiner>
-                            <MemberCardContainer onClick={() => navigate(('/dashboard/members/create'))}>
-                                <ProfileImageContainer >
-                                    <ProfilePic src={DefaultProfilePNG} />
-                                </ProfileImageContainer>
-                                <ProfileNameContainer>
-                                    <ProfileName>
-                                        Add Member
-                                    </ProfileName>
-                                </ProfileNameContainer>
-                            </MemberCardContainer>
-                        </NoMemberCOnatiner>
-                    )}
-                </MemberList>
-            </MembersListConater>
-        </MembersContainer>
-    )
+  const { members } = useAppSelector((state) => state.member)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  useEffect(() => {
+    dispatch(getAllMembers())
+  }, [dispatch])
+  return (
+    <MembersContainer>
+      <MembersHeader>
+        <MembersHeaderText>Members</MembersHeaderText>
+        <AddMemberButton onClick={() => navigate('/dashboard/members/create')}>
+          <PlusSignContainer>
+            <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
+          </PlusSignContainer>
+          <ButtonText>ADD</ButtonText>
+        </AddMemberButton>
+      </MembersHeader>
+      <MembersListConater>
+        <MemberList>
+          {members && members.length !== 0 ? (
+            members.map((member: Member) => (
+              <MemberCard key={member.id} member={member}></MemberCard>
+            ))
+          ) : (
+            <NoMemberCOnatiner >
+              <MemberCardContainer onClick={() => navigate(('/dashboard/members/create'))}>
+                <ProfileImageContainer >
+                  <ProfilePic src={DefaultProfilePNG} />
+                </ProfileImageContainer>
+                <ProfileNameContainer>
+                  <ProfileName>
+                    Add Member
+                  </ProfileName>
+                </ProfileNameContainer>
+              </MemberCardContainer>
+            </NoMemberCOnatiner>
+          )}
+        </MemberList>
+      </MembersListConater>
+    </MembersContainer>
+  )
 }
 
 export default Members

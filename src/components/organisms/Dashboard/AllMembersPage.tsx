@@ -57,6 +57,7 @@ justify-content: center;
 border-radius:14%;
 display: flex;
 flex-direction:column;
+cursor: pointer;
 `;
 const AddMemberIconDiv = styled.div`
 width: 163px;

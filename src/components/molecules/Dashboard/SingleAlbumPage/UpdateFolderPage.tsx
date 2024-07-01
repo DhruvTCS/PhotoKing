@@ -24,6 +24,7 @@ align-items: center;
 const BackIcon = styled.img`
 height:20px;
 width:20px;
+cursor:pointer;
 `;
 const BackText = styled.p`
 font-family: Urbanist;
@@ -32,6 +33,7 @@ font-weight: 600;
 line-height: 22.8px;
 text-align: left;
 margin-left: 10px;
+cursor:pointer;
 `;
 const PageBoady = styled.div`
 
@@ -41,7 +43,7 @@ min-height: 700px;
  margin-top:10px;
  background-color: hsla(0, 0%, 100%, 0.8);
  border-radius:10px;
-
+position:relative;
  hr{
  margin-top:40px;
  opacity:0.4;
@@ -95,6 +97,7 @@ display: flex;
   margin-top: 1rem;
   overflow-y: scroll;
    max-height: 500px;
+  //  min-height: 500px;
 `;
 const ImageUploadContainer = styled.div`
   display: flex;
@@ -176,12 +179,14 @@ height:19px;
 width:19px;
 `
 const ButtonContainer = styled.div`
-height:200px;
+position: absolute;
+bottom: 30px;
+left:46%;
 `;
 const UpdateButton = styled.button`
-width:90px;
+width:291px;
 height:50px;
-border-radius: 10%;
+border-radius: 11px;
 font-family: Urbanist;
 font-size: 19px;
 font-weight: 500;
@@ -198,12 +203,12 @@ cursor:pointer;
 
 `;
 const DeleteButton = styled.button`
-width:110px;
+width:291px;
 height:50px;
-border-radius: 10%;
+border-radius: 11px;
 border:none;
 margin-left:20px;
-background-color:#e96666;
+background-color:red;
 font-family: Urbanist;
 font-size: 19px;
 font-weight: 500;
@@ -242,9 +247,15 @@ text-align:right;
 margin-right:30px;
 cursor:pointer;
 `;
-const SelectImageLabel = styled.label`
-
+const SelectImageLabel = styled.label<{ isCheck: boolean }>`
+font-family: Urbanist;
+font-size: 16px;
+font-weight: 500;
+line-height: 26.4px;
+text-align: center;
 cursor:pointer;
+color:${props => props.isCheck ? 'black' : 'grey'}
+
 `;
 const SlectImageRadio = styled.input``;
 
@@ -293,6 +304,8 @@ const UpdateFolderPage = () => {
     if (isFolderChange && currentFolder) {
 
       setSelectedFolderImages([])
+      setIsUpdate(false);
+      setIsImageSelected(false);
       setNewFolderImages([]);
       dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
     }
@@ -395,7 +408,7 @@ const UpdateFolderPage = () => {
   const SelectCheckbox = () => {
     console.log(isImageSelected)
     if (!isImageSelected) {
-      if (newFolderImages.length > 0) {
+      if (newFolderImages.length > 0 || currentFolder?.name !== folderName) {
 
         // setIsImageSelected(true);
         setDiscardPopup(true);
@@ -432,13 +445,39 @@ const UpdateFolderPage = () => {
     setIsImageSelected(false);
     setDiscardPopup(false);
   }
+  const folderNameChange = (name: string) => {
+    if (name.length <= 30) {
 
+      if (name !== currentFolder?.name) {
+
+        if (isImageSelected) {
+          if (selectedFolderImages.length > 0) {
+            setDiscardPopup(true);
+          } else {
+            setIsImageSelected(false)
+            setFolderName(name);
+            setIsUpdate(true);
+
+          }
+        } else {
+          // fileInputRef?.current?.click()
+          setIsUpdate(true);
+          setFolderName(name);
+        }
+      } else {
+        setIsUpdate(false);
+        setFolderName(currentFolder?.name);
+        // setFolderName(name);
+
+      }
+    }
+  }
   return (
     <PageConatiner>
       {discardPopup && <DiscardPopUp cancel={() => setDiscardPopup(false)} Delete={() => DiscardAllChanges()} />}
       <PageHeader>
         <BackIcon src={BackIconPNG} onClick={() => navigate(-1)} />
-        <BackText>Back</BackText>
+        <BackText onClick={() => navigate(-1)}>Back</BackText>
       </PageHeader>
       {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
         <PageBoady>
@@ -447,7 +486,7 @@ const UpdateFolderPage = () => {
             <InputNameConatiner >
               <InputFolderLabel>Folder</InputFolderLabel>
 
-              <InputName type='text' value={folderName} onChange={(e) => setFolderName(e.target.value)} />
+              <InputName type='text' value={folderName} onChange={(e) => folderNameChange(e.target.value)} />
             </InputNameConatiner>
             <UnderLine width={400} />
           </Conatiner1>
@@ -455,7 +494,7 @@ const UpdateFolderPage = () => {
           <InputContainer>
             <SelectImageRadioConatiner>
               <SlectImageRadio type='checkbox' id="selecheck" onChange={() => SelectCheckbox()} checked={isImageSelected} />
-              <SelectImageLabel htmlFor='selecheck'>Select Images</SelectImageLabel>
+              <SelectImageLabel htmlFor='selecheck' isCheck={isImageSelected}>Select Images</SelectImageLabel>
             </SelectImageRadioConatiner>
           </InputContainer>
           <Conatiner2>
@@ -506,22 +545,19 @@ const UpdateFolderPage = () => {
 
           </Conatiner2>
           <ButtonContainer>
-            {isUpdate &&
+            {isUpdate && !isImageSelected &&
               <UpdateButton disabled={activeUploadButton} onClick={handleUpdateFolder}>
                 Update
               </UpdateButton>}
 
             {
-              isImageSelected &&
+              isImageSelected && !isUpdate &&
               <DeleteButton disabled={selectedFolderImages.length === 0} onClick={() => setDeleteModal(true)}>
                 Delete {selectedFolderImages.length !== 0 ? `(${selectedFolderImages.length})` : null}
               </DeleteButton>
             }
-            {
-              !isUpdate && !isImageSelected && <UpdateButton disabled={true} >
-                Update
-              </UpdateButton>
-            }
+
+
           </ButtonContainer>
         </PageBoady>
       }

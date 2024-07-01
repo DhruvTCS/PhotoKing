@@ -19,12 +19,15 @@ import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolde
 import FolderCard from '../../../atoms/Dashboard/SingleAlbumPage/FolderCard'
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast'
 
+import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
+
 const AlbumPageContainer = styled.div`
   height: 94%;
   margin: 30px;
   margin-top: 10px;
   background-color: hsla(0, 0%, 100%, 0.8);
   border-radius: 10px;
+  
 `
 const UperContainer = styled.div`
   padding: 30px;
@@ -153,8 +156,8 @@ const SubmitButtonContainer = styled.div`
   cursor: pointer;
 `
 const CoverImagePreview = styled.img`
-  width: 418px;
-  height: 300px;
+  width: 384px;
+  height: 225px;
   border-radius: 10px;
 `
 const FolderListContainer = styled.div`
@@ -169,7 +172,33 @@ const NoFolderTextContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+const ImagePreviewConatiner = styled.div`
+position: relative;
+`;
+
+const RemoveButtonConatiner = styled.div`
+  position: absolute;
+  top: 13px;
+  right:11px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #FF3333;
+  box-shadow: 0px 4px 14px 0px #00000080;
+
+
+height:19px;
+width:21px;
+`;
+const CancleIcon = styled.img`
+height:10px;
+width:12px;
 `
+
+
+
 const CreateNewAlbumPage: React.FC = () => {
     const [album, setAlbum] = useState<NewAlbum>({
         name: '',
@@ -343,16 +372,24 @@ const CreateNewAlbumPage: React.FC = () => {
         })
         showSuccessToast('Folder added successfully.')
     }
-
+    const removeImageandPreview = () => {
+        setImagePreview(null);
+        setSelectedImage(null)
+    }
     return (
         <AlbumPageContainer>
             <UperContainer>
                 <UploadImageContainer onClick={() => handleDivClick()}>
+                    <UploadImageText>Cover Photo</UploadImageText>
                     {imagePreview ? (
-                        <CoverImagePreview src={imagePreview} />
+                        <ImagePreviewConatiner>
+                            <CoverImagePreview src={imagePreview} />
+                            <RemoveButtonConatiner onClick={(e) => { e.stopPropagation(); removeImageandPreview() }}>
+                                <CancleIcon src={CancleIconPNG} />
+                            </RemoveButtonConatiner>
+                        </ImagePreviewConatiner>
                     ) : (
                         <>
-                            <UploadImageText>Cover Photo</UploadImageText>
                             <UploadImageIconContainer>
                                 <UploadImageIcon src={AddCoverImageIconPng} />
                                 <UploadImageIconText>Add Cover Photo</UploadImageIconText>
@@ -448,7 +485,7 @@ const CreateNewAlbumPage: React.FC = () => {
                     <LoadingDots />
                 ) : (
                     <SubmitButton
-                        width={110}
+                        width={291}
                         text="Submit"
                         needArrow={false}
                         onClick={() => handleSubmit()}
