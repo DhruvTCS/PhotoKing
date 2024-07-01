@@ -234,7 +234,7 @@ left:82px;
 `
 const RegisterForm: React.FC = () => {
 
-    const [isChecked, setIsChecked] = useState(false);
+    const [isChecked, setIsChecked] = useState(true);
     const [contact, setContact] = useState('')
     const [countryCode, setCountryCode] = useState('+91');
     const [activeButton, setActiveButton] = useState(false);
