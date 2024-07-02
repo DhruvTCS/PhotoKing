@@ -132,9 +132,9 @@ const Albums: React.FC = () => {
     const navigate = useNavigate()
     useEffect(() => {
         dispatch(getAllAlbums(1))
-        console.log(albums)
+        // console.log(albums)
         if (!loading && albums.length > 0) {
-            console.log('setting total pages' + total_projects)
+            // console.log('setting total pages' + total_projects)
             setTotalAlbums(total_projects)
         }
     }, [dispatch])

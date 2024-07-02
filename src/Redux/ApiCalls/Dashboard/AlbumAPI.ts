@@ -82,13 +82,16 @@ export const createAlbumAPI = createAsyncThunk(
     });
 export const updateAlbumAPI = createAsyncThunk(
     'album/updateAlbumAPI',
-    async (data: { project: NewAlbum, albumId: number }, { rejectWithValue }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
 
             const response = await apiCall({
                 method: 'PUT',
                 url: `/project/user/project-media-view/`,
-                data: { ...data.project, id: data.albumId }
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                data
             })
             console.log(response);
             return response.data;

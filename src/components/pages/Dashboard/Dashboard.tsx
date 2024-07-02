@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks'
 import { getUserByToken } from '../../../Redux/ApiCalls/Auth/login'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { clearError } from '../../../Redux/Slice/Auth/AuthSlice'
+import { getAllNotificationAPI } from '../../../Redux/ApiCalls/Dashboard/NotificationAPI'
 
 const DashboardContainer = styled.div`
 display:flex;
@@ -80,16 +81,23 @@ const Dashboard: React.FC = () => {
     }
     const dispatch = useAppDispatch();
     useEffect(() => {
+        if (isAuthticated && access_token) {
+            dispatch(getAllNotificationAPI());
+        }
+
+    }, [isAuthticated, access_token])
+    useEffect(() => {
         if (isError) {
             console.log("error in loadind dashboard")
             console.log(error)
             navigate('/auth/login')
         }
+
         //   check user is Auth ?
         // 1. yes then fetch data from user redux object 
         // 2. no then check there is accesstoken pr not in localstorage 
-        console.log(!isAuthticated && !user && !access_token)
-        console.log("+++++++++++++++++++++++++++++")
+        // console.log(!isAuthticated && !user && !access_token)
+        // console.log("+++++++++++++++++++++++++++++")
         // 3. If there is no acces token or isAuthenticated is true the redirect to loginpage
         if (!isAuthticated && !user && !access_token) {
             if (localStorage.getItem('access_token')) {

@@ -2,12 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Error } from '../../../Data/error.dto';
 import { SubscriptionReducer } from '../../Reducers/Dashboard/SubscriptionReducer';
 import { SubscriptionType } from '../../../Data/subscription.dto';
-export interface SubscriptionStates {
+import { Notification } from '../../../Data/user.dto';
+import { NotificationReducer } from '../../Reducers/Dashboard/NotificationReducer';
+export interface ExtraState {
     loading: boolean;
     subscriptions: SubscriptionType[] | null;
     error: Error;
     isError: boolean;
     success: boolean;
+    fcm_token?: string;
+    notifications: Notification[];
 }
 
 // id": "19",
@@ -17,32 +21,38 @@ export interface SubscriptionStates {
 //             "name": "Pinkesh Patel",
 //             "job_type": "Camera Man",
 //             "user_id": null
-const initialState: SubscriptionStates = {
+const initialState: ExtraState = {
     subscriptions: null,
     loading: false,
     error: {},
     isError: false,
     success: false,
+    notifications: [],
+
 
 }
 
 
 
-const subscriptionSlice = createSlice({
-    name: 'subscription',
+const extraSlice = createSlice({
+    name: 'extra',
     initialState,
     reducers: {
         clearError(state) {
             state.error = {};
             state.isError = false;
+        },
+        setFCM(state, action: PayloadAction<string>) {
+            state.fcm_token = action.payload;
         }
     },
     extraReducers: (builder) => {
         SubscriptionReducer(builder)
+        NotificationReducer(builder)
     },
 });
 
-export const { clearError } = subscriptionSlice.actions;
+export const { clearError, setFCM } = extraSlice.actions;
 
 
-export default subscriptionSlice.reducer;
+export default extraSlice.reducer;

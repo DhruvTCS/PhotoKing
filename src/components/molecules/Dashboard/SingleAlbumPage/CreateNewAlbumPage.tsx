@@ -229,7 +229,7 @@ const CreateNewAlbumPage: React.FC = () => {
     }, [isUpdate])
 
     useEffect(() => {
-        console.log(isError)
+        // console.log(isError)
         if (isError) {
             if (error && error.message) {
                 showErrorToast(error.message)
@@ -249,6 +249,7 @@ const CreateNewAlbumPage: React.FC = () => {
         isValidAlbum(album)
     }, [selectedImage, album])
     const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+        // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0]
             const reader = new FileReader()
@@ -277,34 +278,21 @@ const CreateNewAlbumPage: React.FC = () => {
     }
 
     const isValidAlbum = (album: NewAlbum) => {
-        console.log(
-            isValidDate(album.date)
-        )
-        console.log(album.date)
+        // console.log(
+        //     isValidDate(album.date)
+        // )
+        // console.log(album.date)
         if (isValidDate(album.date) && album.name.length > 3 && selectedImage) {
             setActiveButton(false)
         } else {
             setActiveButton(true)
         }
     }
-    const sendImageToCloudinary = async () => {
-        if (selectedImage) {
-            console.log(selectedImage)
-            const result = uploadToCloudinary1(selectedImage)
-                .then((data) => {
-                    album.image = data
-                })
-                .catch((err) => console.log(err))
-            console.log(result)
-            return result
-        }
-        return 'false'
-    }
     const isValidDate = (dateString: string): boolean => {
         // Check the format with a regular expression
         const regex = /^(\d{4})\-(\d{2})\-(\d{2})$/
         const match = dateString.match(regex)
-        console.log(dateString)
+        // console.log(dateString)
         if (!match) {
             return false
         }
@@ -323,7 +311,7 @@ const CreateNewAlbumPage: React.FC = () => {
                 album.folders = folders
                 return album
             })
-            console.log(folders)
+            // console.log(folders)
             const formData = new FormData()
             formData.append('project[name]', album.name)
             formData.append('project[date]', album.date)
@@ -342,16 +330,16 @@ const CreateNewAlbumPage: React.FC = () => {
                         `folders[${folderIndex}][images][${imageIndex}][media_type]`,
                         image.media_type.toString(),
                     )
-                    console.log(
-                        formData.get(
-                            `folders[${folderIndex}][images][${imageIndex}][image]`,
-                        ),
-                    )
-                    console.log(image.image)
+                    // console.log(
+                    //     formData.get(
+                    //         `folders[${folderIndex}][images][${imageIndex}][image]`,
+                    //     ),
+                    // )
+                    // console.log(image.image)
                 })
             })
-            console.log(folders)
-            console.log(formData.get('project_image'))
+            // console.log(folders)
+            // console.log(formData.get('project_image'))
             dispatch(createAlbumAPI(formData))
         }
     }
@@ -419,7 +407,7 @@ const CreateNewAlbumPage: React.FC = () => {
                     <InputContainer
                         onClick={() => {
                             dateRef.current?.showPicker()
-                            console.log('calling')
+                            // console.log('calling')
                         }}
                     >
                         <InputLabel>Creation Date</InputLabel>

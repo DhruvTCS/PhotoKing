@@ -223,7 +223,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
             showSuccessToast("Your Album has been locked");
 
         } else {
-            console.log(selectedFolders);
+            // console.log(selectedFolders);
             if (selectedReason === 4) {
                 dispatch(lockMultipleFoldersAPI({ folders: selectedFolders, project_id: album.id, custom_reason: reason }))
             } else {

@@ -1,8 +1,8 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { MemberState } from '../../Slice/Dashboard/MemberSlice';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
-import { SubscriptionStates } from '../../Slice/Dashboard/SubscriptionSlice';
-export const SubscriptionReducer = (builder: ActionReducerMapBuilder<SubscriptionStates>) => {
+import { ExtraState } from '../../Slice/Dashboard/ExtraSlice';
+export const SubscriptionReducer = (builder: ActionReducerMapBuilder<ExtraState>) => {
     builder.addCase(subscriptionsPlansAPI.pending, (state) => {
         state.loading = true;
         state.isError = false;

@@ -148,7 +148,7 @@ const Members: React.FC = () => {
     <MembersContainer>
       <MembersHeader>
         <MembersHeaderText>Members</MembersHeaderText>
-        <AddMemberButton onClick={() => navigate('/dashboard/members/create')}>
+        <AddMemberButton onClick={() => navigate('/dashboard/members/create/new')}>
           <PlusSignContainer>
             <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
           </PlusSignContainer>
@@ -163,7 +163,7 @@ const Members: React.FC = () => {
             ))
           ) : (
             <NoMemberCOnatiner >
-              <MemberCardContainer onClick={() => navigate(('/dashboard/members/create'))}>
+              <MemberCardContainer onClick={() => navigate(('/dashboard/members/create/new'))}>
                 <ProfileImageContainer >
                   <ProfilePic src={DefaultProfilePNG} />
                 </ProfileImageContainer>

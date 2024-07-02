@@ -358,16 +358,17 @@ const EditAlbumPage: React.FC = () => {
     };
     const handleSubmit = async () => {
         if (currentAlbum) {
-
+            const formData = new FormData();
+            console.log(album);
             dispatch(setAlbumLoading())
-            if (album.image.length !== 0 || slectedImage) {
-                if (slectedImage)
-                    sendImageToCloudinary().then(() => dispatch(updateAlbumAPI({ project: album, albumId: currentAlbum.id })));
-                else
-                    dispatch(updateAlbumAPI({ project: album, albumId: currentAlbum.id }))
-            } else {
-
+            if (slectedImage) {
+                formData.append('image', slectedImage);
             }
+            formData.append('project_id', `${currentAlbum?.id}`);
+            formData.append('name', album.name);
+            formData.append('date', album.date);
+            dispatch(updateAlbumAPI(formData));
+
         }
 
     }

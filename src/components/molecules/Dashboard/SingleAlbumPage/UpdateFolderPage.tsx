@@ -300,7 +300,7 @@ const UpdateFolderPage = () => {
     isUploadActiveButton();
   }, [newFolderImages, folderName])
   useEffect(() => {
-    console.log("calling ++++")
+    // console.log("calling ++++")
     if (isFolderChange && currentFolder) {
 
       setSelectedFolderImages([])
@@ -331,13 +331,13 @@ const UpdateFolderPage = () => {
     }
   };
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("calling")
+    // console.log("calling")
     setCompresedImageLoading(true);
     const files = event.target.files;
     if (!files) return;
 
     const acceptedFiles = Array.from(files);
-    console.log(acceptedFiles);
+    // console.log(acceptedFiles);
     const compressedFiles = await Promise.all(
       acceptedFiles.map(async (file) => {
 
@@ -346,7 +346,7 @@ const UpdateFolderPage = () => {
 
             const compressedBlob = await compressImage(file); // Your image compression function
             const compressedFile = blobToFile(compressedBlob, file.name);
-            console.log("compressed")
+            // console.log("compressed")
             return compressedFile;
           } else {
             return file;
@@ -406,7 +406,7 @@ const UpdateFolderPage = () => {
     setDeleteModal(false);
   }
   const SelectCheckbox = () => {
-    console.log(isImageSelected)
+    // console.log(isImageSelected)
     if (!isImageSelected) {
       if (newFolderImages.length > 0 || currentFolder?.name !== folderName) {
 

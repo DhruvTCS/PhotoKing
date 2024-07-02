@@ -8,4 +8,10 @@ export interface User {
     image: string | null;
     username: string;
 }
-
+export interface Notification {
+    id: number;
+    title: string;
+    message: string;
+    is_seen: boolean;
+    user: number;
+}

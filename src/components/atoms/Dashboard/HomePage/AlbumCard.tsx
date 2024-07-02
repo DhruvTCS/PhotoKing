@@ -162,7 +162,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const toggleMenu = () => {
-    console.log('calling')
+    // console.log('calling')
     setMenuOpen(menuOpen => !menuOpen)
   }
   const openMenu = (e: React.MouseEvent) => {

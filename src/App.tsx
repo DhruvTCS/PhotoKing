@@ -19,9 +19,33 @@ import 'react-toastify/dist/ReactToastify.css'
 import SubscriptionPage from './components/organisms/Dashboard/SubscriptionPage';
 import ShareCodePage from './components/organisms/Dashboard/ShareCodePage';
 import UpdateFolderPage from './components/molecules/Dashboard/SingleAlbumPage/UpdateFolderPage';
+import { onMessageListener, requestFirebaseNotificationPermission } from './firebase'
+import { setFCM } from './Redux/Slice/Dashboard/ExtraSlice';
+import EditMemberPage from './components/molecules/Dashboard/Member/EditNewMember';
 function App() {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(registration => {
+        // console.log('Service Worker registered with scope:', registration.scope);
+      })
+      .catch(err => {
+        // console.log('Service Worker registration failed:', err);
+      });
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+      // console.log("Data payload from background notification ");
+      // console.log(event.data.payload);
+      if (event.data && event.data.type === 'BACKGROUND_NOTIFICATION') {
+        // store.dispatch(addNotification(event.data.payload));
+
+      }
+    });
+  }
+
   const navigate = useNavigate();
   useEffect(() => {
+    // setupNotifications()
+
     if (!localStorage.getItem('access_token')) {
 
       navigate('/auth/login');
@@ -29,7 +53,20 @@ function App() {
       navigate('/dashboard/')
     }
 
+
   }, [])
+  useEffect(() => {
+    requestFirebaseNotificationPermission();
+
+    onMessageListener()
+      .then(payload => {
+        console.log('Message received: ', payload);
+      })
+      .catch(err => console.log('Failed to receive message: ', err));
+  }, []);
+
+
+
   return (
     <Provider store={store}>
       <div className="App">
@@ -43,7 +80,8 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="singleAlbum/:new" element={< SingleAlbum />} />
             <Route path="members/all" element={<AllMembersPage />} />
-            <Route path="members/create" element={<CreateNewMemberPage />} />
+            <Route path="members/create/new" element={<CreateNewMemberPage />} />
+            <Route path="members/edit/:id" element={<EditMemberPage />} />
             <Route path="albums/all" element={<Albums />} />
             <Route path="albums/folder/:id" element={<UpdateFolderPage />} />
             <Route path="subscriptions" element={<SubscriptionPage />} />

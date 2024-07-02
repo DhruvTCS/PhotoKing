@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Member } from '../../../../Data/member.dto';
+import { useAppDispatch } from '../../../../Redux/Hooks';
+import { setCurrentMember } from '../../../../Redux/Slice/Dashboard/MemberSlice';
+import { useNavigate } from 'react-router-dom';
 
 const MemberCardContainer = styled.div`
   height:91px;
@@ -56,8 +59,10 @@ interface MemberCardProps {
     member: Member
 }
 const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
+    const dispatch = useAppDispatch()
+    const navigate = useNavigate()
     return (
-        <MemberCardContainer>
+        <MemberCardContainer onClick={() => { dispatch(setCurrentMember(member)); navigate(`/dashboard/members/edit/${member.id}`) }}>
             <ProfileImageContainer >
                 <ProfilePic src={member.profile_image} />
             </ProfileImageContainer>

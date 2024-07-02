@@ -139,6 +139,7 @@ font-size: 15px;
 font-weight: 500;
 line-height: 18px;
 text-align: center;
+cursor:pointer;
 
 background:${props => props.isActivated ? 'linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);' : '#8b85A4'};
 ${props => props.isActivated ? `box-shadow: 0px 4px 18px 0px #A720B966;` : null}

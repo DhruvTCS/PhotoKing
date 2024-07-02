@@ -28,6 +28,7 @@ export interface UserState {
         country_code: string;
     } | null;
     subscription_plans?: any;
+
 }
 
 const initialState: UserState = {

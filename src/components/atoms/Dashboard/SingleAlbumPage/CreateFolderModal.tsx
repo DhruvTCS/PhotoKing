@@ -26,7 +26,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [compresedImageLoading, setCompresedImageLoading] = useState(false);
     useEffect(() => {
-        console.log(currentFolder);
+        // console.log(currentFolder);
         if (currentFolder) {
             setFolderName(currentFolder.name);
             setNewFolderImages(pre => currentFolder.images.map(image => image.image));
@@ -66,7 +66,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({ isOpen, onRequestClose,
         if (!files) return;
 
         const acceptedFiles = Array.from(files);
-        console.log(acceptedFiles);
+        // console.log(acceptedFiles);
         const compressedFiles = await Promise.all(
             acceptedFiles.map(async (file) => {
 

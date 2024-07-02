@@ -47,7 +47,7 @@ display: flex;
 `
 const SubscriptionPage: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { subscriptions, loading } = useAppSelector(state => state.subscription);
+    const { subscriptions, loading } = useAppSelector(state => state.extra);
     const [activeCard, setActiveCard] = useState<number>();
     useEffect(() => {
         if (!subscriptions) {

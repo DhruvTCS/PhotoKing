@@ -106,7 +106,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
                         {folder.name}
                     </FolderName>
                     <ImageContainer>
-                        {folder.images.length !== 0 ?
+                        {folder.images && folder.images.length !== 0 ?
                             <Images>
                                 <Image1 src={folder.images[0].image} />
                                 {folder.images.length >= 2 ? <Image2 src={folder.images[1].image} /> : null}

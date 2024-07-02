@@ -42,6 +42,10 @@ const memberSlice = createSlice({
             state.loading = false;
             state.members = action.payload;
         },
+        setCurrentMember(state, action: PayloadAction<Member>) {
+            state.currentMember = action.payload;
+        },
+
         clearFlagsMembers(state) {
             state.isError = false;
             state.success = false;
@@ -57,7 +61,7 @@ const memberSlice = createSlice({
     },
 });
 
-export const { setMember, setMemberLoading, clearFlagsMembers, clearError } = memberSlice.actions;
+export const { setMember, setMemberLoading, clearFlagsMembers, clearError, setCurrentMember } = memberSlice.actions;
 
 
 export default memberSlice.reducer;

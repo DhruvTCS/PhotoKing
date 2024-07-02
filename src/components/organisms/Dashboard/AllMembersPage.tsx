@@ -124,7 +124,7 @@ const AllMembersPage: React.FC = () => {
         Members
       </MembersHeading>
       <MembersCardContainer>
-        <AddMemeberCard onClick={() => navigate('/dashboard/members/create')}>
+        <AddMemeberCard onClick={() => navigate('/dashboard/members/create/new')}>
           <AddMemberIconDiv>
             <AddMemberIcon src={AddMemberIconPNG}></AddMemberIcon>
 

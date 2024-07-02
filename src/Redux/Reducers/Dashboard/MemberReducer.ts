@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { MemberState } from '../../Slice/Dashboard/MemberSlice';
-import { createNewMemberAPI, getAllMembers } from '../../ApiCalls/Dashboard/MembersAPI';
+import { createNewMemberAPI, getAllMembers, updateMemberAPI } from '../../ApiCalls/Dashboard/MembersAPI';
 export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => {
     builder.addCase(getAllMembers.pending, (state) => {
         state.loading = true;
@@ -39,6 +39,23 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
 
         })
         .addCase(createNewMemberAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+            state.success = false;
+            console.log(action.payload);
+            state.error = action.payload;
+        }).addCase(updateMemberAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+            state.error = {};
+
+        }).addCase(updateMemberAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.success = true;
+
+
+        })
+        .addCase(updateMemberAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
             state.success = false;

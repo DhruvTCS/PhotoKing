@@ -10,7 +10,7 @@ import InputComponent from '../../../atoms/Login/InputComponent';
 import phoneIcon from '../../../../assets/Icons/phone.svg'
 import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
-import { createNewMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
+import { createNewMemberAPI, updateMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
@@ -208,7 +208,7 @@ const InputContact = styled.div`
 const PhoneContainer = styled.div`
 margin-left:42px;
 `;
-const CreateNewMemberPage: React.FC = () => {
+const EditMemberPage: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [jobType, setJobType] = useState<string>('');
     const navigate = useNavigate();
@@ -219,7 +219,7 @@ const CreateNewMemberPage: React.FC = () => {
     const [contact, setContact] = useState<string>('');
     const [activeButton, setActiveButton] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const { loading, isError, success, error } = useAppSelector(state => state.member)
+    const { loading, isError, success, error, currentMember } = useAppSelector(state => state.member)
     useEffect(() => {
 
         isValidData();
@@ -229,7 +229,7 @@ const CreateNewMemberPage: React.FC = () => {
     };
     useEffect(() => {
         if (success) {
-            showSuccessToast("Member added successfully");
+            showSuccessToast("Member edited successfully");
             navigate('/dashboard/members/all');
         } else if (isError) {
             if (error && error.message) {
@@ -245,7 +245,16 @@ const CreateNewMemberPage: React.FC = () => {
         }
 
     }, [success, isError, dispatch])
+    useEffect(() => {
+        if (currentMember) {
+            setName(currentMember.name)
+            setJobType(currentMember.job_type);
+            setContact(currentMember.phone_number);
+            setCountryCode(currentMember.country_code);
+            setImagePreview(currentMember.profile_image);
+        }
 
+    }, [currentMember])
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
@@ -263,8 +272,12 @@ const CreateNewMemberPage: React.FC = () => {
         }
     };
     const isValidData = () => {
-        if (name.length > 0 && jobType.length > 0 && selectedImage && validatePhoneNumber(contact) && countryCode.length > 0 && countryCode.length <= 4) {
-            setActiveButton(true);
+        // console.log("validate calling");
+        if (name.length > 0 && jobType.length > 0 && (selectedImage || currentMember?.profile_image) && validatePhoneNumber(contact) && countryCode.length > 0 && countryCode.length <= 4) {
+            if (currentMember?.name !== name || currentMember.job_type !== jobType || currentMember.country_code !== countryCode || currentMember.phone_number !== contact || selectedImage)
+                setActiveButton(true);
+            else
+                setActiveButton(false);
         } else
             setActiveButton(false);
     }
@@ -288,11 +301,12 @@ const CreateNewMemberPage: React.FC = () => {
         formData.append('country_code', countryCode);
         formData.append('phone_number', contact);
         formData.append('job_type', jobType);
+        formData.append('id', `${currentMember?.id}`)
         formData.append('name', name)
         if (selectedImage)
             formData.append('profile_image', selectedImage);
 
-        dispatch(createNewMemberAPI(formData))
+        dispatch(updateMemberAPI(formData))
     }
     return (
         <NewMemberPageContainer>
@@ -325,10 +339,10 @@ const CreateNewMemberPage: React.FC = () => {
                     <JobTypeContainer>
                         <div style={{ "display": "flex" }}>
                             <JobTypeSelect onChange={(e) => { setJobType(e.target.value) }} >
-                                <SelectionOption value="Job Type" selected disabled >Job Type</SelectionOption>
-                                <SelectionOption value="Camera Man" >Camera Man</SelectionOption>
-                                <SelectionOption value="Studio Manager" >Studio Manager</SelectionOption>
-                                <SelectionOption value="Studio Owner" >Studio Owner</SelectionOption>
+                                {/* <SelectionOption value="Job Type" selected disabled >Job Type</SelectionOption> */}
+                                <SelectionOption value="Camera Man" selected={jobType === "Camera Man"}>Camera Man</SelectionOption>
+                                <SelectionOption value="Studio Manager" selected={jobType === "Studio Manager"}>Studio Manager</SelectionOption>
+                                <SelectionOption value="Studio Owner" selected={jobType === "Studio Owner"}>Studio Owner</SelectionOption>
                             </JobTypeSelect>
                         </div>
                         <UnderLine width={478} />
@@ -366,4 +380,4 @@ const CreateNewMemberPage: React.FC = () => {
     )
 }
 
-export default CreateNewMemberPage
+export default EditMemberPage
