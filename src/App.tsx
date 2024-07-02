@@ -22,6 +22,7 @@ import UpdateFolderPage from './components/molecules/Dashboard/SingleAlbumPage/U
 import { onMessageListener, requestFirebaseNotificationPermission } from './firebase'
 import { setFCM } from './Redux/Slice/Dashboard/ExtraSlice';
 import EditMemberPage from './components/molecules/Dashboard/Member/EditNewMember';
+import EventCalendar from './components/organisms/Dashboard/EventCalendar';
 function App() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/firebase-messaging-sw.js')
@@ -86,6 +87,8 @@ function App() {
             <Route path="albums/folder/:id" element={<UpdateFolderPage />} />
             <Route path="subscriptions" element={<SubscriptionPage />} />
             <Route path="albums/share/:code" element={<ShareCodePage />} />
+            <Route path="event" element={<EventCalendar />} />
+
           </Route>
         </Routes>
         <ToastContainer />

@@ -53,10 +53,10 @@ export const sidebarOptions = [
         redirection: "/dashboard/chnagepassword"
     },
     {
-        key: "About Us",
+        key: "Event Scheduling",
         icon: AboutUs,
         whiteIcon: AboutUsWhite,
-        redirection: "/dashboard/aboutus"
+        redirection: "/dashboard/event"
     },
     {
         key: "Contact Us",
@@ -70,18 +70,7 @@ export const sidebarOptions = [
         whiteIcon: PrivacyWhite,
         redirection: "/dashboard/privacy"
     },
-    {
-        key: "Terms and Conditions",
-        icon: TnC,
-        whiteIcon: TnCWhite,
-        redirection: "/dashboard/terms"
-    },
-    {
-        key: "Delete Account",
-        icon: Delete,
-        whiteIcon: DeleteWhite,
-        redirection: "/dashboard/delete/account"
-    },
+
     {
         key: "Logout",
         isPng: true,
