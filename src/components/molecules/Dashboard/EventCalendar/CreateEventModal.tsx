@@ -497,12 +497,6 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                         <MemberSelecetionConatiner>
                             <SelectMemberHeadingConatiner>
                                 <SelectMemberHeading>Selected Members {`(${selectedMembers.length})`}</SelectMemberHeading>
-                                <AddMemberButton onClick={() => navigate('/dashboard/members/create/new')}>
-                                    <PlusSignContainer>
-                                        <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
-                                    </PlusSignContainer>
-                                    <ButtonText>New Member</ButtonText>
-                                </AddMemberButton>
                             </SelectMemberHeadingConatiner>
                             <SelectedMemberConatiner>
                                 <SelectedMembersList>
