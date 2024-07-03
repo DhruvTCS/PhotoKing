@@ -34,6 +34,7 @@ const BackButtonIcon = styled.img`
 width: 19.6px;
 height: 16.8px;
 color: #171717;
+cursor: pointer;
 
 
 `;

@@ -11,6 +11,7 @@ export interface MemberState {
     isError: boolean;
     currentMember?: Member;
     success: boolean;
+    isMemberFetched: boolean;
 }
 
 // id": "19",
@@ -26,6 +27,7 @@ const initialState: MemberState = {
     error: {},
     isError: false,
     success: false,
+    isMemberFetched: false
 
 }
 

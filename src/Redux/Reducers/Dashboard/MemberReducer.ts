@@ -18,6 +18,7 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
         }]
         >) => {
             state.loading = false;
+            state.isMemberFetched = true;
             console.log(action.payload);
             state.members = action.payload;
         })
@@ -36,7 +37,7 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.success = true;
 
-
+            state.isMemberFetched = false;
         })
         .addCase(createNewMemberAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
@@ -52,7 +53,7 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
         }).addCase(updateMemberAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.success = true;
-
+            state.isMemberFetched = false;
 
         })
         .addCase(updateMemberAPI.rejected, (state, action: PayloadAction<any>) => {

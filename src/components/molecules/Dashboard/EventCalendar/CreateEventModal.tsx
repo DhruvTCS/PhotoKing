@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import UnderLine from '../../../atoms/Login/UnderLine';
+import { useAppSelector } from '../../../../Redux/Hooks';
+import { useNavigate } from 'react-router-dom';
 
+import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
+import SubmitButton from '../../../atoms/Login/SubmitButton';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -96,19 +100,7 @@ const MemberCheckbox = styled.input`
     margin-right: 0.5rem;
     `;
 
-const SubmitButton = styled.button`
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-    
-    &:hover {
-        background-color: #0056b3;
-        }
-        `;
+
 const InputNameConatiner = styled.div`
         display:flex;
         flex-direction: column;
@@ -133,6 +125,7 @@ margin-top:10px;
 display:flex;
 justify-content: space-between;
 width: 100%;
+// margin-bottom: 1rem;
 `;
 const FromDateConatiner = styled.div`
 display:flex;
@@ -154,29 +147,256 @@ line-height: 18px;
 text-align: left;
 color: grey;
 `;
+const SelectMemberLabel = styled.select`
+
+width: 50%;
+border:none;
+outline:none;
+`;
+const AddMemberLabel = styled.label`
+text-align: left;
+font-family: Urbanist;
+font-size: 16px;
+font-weight: 500;
+line-height: 18px;
+text-align: left;
+color: grey;
+`;
+
+const MemberSelecetionConatiner = styled.div` 
+width:100%;
+margin-top:1rem;
+`;
+const SelectedMemberConatiner = styled.div``;
+const SelectionMenuListConatiner = styled.div`
+text-align: left;
+cursor: pointer;
+
+`;
+const AddMemberConatiner = styled.div`
+width:100%;
+display:flex;
+align-items: center;
+justify-content: space-between;
+`;
+const SelectMemberHeading = styled.p`
+font-family: Urbanist;
+font-size: 18px;
+font-weight: 600;
+line-height: 18px;
+text-align: left;
+color: #424242;
+`;
+const MemberMenuConatriner = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+`;
+const AddMemberListConatiner = styled.div`
+width:100%;
+height:100%;
+// background:red;
+box-shadow: 0px 14px 44px 0px #00000026;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index:100;
+// position:absolute;
+background:white;
+border-radius:10px;
+`;
+
+const MenuHeadingConatiner = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+`;
+const MenuHeading = styled.p``;
+const AddMemberButton = styled.button`
+  border: 1px solid #a720b9;
+  width: 137px;
+  height: 30px;
+  margin-right: 52px;
+  border: 1px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: 1px solid #a720b9;
+`
+const PlusSignContainer = styled.div``
+const PlusSignIcon = styled.img`
+  height: 21px;
+  width: 21px;
+`
+
+const ButtonText = styled.div`
+  width: 89px;
+  height: 17px;
+  font-family: 'Urbanist', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16.8px;
+  text-align: left;
+  margin-left:6px;
+  color: #a720b9;
+`
+const SelectMemberHeadingConatiner = styled.div`
+display:flex;
+align-items: center;
+justify-content: space-between;
+`;
+const MemberList = styled.div`
+display: flex;
+flex-direction: column;
+width: 97%;
+
+// border: 1px solid black;
+// height:300px;
+max-height: 172px;
+overflow: auto;
+
+`;
+const MemberData = styled.div`
+display: flex;
+flex-direction: row;
+align-items: center;
+cursor: pointer;
+`;
+const MemberName = styled.p`
+font-family: Urbanist;
+font-size: 16px;
+font-weight: 700;
+line-height: 23px;
+text-align: left;
+
+    margin: 0;
+`;
+const MemberRole = styled.p`
+font-family: Urbanist;
+font-size: 14px;
+font-weight: 500;
+line-height: 23px;
+text-align: left;
+
+    margin: 0;
+`;
+const MemberListItem = styled.label`
+display: flex;
+align-items: center;
+justify-content: space-between;
+width:100%;
+margin-top:10px;
+cursor:pointer;
+// padding-right:20px;
+// margin-right:20px;
+`;
+const MemberText = styled.div`
+margin-left:10px;
+`;
+const MemberSelectButton = styled.input`
+margin-right:10px;
+cursor: pointer;
+`;
+const MeberProfileImage = styled.img`
+width:40px;
+height:40px;
+border-radius:50%;
+`;
+
+const SelectedMembersList = styled.div`
+display: flex;
+flex-wrap:wrap;
+`;
+const SelectedMemberDataConatiner = styled.div`
+width:30%;
+margin-bottom:10px;
+// box-shadow: 0px 14px 44px 0px #00000026;
+border:1px solid #00000026;
+border-radius:10px;
+margin-right:4px;
+padding:5px;
+`;
+const SelectedMemberData = styled.div`
+display: flex;
+justify-content: space-between;
+`;
+const SubmitConatiner = styled.div`
+margin-top:10px;
+`;
+
+
 const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, selectedSlot }) => {
 
 
     const [eventName, setEventName] = useState('');
-    const [members, setMembers] = useState<string[]>([]);
+    const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
     const [startDateTime, setStartDateTime] = useState('');
     const [endDateTime, setEndDateTime] = useState('');
-
+    const { members } = useAppSelector(state => state.member);
+    const selectionRef = useRef<HTMLSelectElement>(null);
+    const [addMemberMenu, setAddMemberMenu] = useState(false);
+    const [activeButton, setActiveButton] = useState(false);
+    const selectMenuRef = useRef<HTMLDivElement>(null)
+    const navigate = useNavigate();
     useEffect(() => {
         if (selectedSlot) {
             const start = new Date(selectedSlot.start);
             const end = new Date(selectedSlot.end);
             setStartDateTime(start.toISOString().slice(0, 16));
             setEndDateTime(end.toISOString().slice(0, 16));
+            setSelectedMembers([])
         }
 
     }, [selectedSlot]);
+    const handleClickOutside = (event: MouseEvent) => {
+        if (
+            selectMenuRef.current &&
+            !selectMenuRef.current.contains(event.target as Node)
+        ) {
+            setAddMemberMenu(false);
+        }
+    };
 
+    useEffect(() => {
+        if (addMemberMenu) {
+            document.addEventListener('mousedown', handleClickOutside)
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [addMemberMenu])
+    useEffect(() => {
+        IsValidData();
+    }, [eventName, startDateTime, endDateTime])
     const handleEventNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setEventName(e.target.value);
     };
 
+    const handleMember = (id: number) => {
+        if (selectedMembers.includes(id)) {
+            setSelectedMembers(pre => pre.filter(val => val !== id));
+        } else {
+            setSelectedMembers(pre => [...pre, id]);
+        }
 
+    }
+    const IsValidData = () => {
+        const startDate = startDateTime.toString().slice(0, 10);
+        const startTime = startDateTime.toString().slice(11, 16);
+        console.log(startDate, startTime);
+        if (eventName.length > 0 && eventName.length <= 25 && startDateTime.length !== 0 && endDateTime.length !== 0) {
+            setActiveButton(true);
+        } else {
+            setActiveButton(false);
+        }
+    }
     const handleSubmit = () => {
         const eventData = {
             title: eventName,
@@ -185,7 +405,9 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
         // onSubmit(eventData);
     };
-
+    useEffect(() => {
+        console.log(selectedMembers)
+    }, [selectedMembers])
 
 
     if (!isOpen) return null;
@@ -224,10 +446,76 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 <UnderLine width={100} isPercent={true} />
                             </FromDateConatiner>
                         </DateRangeConatiner>
+                        {/* <UnderLine width={100} isPercent={true} /> */}
+                        <MemberSelecetionConatiner>
+                            <SelectMemberHeadingConatiner>
+                                <SelectMemberHeading>Selected Members {`(${selectedMembers.length})`}</SelectMemberHeading>
+                                <AddMemberButton onClick={() => navigate('/dashboard/members/create/new')}>
+                                    <PlusSignContainer>
+                                        <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
+                                    </PlusSignContainer>
+                                    <ButtonText>New Member</ButtonText>
+                                </AddMemberButton>
+                            </SelectMemberHeadingConatiner>
+                            <SelectedMemberConatiner>
+                                <SelectedMembersList>
+                                    {members.map(member => selectedMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
+                                        <SelectedMemberData>
+                                            <MemberData  >
+                                                <MeberProfileImage src={member.profile_image} />
+                                                <MemberText>
+
+                                                    <MemberName>{member.name}</MemberName>
+                                                    <MemberRole>{member.job_type}</MemberRole>
+                                                </MemberText>
+
+                                            </MemberData>
+                                            <CloseButton onClick={() => handleMember(parseInt(member.id))}>&times;</CloseButton>
+                                        </SelectedMemberData>
+                                    </SelectedMemberDataConatiner>)}
+
+                                </SelectedMembersList>
+                            </SelectedMemberConatiner>
+                            <SelectionMenuListConatiner >
+                                <AddMemberConatiner onClick={() => setAddMemberMenu(pre => !pre)}>
+
+                                    <AddMemberLabel>Add Member</AddMemberLabel>
+                                    <SelectMemberLabel ref={selectionRef} defaultValue={"Add Member"}>
+                                        {/* <option value="Add Member" selected >Add Member</option> */}
+                                    </SelectMemberLabel>
+                                </AddMemberConatiner>
+                                <UnderLine width={100} isPercent={true} />
+                                <MemberMenuConatriner>
+
+                                    {addMemberMenu && <AddMemberListConatiner ref={selectMenuRef}>
+                                        <MemberList>
+                                            {members.map(member =>
+                                                <MemberListItem htmlFor={`member${member.id}`} >
+
+                                                    <MemberData  >
+                                                        <MeberProfileImage src={member.profile_image} />
+                                                        <MemberText>
+
+                                                            <MemberName>{member.name}</MemberName>
+                                                            <MemberRole>{member.job_type}</MemberRole>
+                                                        </MemberText>
+                                                    </MemberData>
+                                                    <MemberSelectButton id={`member${member.id}`} type='checkbox' onChange={() => { handleMember(parseInt(member.id)) }} checked={selectedMembers.includes(parseInt(member.id))}></MemberSelectButton>
+                                                </MemberListItem>
+                                            )}
+
+                                        </MemberList>
+                                    </AddMemberListConatiner>}
+                                </MemberMenuConatriner>
+                            </SelectionMenuListConatiner>
+                        </MemberSelecetionConatiner>
                     </ModalDateConatiner>
 
                     {/* Add more members as needed */}
-                    <SubmitButton onClick={handleSubmit}>Submit</SubmitButton>
+                    <SubmitConatiner>
+
+                        <SubmitButton active={!activeButton} text={'Create'} width={270} needArrow={false} onClick={(e) => { console.log() }} />
+                    </SubmitConatiner>
                 </ModalContent>
             </ModalOverlay>
             : null

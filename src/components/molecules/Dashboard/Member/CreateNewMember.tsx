@@ -34,6 +34,7 @@ const BackButtonIcon = styled.img`
 width: 19.6px;
 height: 16.8px;
 color: #171717;
+cursor: pointer;
 
 
 `;
@@ -230,7 +231,7 @@ const CreateNewMemberPage: React.FC = () => {
     useEffect(() => {
         if (success) {
             showSuccessToast("Member added successfully");
-            navigate('/dashboard/members/all');
+            navigate(-1);
         } else if (isError) {
             if (error && error.message) {
 

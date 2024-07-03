@@ -21,6 +21,10 @@ body {
     background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%) !important;
     color: white !important;
 }
+.rbc-calendar{
+  font-family: 'Urbanist'  !important;
+  font-weight: 600 !important;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

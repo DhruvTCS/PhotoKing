@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Calendar, momentLocalizer, SlotInfo } from 'react-big-calendar';
 import moment from 'moment';
 import styled from 'styled-components'; // Adjust the path as per your project structure
 import EventCreateModal from '../../molecules/Dashboard/EventCalendar/CreateEventModal';
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks';
+import { getAllMembers } from '../../../Redux/ApiCalls/Dashboard/MembersAPI';
 
 const localizer = momentLocalizer(moment);
 interface EventData {
@@ -44,6 +46,18 @@ const CustomDateCellWrapper = ({ value, children }: { value: Date; children: Rea
 const EventCalendar: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
+    const { members, isMemberFetched } = useAppSelector(state => state.member);
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        if (members.length == 0 && !isMemberFetched) {
+
+            dispatch(getAllMembers());
+        }
+
+        return () => {
+
+        }
+    }, [members]);
 
     const handleSelectSlot = (slotInfo: SlotInfo) => {
         setSelectedSlot(slotInfo);
@@ -72,7 +86,7 @@ const EventCalendar: React.FC = () => {
             <Calendar
                 localizer={localizer}
                 events={eventsData}
-                views={['month', 'week', 'day']}
+                views={{ month: true, week: true, day: true }}
                 onSelectSlot={handleSelectSlot}
                 selectable={true}
                 defaultView="month"
