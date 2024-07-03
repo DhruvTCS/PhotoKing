@@ -14,10 +14,8 @@ import ContactUs from '../assets/Icons/Sidebar/contactus.png'
 import ContactUsWhite from '../assets/Icons/Sidebar/contactus_white.png'
 import Privacy from '../assets/Icons/Sidebar/privacypolicy.png'
 import PrivacyWhite from '../assets/Icons/Sidebar/privacypolicy_white.png'
-import TnC from '../assets/Icons/Sidebar/termsandconditions.png'
-import TnCWhite from '../assets/Icons/Sidebar/termsandconditions_white.png'
-import Delete from '../assets/Icons/Sidebar/deleteaccount.png'
-import DeleteWhite from '../assets/Icons/Sidebar/deleteaccount_white.png'
+import Calander from '../assets/Icons/Sidebar/calendar.png'
+import CalenderWhite from '../assets/Icons/Sidebar/calendarWhite.png'
 import Logout from '../assets/Icons/Sidebar/logout.png'
 import LogOutWhite from '../assets/Icons/Sidebar/logout_white.png'
 
@@ -47,15 +45,9 @@ export const sidebarOptions = [
         redirection: "/dashboard/members/all"
     },
     {
-        key: "Change Password",
-        icon: Mobile,
-        whiteIcon: MobileWhite,
-        redirection: "/dashboard/chnagepassword"
-    },
-    {
         key: "Event Scheduling",
-        icon: AboutUs,
-        whiteIcon: AboutUsWhite,
+        icon: Calander,
+        whiteIcon: CalenderWhite,
         redirection: "/dashboard/event"
     },
     {
