@@ -35,7 +35,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "https://photo-app-be-python.onrender.com",
   "eslintConfig": {
     "extends": [
       "react-app",
