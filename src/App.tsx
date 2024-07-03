@@ -24,24 +24,24 @@ import { setFCM } from './Redux/Slice/Dashboard/ExtraSlice';
 import EditMemberPage from './components/molecules/Dashboard/Member/EditNewMember';
 import EventCalendar from './components/organisms/Dashboard/EventCalendar';
 function App() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
-      .then(registration => {
-        // console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(err => {
-        // console.log('Service Worker registration failed:', err);
-      });
+  // if ('serviceWorker' in navigator) {
+  //   navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  //     .then(registration => {
+  //       // console.log('Service Worker registered with scope:', registration.scope);
+  //     })
+  //     .catch(err => {
+  //       // console.log('Service Worker registration failed:', err);
+  //     });
 
-    navigator.serviceWorker.addEventListener('message', (event) => {
-      // console.log("Data payload from background notification ");
-      // console.log(event.data.payload);
-      if (event.data && event.data.type === 'BACKGROUND_NOTIFICATION') {
-        // store.dispatch(addNotification(event.data.payload));
+  //   navigator.serviceWorker.addEventListener('message', (event) => {
+  //     // console.log("Data payload from background notification ");
+  //     // console.log(event.data.payload);
+  //     if (event.data && event.data.type === 'BACKGROUND_NOTIFICATION') {
+  //       // store.dispatch(addNotification(event.data.payload));
 
-      }
-    });
-  }
+  //     }
+  //   });
+  // }
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -56,15 +56,15 @@ function App() {
 
 
   }, [])
-  useEffect(() => {
-    requestFirebaseNotificationPermission();
+  // useEffect(() => {
+  //   requestFirebaseNotificationPermission();
 
-    onMessageListener()
-      .then(payload => {
-        console.log('Message received: ', payload);
-      })
-      .catch(err => console.log('Failed to receive message: ', err));
-  }, []);
+  //   onMessageListener()
+  //     .then(payload => {
+  //       console.log('Message received: ', payload);
+  //     })
+  //     .catch(err => console.log('Failed to receive message: ', err));
+  // }, []);
 
 
 

@@ -334,6 +334,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
 
     const [eventName, setEventName] = useState('');
+    const [eventLocation, setEventLocation] = useState('')
     const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
     const [startDateTime, setStartDateTime] = useState('');
     const [endDateTime, setEndDateTime] = useState('');
@@ -388,9 +389,8 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
     }
     const IsValidData = () => {
-        const startDate = startDateTime.toString().slice(0, 10);
-        const startTime = startDateTime.toString().slice(11, 16);
-        console.log(startDate, startTime);
+
+        // console.log(startDate, startTime);
         if (eventName.length > 0 && eventName.length <= 25 && startDateTime.length !== 0 && endDateTime.length !== 0) {
             setActiveButton(true);
         } else {
@@ -398,6 +398,9 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         }
     }
     const handleSubmit = () => {
+        const date = startDateTime.toString().slice(0, 10);
+        const time = startDateTime.toString().slice(11, 16);
+
         const eventData = {
             title: eventName,
             members,
@@ -425,6 +428,16 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                             value={eventName}
                             onChange={(e) => setEventName(e.target.value)}
                             placeholder="Enter event name"
+                        />
+                        <UnderLine width={100} isPercent={true} />
+                    </InputNameConatiner>
+                    <InputNameConatiner>
+                        <ModalLabel>Location:</ModalLabel>
+                        <ModalInput
+                            type="text"
+                            value={eventLocation}
+                            onChange={(e) => setEventLocation(e.target.value)}
+                            placeholder="Enter event's location"
                         />
                         <UnderLine width={100} isPercent={true} />
                     </InputNameConatiner>
