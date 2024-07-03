@@ -6,9 +6,10 @@ export const getAllEventsAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: '',
+                url: '/project/user-event/',
                 data: data
             })
+
             console.log(response.data);
             return response.data;
         } catch (error: any) {

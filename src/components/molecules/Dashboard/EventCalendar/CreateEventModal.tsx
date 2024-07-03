@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import UnderLine from '../../../atoms/Login/UnderLine';
-import { useAppSelector } from '../../../../Redux/Hooks';
+import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { useNavigate } from 'react-router-dom';
 
 import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
+import { createEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
+import { showErrorToast } from '../../../atoms/Utlis/Toast';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -217,7 +219,7 @@ const AddMemberButton = styled.button`
   border: 1px solid #a720b9;
   width: 137px;
   height: 30px;
-  margin-right: 52px;
+//   margin-right: 52px;
   border: 1px;
   border-radius: 6px;
   display: flex;
@@ -339,21 +341,52 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const [startDateTime, setStartDateTime] = useState('');
     const [endDateTime, setEndDateTime] = useState('');
     const { members } = useAppSelector(state => state.member);
+    const { currentEvent } = useAppSelector(state => state.event)
     const selectionRef = useRef<HTMLSelectElement>(null);
     const [addMemberMenu, setAddMemberMenu] = useState(false);
     const [activeButton, setActiveButton] = useState(false);
     const selectMenuRef = useRef<HTMLDivElement>(null)
+    const [isUpdate, setIsUpdate] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
     useEffect(() => {
-        if (selectedSlot) {
+        if (currentEvent) {
+            // const start = new Date(currentEvent.start);
+            // const end = new Date(currentEvent.end);
+            // console.log();
+            const start = new Date(currentEvent.start);
+            const end = new Date(currentEvent.end);
+            const padZero = (num: number) => num.toString().padStart(2, '0');
+
+            const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
+            const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
+            console.log(start);
+            setIsUpdate(true);
+            setStartDateTime(formatedStart);
+            setEndDateTime(formatedEnd);
+            setEventName(currentEvent.title);
+            setEventLocation(currentEvent.location);
+        }
+        else if (selectedSlot) {
             const start = new Date(selectedSlot.start);
             const end = new Date(selectedSlot.end);
-            setStartDateTime(start.toISOString().slice(0, 16));
-            setEndDateTime(end.toISOString().slice(0, 16));
+            const padZero = (num: number) => num.toString().padStart(2, '0');
+
+            const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
+            const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
+            console.log(start);
+            setStartDateTime(formatedStart);
+            setEndDateTime(formatedEnd);
             setSelectedMembers([])
         }
-
-    }, [selectedSlot]);
+        return () => {
+            setEventLocation('');
+            setEventName('');
+            setStartDateTime('');
+            setEndDateTime('');
+            setSelectedMembers([])
+        }
+    }, [selectedSlot, currentEvent]);
     const handleClickOutside = (event: MouseEvent) => {
         if (
             selectMenuRef.current &&
@@ -398,13 +431,14 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         }
     }
     const handleSubmit = () => {
-        const date = startDateTime.toString().slice(0, 10);
-        const time = startDateTime.toString().slice(11, 16);
-
-        const eventData = {
-            title: eventName,
-            members,
-        };
+        if (new Date(startDateTime) > new Date(endDateTime)) showErrorToast("Please enter valid from and to date and time.")
+        else {
+            const date = startDateTime.toString().slice(0, 10);
+            const time = startDateTime.toString().slice(11, 16);
+            console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
+            // dispatch(createEventAPI({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` }))
+            onClose()
+        }
 
         // onSubmit(eventData);
     };
@@ -416,7 +450,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     if (!isOpen) return null;
 
     return (
-        selectedSlot ?
+        selectedSlot || currentEvent ?
             <ModalOverlay>
                 <ModalContent>
                     <CloseButton onClick={onClose}>&times;</CloseButton>
@@ -448,14 +482,14 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 <FromDateLable>
                                     From
                                 </FromDateLable>
-                                <Fromdate type='datetime-local' placeholder='Select date and time' value={startDateTime} />
+                                <Fromdate type='datetime-local' onChange={(e) => setStartDateTime(e.target.value)} placeholder='Select date and time' value={startDateTime} />
                                 <UnderLine width={100} isPercent={true} />
                             </FromDateConatiner>
                             <FromDateConatiner>
                                 <FromDateLable>
                                     To
                                 </FromDateLable>
-                                <Fromdate type='datetime-local' placeholder='Select date and time' value={endDateTime} />
+                                <Fromdate type='datetime-local' onChange={(e) => setEndDateTime(e.target.value)} placeholder='Select date and time' value={endDateTime} />
                                 <UnderLine width={100} isPercent={true} />
                             </FromDateConatiner>
                         </DateRangeConatiner>
@@ -527,7 +561,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                     {/* Add more members as needed */}
                     <SubmitConatiner>
 
-                        <SubmitButton active={!activeButton} text={'Create'} width={270} needArrow={false} onClick={(e) => { console.log() }} />
+                        <SubmitButton active={!activeButton} text={isUpdate ? 'Update' : 'Create'} width={270} needArrow={false} onClick={handleSubmit} />
                     </SubmitConatiner>
                 </ModalContent>
             </ModalOverlay>

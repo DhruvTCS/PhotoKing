@@ -1,87 +1,116 @@
-import React, { useEffect, useState } from 'react';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Calendar, momentLocalizer, SlotInfo } from 'react-big-calendar';
-import moment from 'moment';
-import styled from 'styled-components'; // Adjust the path as per your project structure
-import EventCreateModal from '../../molecules/Dashboard/EventCalendar/CreateEventModal';
-import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks';
-import { getAllMembers } from '../../../Redux/ApiCalls/Dashboard/MembersAPI';
+import React, { useEffect, useState } from 'react'
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { Calendar, momentLocalizer, SlotInfo } from 'react-big-calendar'
+import moment from 'moment'
+import styled from 'styled-components' // Adjust the path as per your project structure
+import EventCreateModal from '../../molecules/Dashboard/EventCalendar/CreateEventModal'
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks'
+import { getAllMembers } from '../../../Redux/ApiCalls/Dashboard/MembersAPI'
+import { getAllEventsAPI } from '../../../Redux/ApiCalls/Dashboard/EventAPI'
+import LoadingDots from '../../atoms/Utlis/LoadinDots'
+import { EventType } from '../../../Data/event.dto'
+import { clearCurrentEvent, setCurrentEvent } from '../../../Redux/Slice/Dashboard/EventSlice'
 
-const localizer = momentLocalizer(moment);
+const localizer = momentLocalizer(moment)
 interface EventData {
-    eventName: string;
-    dateTime: Date;
-    members: string[];
+    eventName: string
+    dateTime: Date
+    members: string[]
 }
 
 const eventsData = [
+
     {
-        id: 1,
-        title: 'Event 1',
-        start: new Date(2024, 6, 1, 10, 0, 0),
-        end: new Date(2024, 6, 1, 12, 0, 0),
-    },
-    {
-        id: 2,
-        title: 'Event 2',
-        start: new Date(2024, 6, 2, 15, 0, 0),
-        end: new Date(2024, 6, 2, 17, 0, 0),
+        id: 3,
+        title: 'Surat Marriage shoot',
+        start: 'Mon Jul 15 2024 18:00:00 GMT +0530(India Standard Time)',
+        end: 'Mon Jul 15 2024 22:00:00 GMT +0530(India Standard Time)',
+        location: 'done',
+        members: [
+            {
+                id: 5,
+                member: 52,
+            },
+            {
+                id: 6,
+                member: 48,
+            },
+        ],
     },
     // Add more events as needed
-];
+]
 
 const CalenderConatiner = styled.div`
-  height:900px;
+  height: 900px;
   padding: 20px;
-`;
-const StyledDateCellWrapper = styled.div<{ isToday: boolean }>`
-  background-color: ${({ isToday }) => (isToday ? 'black' : 'black')};
-`;
-
-const CustomDateCellWrapper = ({ value, children }: { value: Date; children: React.ReactNode }) => {
-    const isToday = moment().isSame(value, 'day');
-    return <StyledDateCellWrapper isToday={isToday}>{children}</StyledDateCellWrapper>;
-};
+`
 
 const EventCalendar: React.FC = () => {
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null);
-    const { members, isMemberFetched } = useAppSelector(state => state.member);
-    const dispatch = useAppDispatch();
+    const [modalOpen, setModalOpen] = useState(false)
+    const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null)
+    const { members, isMemberFetched } = useAppSelector((state) => state.member)
+    const { loading, Events, isError, isEventUpdate } = useAppSelector(
+        (state) => state.event,
+    )
+    const dispatch = useAppDispatch()
     useEffect(() => {
+        // console.log(convertToDateTime("2024/07/15", "14:00:00"))
+        // console.log("+++++++++++++++++++++++++++++++++++++++")
         if (members.length == 0 && !isMemberFetched) {
-
-            dispatch(getAllMembers());
+            dispatch(getAllMembers())
         }
 
-        return () => {
-
+        return () => { }
+    }, [members])
+    useEffect(() => {
+        if (isEventUpdate) {
+            dispatch(
+                getAllEventsAPI({
+                    start_date: '2024-01-15',
+                    end_date: '2024-12-15',
+                }),
+            )
         }
-    }, [members]);
+    }, [isEventUpdate])
 
     const handleSelectSlot = (slotInfo: SlotInfo) => {
-        setSelectedSlot(slotInfo);
+        setSelectedSlot(slotInfo)
         console.log(modalOpen)
         console.log(slotInfo.start)
         // if (selectedSlot)
-        setModalOpen(true);
-    };
+        setModalOpen(true)
+    }
     const handleSelectedEvent = (data: any) => {
+
         console.log(data);
+        const eventObje: EventType = {
+            id: data.id,
+            location: data.location,
+            start: data.start,
+            end: data.end,
+            members: data.members,
+            title: data.title
+        }
+        console.log(eventObje);
+        dispatch(setCurrentEvent(eventObje));
+        setModalOpen(true);
     }
     const handleCloseModal = () => {
-        setModalOpen(false);
-        setSelectedSlot(null);
-    };
+        setModalOpen(false)
+        setSelectedSlot(null)
+        dispatch(clearCurrentEvent());
+    }
 
     const handleSubmitEvent = (eventData: EventData) => {
         // Here you would handle submitting the event data to your backend or state management
-        console.log('Submitted event data:', eventData);
+        console.log('Submitted event data:', eventData)
         // For demo, just close the modal
-        handleCloseModal();
-    };
+        handleCloseModal()
+    }
 
-    return (
+    return loading ? (
+        <LoadingDots />
+    ) : (
         <CalenderConatiner>
             <Calendar
                 localizer={localizer}
@@ -93,7 +122,6 @@ const EventCalendar: React.FC = () => {
                 step={15}
                 timeslots={4}
                 onSelectEvent={handleSelectedEvent}
-
             />
             <EventCreateModal
                 isOpen={modalOpen}
@@ -102,7 +130,7 @@ const EventCalendar: React.FC = () => {
                 selectedSlot={selectedSlot}
             />
         </CalenderConatiner>
-    );
-};
+    )
+}
 
-export default EventCalendar;
+export default EventCalendar
