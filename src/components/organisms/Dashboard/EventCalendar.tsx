@@ -23,8 +23,8 @@ const eventsData = [
     {
         id: 3,
         title: 'Surat Marriage shoot',
-        start: 'Mon Jul 15 2024 18:00:00 GMT +0530(India Standard Time)',
-        end: 'Mon Jul 15 2024 22:00:00 GMT +0530(India Standard Time)',
+        start: new Date('Mon Jul 15 2024 18:00:00 GMT +0530(India Standard Time)'),
+        end: new Date('Mon Jul 15 2024 22:00:00 GMT +0530(India Standard Time)'),
         location: 'done',
         members: [
             {
