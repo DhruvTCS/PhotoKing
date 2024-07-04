@@ -62,19 +62,21 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             // state.albums = [];
         })
         .addCase(getFoldersForAlbum.fulfilled, (state, action: PayloadAction<Folder[]>) => {
-            console.log(action.payload.length);
+            // console.log(action.payload.length);
+            if (action.payload) {
 
-            if (action.payload.length > 0) {
-                state.isFolderChange = false;
-                if (state.currentAlbum) {
-                    if (state.currentAlbum.id === action.payload[0].project_id)
-                        state.currentAlbum.folders = action.payload;
-                }
-                state.albums.forEach((album) => {
-                    if (album.id === action.payload[0].project_id) {
-                        album.folders = action.payload;
+                if (action.payload.length > 0) {
+                    state.isFolderChange = false;
+                    if (state.currentAlbum) {
+                        if (state.currentAlbum.id === action.payload[0].project_id)
+                            state.currentAlbum.folders = action.payload;
                     }
-                })
+                    state.albums.forEach((album) => {
+                        if (album.id === action.payload[0].project_id) {
+                            album.folders = action.payload;
+                        }
+                    })
+                }
             }
             state.folderLoading = false;
 

@@ -30,7 +30,7 @@ const initialState: AlbumState = {
     total_projects: 0,
     currentPage: 1,
     folderLoading: false,
-    isUpdate: false,
+    isUpdate: true,
     isFolderChange: false,
     success: false,
     isSearchData: false,

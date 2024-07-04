@@ -103,7 +103,7 @@ const ButtonText = styled.div`
 const AlbumsListContainer = styled.div`
   display: grid;
   // grid-template-columns: repeat(3, 1fr);
-  grid-template-columns: repeat(auto-fit, 33%);
+  grid-template-columns: repeat(auto-fit, minmax(450px,33%));
   transition: all 0.3s ease-in-out;
   gap: 63px 0px;
   width: 100%;
@@ -131,13 +131,13 @@ const Albums: React.FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     useEffect(() => {
-        dispatch(getAllAlbums(1))
+
         // console.log(albums)
         if (!loading && albums.length > 0) {
             // console.log('setting total pages' + total_projects)
             setTotalAlbums(total_projects)
         }
-    }, [dispatch])
+    }, [dispatch, total_projects, albums])
 
     useEffect(() => {
         if (isUpdate) {

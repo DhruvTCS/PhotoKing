@@ -17,7 +17,13 @@ interface EventData {
     dateTime: Date
     members: string[]
 }
-
+const LoaderContainer = styled.div`
+width:100%;
+height:100%;
+display:flex;
+align-items: center;
+justify-content: center;
+`;
 const eventsData = [
 
     {
@@ -49,6 +55,31 @@ const EventCalendar: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null)
     const { members, isMemberFetched } = useAppSelector((state) => state.member)
+    const [currentQuarter, setCurrentQuarter] = useState({
+        start: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1),
+        end: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3 + 3, 0),
+    });
+
+
+    useEffect(() => {
+        console.log(currentQuarter);
+        fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
+    }, [currentQuarter]);
+
+    const fetchAndSetEvents = async (start: Date, end: Date) => {
+        // const newEvents = await fetchEventsForQuarter(start, end);
+        // setEvents(newEvents);
+        console.log(start, end);
+    };
+
+    const handleNavigate = (date: Date, view: string, action: string) => {
+        const newStart = new Date(date.getFullYear(), Math.floor(date.getMonth() / 3) * 3, 1);
+        const newEnd = new Date(date.getFullYear(), Math.floor(date.getMonth() / 3) * 3 + 3, 0);
+        if (newStart.getTime() !== currentQuarter.start.getTime() || newEnd.getTime() !== currentQuarter.end.getTime()) {
+            setCurrentQuarter({ start: newStart, end: newEnd });
+        }
+        // setCurrentQuarter({ start, end });
+    };
     const { loading, Events, isError, isEventUpdate } = useAppSelector(
         (state) => state.event,
     )
@@ -57,32 +88,30 @@ const EventCalendar: React.FC = () => {
         // console.log(convertToDateTime("2024/07/15", "14:00:00"))
         // console.log("+++++++++++++++++++++++++++++++++++++++")
         if (members.length == 0 && !isMemberFetched) {
-            dispatch(getAllMembers())
+            // dispatch(getAllMembers())
         }
 
         return () => { }
     }, [members])
     useEffect(() => {
         if (isEventUpdate) {
-            dispatch(
-                getAllEventsAPI({
-                    start_date: '2024-01-15',
-                    end_date: '2024-12-15',
-                }),
-            )
+            // dispatch(
+            //     getAllEventsAPI({
+            //         start_date: '2024-01-15',
+            //         end_date: '2024-12-15',
+            //     }),
+            // )
         }
     }, [isEventUpdate])
 
     const handleSelectSlot = (slotInfo: SlotInfo) => {
         setSelectedSlot(slotInfo)
-        console.log(modalOpen)
-        console.log(slotInfo.start)
+
         // if (selectedSlot)
         setModalOpen(true)
     }
     const handleSelectedEvent = (data: any) => {
 
-        console.log(data);
         const eventObje: EventType = {
             id: data.id,
             location: data.location,
@@ -91,7 +120,7 @@ const EventCalendar: React.FC = () => {
             members: data.members,
             title: data.title
         }
-        console.log(eventObje);
+
         dispatch(setCurrentEvent(eventObje));
         setModalOpen(true);
     }
@@ -109,7 +138,7 @@ const EventCalendar: React.FC = () => {
     }
 
     return loading ? (
-        <LoadingDots />
+        <LoaderContainer> <LoadingDots /></LoaderContainer>
     ) : (
         <CalenderConatiner>
             <Calendar
@@ -122,6 +151,7 @@ const EventCalendar: React.FC = () => {
                 step={15}
                 timeslots={4}
                 onSelectEvent={handleSelectedEvent}
+                onNavigate={handleNavigate}
             />
             <EventCreateModal
                 isOpen={modalOpen}

@@ -7,7 +7,7 @@ border:none;
 border-radius: 16px 16px 16px 16px;
 font-family: "Urbanist", sans-serif;
 font-size: 20px;
-font-weight: 600;
+font-weight: 800;
 line-height: 19.2px;
 text-align: center;
 cursor: pointer;

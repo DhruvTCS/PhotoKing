@@ -8,6 +8,8 @@ import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import { createEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
 import { showErrorToast } from '../../../atoms/Utlis/Toast';
+import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
+import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -54,7 +56,11 @@ const CloseButton = styled.span`
   font-weight: bold;
   cursor: pointer;
 `;
-
+const ModalTitleConatiner = styled.div`
+display:flex;
+align-items: center;
+justify-content: center;
+`;
 const ModalTitle = styled.h2`
   font-family: Urbanist;
 font-size: 20px;
@@ -86,22 +92,6 @@ border:none;
     outline:none;
     }
     `;
-
-const MemberContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    `;
-
-const MemberLabel = styled.label`
-    display: flex;
-    align-items: center;
-    `;
-
-const MemberCheckbox = styled.input`
-    margin-right: 0.5rem;
-    `;
-
 
 const InputNameConatiner = styled.div`
         display:flex;
@@ -209,44 +199,6 @@ background:white;
 border-radius:10px;
 `;
 
-const MenuHeadingConatiner = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
-`;
-const MenuHeading = styled.p``;
-const AddMemberButton = styled.button`
-  border: 1px solid #a720b9;
-  width: 137px;
-  height: 30px;
-//   margin-right: 52px;
-  border: 1px;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: row;
-  cursor: pointer;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  border: 1px solid #a720b9;
-`
-const PlusSignContainer = styled.div``
-const PlusSignIcon = styled.img`
-  height: 21px;
-  width: 21px;
-`
-
-const ButtonText = styled.div`
-  width: 89px;
-  height: 17px;
-  font-family: 'Urbanist', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 16.8px;
-  text-align: left;
-  margin-left:6px;
-  color: #a720b9;
-`
 const SelectMemberHeadingConatiner = styled.div`
 display:flex;
 align-items: center;
@@ -326,17 +278,31 @@ padding:5px;
 const SelectedMemberData = styled.div`
 display: flex;
 justify-content: space-between;
+align-items: center;
 `;
 const SubmitConatiner = styled.div`
 margin-top:10px;
 `;
-
+const DeleteIcon = styled.img`
+height:25px;
+width:25px;
+`;
+const DeleteEventConatiner = styled.div`
+display: flex;
+align-items: center;
+justify-content: center;
+cursor:pointer;
+&:hover{
+color:#B827BB;
+}
+`;
 
 const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, selectedSlot }) => {
 
 
     const [eventName, setEventName] = useState('');
     const [eventLocation, setEventLocation] = useState('')
+    const [eventMembers, setEventMembers] = useState<number[]>([])
     const [selectedMembers, setSelectedMembers] = useState<number[]>([]);
     const [startDateTime, setStartDateTime] = useState('');
     const [endDateTime, setEndDateTime] = useState('');
@@ -345,9 +311,11 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const selectionRef = useRef<HTMLSelectElement>(null);
     const [addMemberMenu, setAddMemberMenu] = useState(false);
     const [activeButton, setActiveButton] = useState(false);
+    const [deletMember, setDeleteMember] = useState<number[]>([]);
     const selectMenuRef = useRef<HTMLDivElement>(null)
     const [isUpdate, setIsUpdate] = useState(false);
     const navigate = useNavigate();
+    const [deletePopup, setDeletePopUp] = useState(false);
     const dispatch = useAppDispatch();
     useEffect(() => {
         if (currentEvent) {
@@ -357,10 +325,12 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             const start = new Date(currentEvent.start);
             const end = new Date(currentEvent.end);
             const padZero = (num: number) => num.toString().padStart(2, '0');
-
+            currentEvent.members.forEach((member) => {
+                eventMembers.push(member.member);
+            })
             const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
             const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
-            console.log(start);
+            // console.log(start);
             setIsUpdate(true);
             setStartDateTime(formatedStart);
             setEndDateTime(formatedEnd);
@@ -374,7 +344,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
             const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
             const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
-            console.log(start);
+            // console.log(start);
             setStartDateTime(formatedStart);
             setEndDateTime(formatedEnd);
             setSelectedMembers([])
@@ -414,10 +384,16 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     };
 
     const handleMember = (id: number) => {
-        if (selectedMembers.includes(id)) {
-            setSelectedMembers(pre => pre.filter(val => val !== id));
+        if (deletMember.includes(id)) {
+            setDeleteMember(pre => pre.filter(member => member !== id));
+            eventMembers.push(id);
         } else {
-            setSelectedMembers(pre => [...pre, id]);
+
+            if (selectedMembers.includes(id)) {
+                setSelectedMembers(pre => pre.filter(val => val !== id));
+            } else {
+                setSelectedMembers(pre => [...pre, id]);
+            }
         }
 
     }
@@ -435,16 +411,19 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         else {
             const date = startDateTime.toString().slice(0, 10);
             const time = startDateTime.toString().slice(11, 16);
-            console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
-            // dispatch(createEventAPI({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` }))
+            // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
+            dispatch(createEventAPI({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` }))
             onClose()
         }
 
         // onSubmit(eventData);
     };
-    useEffect(() => {
-        console.log(selectedMembers)
-    }, [selectedMembers])
+    const handleDeleteMember = (id: number) => {
+        if (!deletMember.includes(id) && eventMembers.includes(id)) {
+            setDeleteMember([...deletMember, id]);
+            setEventMembers(pre => pre.filter(member => member !== id));
+        }
+    }
 
 
     if (!isOpen) return null;
@@ -454,7 +433,19 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             <ModalOverlay>
                 <ModalContent>
                     <CloseButton onClick={onClose}>&times;</CloseButton>
-                    <ModalTitle>Add Event</ModalTitle>
+                    <ModalTitleConatiner>
+                        {currentEvent ?
+                            <>
+                                {deletePopup && <DeleteEventPopup Delete={() => console.log('date')} cancel={() => setDeletePopUp(false)} />}
+                                <ModalTitle> {`Event`}&nbsp;</ModalTitle>
+                                <DeleteEventConatiner onClick={() => setDeletePopUp(true)}>
+                                    {`(Delete Event `} <DeleteIcon src={DeleteIconPNG} /> {` )`}
+                                </DeleteEventConatiner></> : <ModalTitle>Add Event</ModalTitle>
+
+
+                        }
+                    </ModalTitleConatiner>
+
                     <InputNameConatiner>
                         <ModalLabel>Event Name:</ModalLabel>
                         <ModalInput
@@ -500,6 +491,22 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                             </SelectMemberHeadingConatiner>
                             <SelectedMemberConatiner>
                                 <SelectedMembersList>
+                                    {
+                                        currentEvent && eventMembers.length > 0 && (members.map(member => eventMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
+                                            <SelectedMemberData>
+                                                <MemberData  >
+                                                    <MeberProfileImage src={member.profile_image} />
+                                                    <MemberText>
+
+                                                        <MemberName>{member.name}</MemberName>
+                                                        <MemberRole>{member.job_type}</MemberRole>
+                                                    </MemberText>
+
+                                                </MemberData>
+                                                <DeleteIcon onClick={() => handleDeleteMember(parseInt(member.id))} src={DeleteIconPNG} />
+                                            </SelectedMemberData>
+                                        </SelectedMemberDataConatiner>))
+                                    }
                                     {members.map(member => selectedMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
                                         <SelectedMemberData>
                                             <MemberData  >
@@ -530,7 +537,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
                                     {addMemberMenu && <AddMemberListConatiner ref={selectMenuRef}>
                                         <MemberList>
-                                            {members.map(member =>
+                                            {members.map(member => !eventMembers.includes(parseInt(member.id)) &&
                                                 <MemberListItem htmlFor={`member${member.id}`} >
 
                                                     <MemberData  >

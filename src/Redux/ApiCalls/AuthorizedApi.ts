@@ -2,9 +2,10 @@ import axios, { AxiosRequestConfig } from 'axios';
 import store from '../Store'; // Import the Redux store
 import { clearToken, setToken } from './../Slice/Auth/AuthSlice';
 import { refreshAccessToken } from './../ApiCalls/Auth/refreshToken'; // Assume you have a thunk for refreshing the token
+import { getHostUrl } from './getHotUrl';
 
 const api = axios.create({
-    baseURL: 'https://photo-app-be-python.onrender.com'
+    baseURL: `${getHostUrl()}`
 });
 const getTokens = () => {
     const state = store.getState();

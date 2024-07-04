@@ -209,6 +209,11 @@ const InputContact = styled.div`
 const PhoneContainer = styled.div`
 margin-left:42px;
 `;
+const ErrorSpan = styled.span`
+font-size:13px;
+color: red;
+text-align:left;
+`
 const CreateNewMemberPage: React.FC = () => {
     const [name, setName] = useState<string>('');
     const [jobType, setJobType] = useState<string>('');
@@ -219,6 +224,8 @@ const CreateNewMemberPage: React.FC = () => {
     const [countryCode, setCountryCode] = useState<string>('+91');
     const [contact, setContact] = useState<string>('');
     const [activeButton, setActiveButton] = useState<boolean>(false);
+    const [showError, setShowError] = useState<boolean>(false);
+    const [requireFiled, setReduireFiled] = useState<number[]>([0, 1, 2, 3, 4]);
     const dispatch = useAppDispatch();
     const { loading, isError, success, error } = useAppSelector(state => state.member)
     useEffect(() => {
@@ -285,15 +292,26 @@ const CreateNewMemberPage: React.FC = () => {
         return 'false';
     }
     const handleSubmit = () => {
-        const formData = new FormData();
-        formData.append('country_code', countryCode);
-        formData.append('phone_number', contact);
-        formData.append('job_type', jobType);
-        formData.append('name', name)
-        if (selectedImage)
-            formData.append('profile_image', selectedImage);
+        if (!activeButton) {
+            setShowError(true);
 
-        dispatch(createNewMemberAPI(formData))
+        }
+        else {
+
+            const formData = new FormData();
+            formData.append('country_code', countryCode);
+            formData.append('phone_number', contact);
+            formData.append('job_type', jobType);
+            formData.append('name', name)
+            if (selectedImage)
+                formData.append('profile_image', selectedImage);
+
+            dispatch(createNewMemberAPI(formData))
+        }
+    }
+    const showErrorMessgae = () => {
+        console.log("calledddd")
+
     }
     return (
         <NewMemberPageContainer>
@@ -314,6 +332,7 @@ const CreateNewMemberPage: React.FC = () => {
                     <ImageIconContainer >
                         <AddMemberIcon src={MemberIconPNG} />
                     </ImageIconContainer>
+                    {!selectedImage && showError && <ErrorSpan >Please Add Image</ErrorSpan>}
                 </ImageContainer>
                 <InputContainer>
                     <NameDataContainer>
@@ -322,6 +341,7 @@ const CreateNewMemberPage: React.FC = () => {
                             <Input onChange={(e) => { if (e.target.value.length <= 20) setName(e.target.value) }} value={name} placeholder='Name' />
                         </div>
                         <UnderLine width={478} />
+                        {!(name.length >= 4 && name.length <= 25) && showError && <ErrorSpan >Name should be more than 4 character and less than 25 characters.</ErrorSpan>}
                     </NameDataContainer>
                     <JobTypeContainer>
                         <div style={{ "display": "flex" }}>
@@ -333,6 +353,7 @@ const CreateNewMemberPage: React.FC = () => {
                             </JobTypeSelect>
                         </div>
                         <UnderLine width={478} />
+                        {!(jobType.length > 0) && showError && <ErrorSpan >Please provide Job type.</ErrorSpan>}
                     </JobTypeContainer>
                 </InputContainer>
                 <PhoneContainer>
@@ -347,19 +368,21 @@ const CreateNewMemberPage: React.FC = () => {
                                     </CountryCodeText>
                                 </CountryCode>
                                 <UnderLine width={80} />
+                                {!(countryCode.length > 0 && countryCode.length <= 4) && showError && <ErrorSpan >Please provide country code</ErrorSpan>}
                             </CountryCodeContainer>
 
                             <InputContact>
                                 <InputComponent id="contactNo" width={370} value={contact} onChange={(e) => { if (e.target.value.length <= 10) setContact(e.target.value) }} name='contact' placeholder='123456789' type='number' />
                                 <UnderLine width={402} />
+                                {!(contact.length == 10 && validatePhoneNumber(contact)) && showError && <ErrorSpan >Please provide valid contact</ErrorSpan>}
                             </InputContact>
                         </InputContainerContact>
                     </InputFields>
                 </PhoneContainer>
-                <SubmitButtonContainer>
+                <SubmitButtonContainer onClick={() => { showErrorMessgae() }}>
                     {loading ? <LoadingDots /> :
 
-                        <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={!activeButton} />
+                        <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} />
                     }
                 </SubmitButtonContainer>
             </BoadyContainer>
