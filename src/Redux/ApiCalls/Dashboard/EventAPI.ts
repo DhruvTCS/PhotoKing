@@ -32,3 +32,18 @@ export const createEventAPI = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     });
+export const deleteEventAPI = createAsyncThunk(
+    'event/deleteEventAPI',
+    async (data: { id: number }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/user-event/?event_id=${data.id}`,
+
+            })
+            console.log(response.data);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });

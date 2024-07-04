@@ -9,7 +9,8 @@ import { getAllMembers } from '../../../Redux/ApiCalls/Dashboard/MembersAPI'
 import { getAllEventsAPI } from '../../../Redux/ApiCalls/Dashboard/EventAPI'
 import LoadingDots from '../../atoms/Utlis/LoadinDots'
 import { EventType } from '../../../Data/event.dto'
-import { clearCurrentEvent, setCurrentEvent } from '../../../Redux/Slice/Dashboard/EventSlice'
+import { clearCurrentEvent, clearError, setCurrentEvent } from '../../../Redux/Slice/Dashboard/EventSlice'
+import { showErrorToast } from '../../atoms/Utlis/Toast'
 
 const localizer = momentLocalizer(moment)
 interface EventData {
@@ -27,7 +28,7 @@ justify-content: center;
 const eventsData = [
 
     {
-        id: 3,
+        id: 2,
         title: 'Surat Marriage shoot',
         start: new Date('Mon Jul 15 2024 18:00:00 GMT +0530(India Standard Time)'),
         end: new Date('Mon Jul 15 2024 22:00:00 GMT +0530(India Standard Time)'),
@@ -59,12 +60,44 @@ const EventCalendar: React.FC = () => {
         start: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1),
         end: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3 + 3, 0),
     });
-
-
+    const { loading, Events, isError, isEventUpdate, error, success } = useAppSelector(
+        (state) => state.event,
+    )
+    const dispatch = useAppDispatch()
     useEffect(() => {
         console.log(currentQuarter);
         fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
     }, [currentQuarter]);
+
+    useEffect(() => {
+        // console.log(convertToDateTime("2024/07/15", "14:00:00"))
+        // console.log("+++++++++++++++++++++++++++++++++++++++")
+        if (members.length == 0 && !isMemberFetched) {
+            // dispatch(getAllMembers())
+        }
+
+        return () => { }
+    }, [members])
+    useEffect(() => {
+        if (isError) {
+            if (error && error.message) {
+                showErrorToast(error.message)
+            } else {
+                showErrorToast("Something went wrong! Please try again.")
+            }
+        }
+        else if (isEventUpdate) {
+            // dispatch(
+            //     getAllEventsAPI({
+            //         start_date: '2024-01-15',
+            //         end_date: '2024-12-15',
+            //     }),
+            // )
+        }
+        return () => {
+            dispatch(clearError())
+        }
+    }, [dispatch, isEventUpdate, isError])
 
     const fetchAndSetEvents = async (start: Date, end: Date) => {
         // const newEvents = await fetchEventsForQuarter(start, end);
@@ -80,29 +113,6 @@ const EventCalendar: React.FC = () => {
         }
         // setCurrentQuarter({ start, end });
     };
-    const { loading, Events, isError, isEventUpdate } = useAppSelector(
-        (state) => state.event,
-    )
-    const dispatch = useAppDispatch()
-    useEffect(() => {
-        // console.log(convertToDateTime("2024/07/15", "14:00:00"))
-        // console.log("+++++++++++++++++++++++++++++++++++++++")
-        if (members.length == 0 && !isMemberFetched) {
-            // dispatch(getAllMembers())
-        }
-
-        return () => { }
-    }, [members])
-    useEffect(() => {
-        if (isEventUpdate) {
-            // dispatch(
-            //     getAllEventsAPI({
-            //         start_date: '2024-01-15',
-            //         end_date: '2024-12-15',
-            //     }),
-            // )
-        }
-    }, [isEventUpdate])
 
     const handleSelectSlot = (slotInfo: SlotInfo) => {
         setSelectedSlot(slotInfo)
@@ -115,12 +125,12 @@ const EventCalendar: React.FC = () => {
         const eventObje: EventType = {
             id: data.id,
             location: data.location,
-            start: data.start,
-            end: data.end,
+            start: data.start.toString(),
+            end: data.end.toString(),
             members: data.members,
             title: data.title
         }
-
+        console.log(eventObje)
         dispatch(setCurrentEvent(eventObje));
         setModalOpen(true);
     }

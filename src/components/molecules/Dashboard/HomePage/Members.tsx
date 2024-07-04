@@ -36,7 +36,7 @@ const AddMemberButton = styled.button`
   height: 36px;
   margin-right: 52px;
   border: 1px;
-  border-radius: 10%;
+  border-radius: 12px;
   display: flex;
   flex-direction: row;
   cursor: pointer;
