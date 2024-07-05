@@ -1,7 +1,8 @@
 // public/firebase-messaging-sw.js
-importScripts('https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/5.9.4/firebase-messaging.js');
-
+importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
+importScripts(
+    "https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"
+);
 firebase.initializeApp({
     apiKey: "AIzaSyAJUQhRC6vk0U9OT0h98CiAAMBeClaU0sw",
     authDomain: "photo-app-44a28.firebaseapp.com",
@@ -11,44 +12,35 @@ firebase.initializeApp({
     appId: "1:652436510048:web:65a9933b11414e7dbc3a05",
     measurementId: "G-C6C03DX2DG"
 });
-
+//
 const messaging = firebase.messaging();
-
-messaging.setBackgroundMessageHandler(function (payload) {
-    console.log('[firebase-messaging-sw.js] Received background message ', payload);
-    const notificationTitle = payload.notification.title || 'Default Title';
+messaging.onBackgroundMessage(async (payload) => {
+    console.log('[firebase-messaging-sw.js] Received background message', payload);
+    const notificationTitle = payload.notification.title;
     const notificationOptions = {
-        body: payload.notification.body || 'Default body.',
-        icon: '/firebase-logo.png'
+        body: payload.notification.body,
+        icon: '/firebase-logo.png' // Customize as per your requirement
     };
+    const clients = await self.clients.matchAll({ includeUncontrolled: true });
+    self.registration.showNotification(notificationTitle, notificationOptions);
+    console.log('[firebase-messaging-sw.js] Clients:', clients);
 
-    // Send message to main thread to update Redux store
-    self.clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(windowClients => {
-        for (let client of windowClients) {
+    if (clients && clients.length > 0) {
+
+        clients.forEach(client => {
             client.postMessage({
-                type: 'BACKGROUND_NOTIFICATION',
-                payload: payload
+                msg: 'backgroundMessage',
+                data: payload
             });
-        }
-    });
+        });
 
-    return self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-self.addEventListener('notificationclick', function (event) {
-    console.log('[firebase-messaging-sw.js] Notification click Received.');
-    event.notification.close();
-
-    event.waitUntil(
-        clients.matchAll({ type: "window", includeUncontrolled: true }).then(clientList => {
-            for (let client of clientList) {
-                if (client.url === '/' && 'focus' in client) {
-                    return client.focus();
-                }
-            }
-            if (clients.openWindow) {
-                return clients.openWindow('/');
-            }
-        })
-    );
+    } else {
+        console.log('[firebase-messaging-sw.js] No clients available, showing notification');
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+            body: payload.notification.body,
+            icon: '/firebase-logo.png' // Customize as per your requirement
+        };
+        self.registration.showNotification(notificationTitle, notificationOptions);
+    }
 });

@@ -12,15 +12,10 @@ export interface ExtraState {
     success: boolean;
     fcm_token?: string;
     notifications: Notification[];
+    isNotificationUpdated: boolean;
+    totalNotifications: number;
 }
 
-// id": "19",
-//             "country_code": "+91",
-//             "phone_number": "8849827190",
-//             "profile_image": "https://res.cloudinary.com/dcuwbzynm/image/upload/v1718603255/gthlwzqyka7kcbsczocy.png",
-//             "name": "Pinkesh Patel",
-//             "job_type": "Camera Man",
-//             "user_id": null
 const initialState: ExtraState = {
     subscriptions: null,
     loading: false,
@@ -28,7 +23,8 @@ const initialState: ExtraState = {
     isError: false,
     success: false,
     notifications: [],
-
+    isNotificationUpdated: true,
+    totalNotifications: 0
 
 }
 
@@ -44,6 +40,10 @@ const extraSlice = createSlice({
         },
         setFCM(state, action: PayloadAction<string>) {
             state.fcm_token = action.payload;
+        },
+        updateNotification(state, action: PayloadAction<{ update: boolean, count: number }>) {
+            state.isNotificationUpdated = action.payload.update;
+            state.totalNotifications += action.payload.count;
         }
     },
     extraReducers: (builder) => {
@@ -52,7 +52,7 @@ const extraSlice = createSlice({
     },
 });
 
-export const { clearError, setFCM } = extraSlice.actions;
+export const { clearError, setFCM, updateNotification } = extraSlice.actions;
 
 
 export default extraSlice.reducer;

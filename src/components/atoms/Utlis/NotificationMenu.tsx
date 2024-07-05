@@ -44,19 +44,21 @@ font-size: 12px;
 font-weight: 500;
 line-height: 20px;
 margin-right:10px;
+cursor: pointer;
+text-decoration: underline;
 `;
 
 
 const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> = ({ isOpen, handleIsOpen }) => {
-    const notifications = useAppSelector((state) => state.extra.notifications);
+    const { notifications, isNotificationUpdated } = useAppSelector((state) => state.extra);
     const [seenIds, setSeenIds] = useState<number[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
+    const listRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
-    const handleSeenChange = useCallback((newSeenIds: number[], id: number) => {
-        // console.log('New seen IDs:', newSeenIds);
-        setSeenIds(newSeenIds);
-        // dispatch(seenNotification({ notification_id: id }));
-        console.log(id);
+    const handleSeenChange = useCallback((id: number) => {
+
+        dispatch(seenNotification({ notification_id: id }));
+
 
     }, []);
 
@@ -68,27 +70,42 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
                     setSeenIds(prev => {
                         const newSeen = [...prev, id];
 
-                        handleSeenChange(newSeen, id);
+
                         return newSeen;
                     });
+                    handleSeenChange(id);
                 }
             }
         });
     }, [seenIds, handleSeenChange]);
+    const handleMarskallNotificationAsRead = () => {
+        // const remainNot=[];
+        console.log("calledd")
+        console.log(notifications)
+        notifications.forEach(not => {
+            console.log(not)
+            if (!seenIds.includes(not.id)) {
+                console.log(not.id)
+                seenIds.push(not.id);
+                dispatch(seenNotification({ notification_id: not.id }));
+            }
+            handleIsOpen();
+        })
 
+    }
     useEffect(() => {
         // console.log('useEffect triggered');
-        if (!containerRef.current) {
+        if (!listRef.current) {
             console.error('Container ref is not set');
             return;
         }
 
         const observer = new IntersectionObserver(handleIntersection, {
-            root: containerRef.current,
+            root: listRef.current,
             threshold: 0.5,
         });
 
-        const elements = containerRef.current.querySelectorAll('.notification');
+        const elements = listRef.current.querySelectorAll('.notification');
         // console.log('Observing elements:', elements);
         elements.forEach(element => observer.observe(element));
 
@@ -101,7 +118,8 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
         (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 handleIsOpen();
-                dispatch(getAllNotificationAPI());
+                if (isNotificationUpdated)
+                    dispatch(getAllNotificationAPI());
                 console.log('done')
                 if (seenIds.length > 0) {
                     sendSeenNotifications(seenIds);
@@ -127,12 +145,12 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
     }
     return (
         (notifications && isOpen) ? (
-            <NotificationIconContainer>
+            <NotificationIconContainer ref={containerRef}>
                 <NotificationHeader>
                     <NotificationTitle>Notifications{`(${notifications.length})`}</NotificationTitle>
-                    <MarkAllNotification>Mark all as read</MarkAllNotification>
+                    <MarkAllNotification onClick={() => handleMarskallNotificationAsRead()}>Mark all as read</MarkAllNotification>
                 </NotificationHeader>
-                <NotificationMenuStyled ref={containerRef}>
+                <NotificationMenuStyled ref={listRef}>
                     {notifications.length === 0 ? (
                         <p>No notifications</p>
                     ) : (

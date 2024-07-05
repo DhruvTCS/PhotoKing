@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import NotificationIconPng from './../../../../assets/Icons/notificationIcon.png'
 import NotificationMenu from '../../../atoms/Utlis/NotificationMenu';
-import { useAppSelector } from '../../../../Redux/Hooks';
+import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
+import { Notification as NotificationType } from '../../../../Data/user.dto';
+import { getAllNotificationAPI } from '../../../../Redux/ApiCalls/Dashboard/NotificationAPI';
 
 
 const NotifcationContainer = styled.div`
@@ -34,11 +36,13 @@ margin:0px;
 `;
 
 const NotificationTextContainer = styled.div`
-width: 20px;
-height: 20px;
+width: 22px;
+height: 23px;
 background: #A720B9;
 border-radius:50%;
 text-align: center;
+display:flex;
+align-items: center;
 justify-content: center;
 position:absolute;
 top:2px;
@@ -47,8 +51,23 @@ right:-6px;
 `;
 
 const Notification: React.FC = () => {
-    const { notifications } = useAppSelector(state => state.extra)
+    const { notifications, totalNotifications, isNotificationUpdated } = useAppSelector(state => state.extra)
     const [isOpen, setIsOpen] = useState(false);
+    const [currentNotification, setCurrentNotification] = useState<NotificationType[]>([]);
+    const [totalNoti, setTotalNoti] = useState(0);
+    useEffect(() => {
+        if (notifications && notifications.length > 0)
+            setCurrentNotification(notifications);
+        setTotalNoti(totalNotifications)
+
+    }, [isNotificationUpdated, notifications, totalNotifications])
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        if (!isOpen && isNotificationUpdated) {
+            dispatch(getAllNotificationAPI());
+        }
+
+    }, [isOpen, dispatch, isNotificationUpdated])
     return (
         <NotifcationContainer >
             {isOpen ? <NotificationMenu isOpen={isOpen} handleIsOpen={() => setIsOpen(pre => !pre)} /> : null}
@@ -56,10 +75,13 @@ const Notification: React.FC = () => {
 
                 <NotificationIcon src={NotificationIconPng} />
             </NotificationIconContainer>
-            {notifications.length !== 0 && <NotificationTextContainer >
+            {(notifications.length !== 0 || isNotificationUpdated) &&
+                <NotificationTextContainer >
 
-                <NotificationText>2</NotificationText>
-            </NotificationTextContainer>}
+                    <NotificationText>{totalNotifications}</NotificationText>
+                    {/* <NotificationText>15</NotificationText> */}
+                </NotificationTextContainer>
+            }
         </NotifcationContainer>
     )
 }

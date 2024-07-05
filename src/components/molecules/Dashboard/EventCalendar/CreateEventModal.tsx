@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import UnderLine from '../../../atoms/Login/UnderLine';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
-import { useNavigate } from 'react-router-dom';
-
-import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
-import { createEventAPI, deleteEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
+import { deleteEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
 import LocationPickerModal from '../../../atoms/Dashboard/Events/SetLocationModal';
 import Errortext from '../../../atoms/Utlis/Errortext';
-import { clearCurrentEvent } from '../../../../Redux/Slice/Dashboard/EventSlice';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -144,7 +140,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const IsValidData = () => {
 
         // console.log(startDate, startTime);
-        if (eventName.length > 0 && eventName.length <= 25 && startDateTime.length !== 0 && endDateTime.length !== 0 && eventLocation.length !== 0) {
+        if (eventName.length > 0 && eventName.length <= 25 && startDateTime.length !== 0 && endDateTime.length !== 0) {
             setActiveButton(true);
         } else {
             setActiveButton(false);
@@ -152,13 +148,16 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     };
 
     const handleSubmit = () => {
-        if (new Date(startDateTime) > new Date(endDateTime)) showErrorToast("Please enter valid from and to date and time.")
+        if (new Date(startDateTime) > new Date(endDateTime)) showErrorToast("Please enter valid date and time.")
         if (!activeButton) {
             setShowError(true);
         }
         else {
-            const date = startDateTime.toString().slice(0, 10);
-            const time = startDateTime.toString().slice(11, 16);
+            const startDate = startDateTime.toString().slice(0, 10);
+            const endDate = endDateTime.toString().slice(0, 10);
+            const startTime = startDateTime.toString().slice(11, 16);
+            const endTime = endDateTime.toString().slice(11, 16);
+            console.log(startDate, endDate, startTime, endTime)
             // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             // dispatch(createEventAPI({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` }))
             onClose()
@@ -180,6 +179,10 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         onClose();
 
     }
+    const handleButtonClick = (buttonAction: () => void) => {
+        setAddMemberMenu(false);
+        buttonAction();
+    };
     if (!isOpen) return null;
 
     return (
@@ -193,7 +196,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 {deletePopup && <DeleteEventPopup Delete={() => handleDeleteEvent(currentEvent.id)} cancel={() => setDeletePopUp(false)} />}
                                 <ModalTitle> {`Event`}&nbsp;</ModalTitle>
                                 <DeleteEventConatiner onClick={() => setDeletePopUp(true)}>
-                                    {`(Delete Event `} <DeleteIcon src={DeleteIconPNG} /> {` )`}
+                                    {`(Delete Event `} <DeleteIcon src={DeleteIconPNG} /> {`)`}
                                 </DeleteEventConatiner></> : <ModalTitle>Add Event</ModalTitle>
 
 
@@ -263,7 +266,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                                     </MemberText>
 
                                                 </MemberData>
-                                                <DeleteIcon onClick={() => handleDeleteMember(parseInt(member.id))} src={DeleteIconPNG} />
+                                                <DeleteIcon onClick={(e) => handleButtonClick(() => handleDeleteMember(parseInt(member.id)))} src={DeleteIconPNG} />
                                             </SelectedMemberData>
                                         </SelectedMemberDataConatiner>))
                                     }
@@ -285,14 +288,17 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 </SelectedMembersList>
                             </SelectedMemberConatiner>
                             <SelectionMenuListConatiner >
-                                <AddMemberConatiner onClick={() => setAddMemberMenu(pre => !pre)}>
+                                <div onClick={() => setAddMemberMenu(pre => !pre)}>
 
-                                    <AddMemberLabel>Add Member</AddMemberLabel>
-                                    <SelectMemberLabel ref={selectionRef} defaultValue={"Add Member"}>
-                                        {/* <option value="Add Member" selected >Add Member</option> */}
-                                    </SelectMemberLabel>
-                                </AddMemberConatiner>
-                                <UnderLine width={100} isPercent={true} />
+                                    <AddMemberConatiner >
+
+                                        <AddMemberLabel>Add Member</AddMemberLabel>
+                                        <SelectMemberLabel ref={selectionRef} defaultValue={"Add Member"}>
+                                            {/* <option value="Add Member" selected >Add Member</option> */}
+                                        </SelectMemberLabel>
+                                    </AddMemberConatiner>
+                                    <UnderLine width={100} isPercent={true} />
+                                </div>
                                 <Errortext show={showError && (selectedMembers.length <= 0 && eventMembers.length <= 0)} message='Please add event member.' />
                                 <MemberMenuConatriner>
 
@@ -528,7 +534,6 @@ const MemberData = styled.div`
 display: flex;
 flex-direction: row;
 align-items: center;
-cursor: pointer;
 `;
 const MemberName = styled.p`
 font-family: Urbanist;
@@ -595,6 +600,7 @@ margin-top:10px;
 const DeleteIcon = styled.img`
 height:25px;
 width:25px;
+cursor:pointer;
 `;
 const DeleteEventConatiner = styled.div`
 display: flex;
