@@ -48,31 +48,31 @@ function App() {
   //   }
   // }
 
-  useEffect(() => {
-    // Req user for notification permission
-    onMessage(messaging, (payload) => {
-      console.log(payload);
-      store.dispatch(updateNotification({ update: true, count: 1 }));
-      // toast(<Message notification={payload.notification} />);
-    });
-    async function requestPermission() {
-      const permission = await Notification.requestPermission();
-      if (permission === "granted") {
-        // Generate Token
-        const token = await getToken(messaging, {
-          vapidKey:
-            "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
-        });
-        // console.log("Token Gen", token);
-        store.dispatch(setFCM(token));
-        // Send this token  to server ( db)
-      } else if (permission === "denied") {
-        alert("You denied for the notification");
-      }
-    }
-    // 
-    requestPermission();
-  }, []);
+  // useEffect(() => {
+  //   // Req user for notification permission
+  //   onMessage(messaging, (payload) => {
+  //     console.log(payload);
+  //     store.dispatch(updateNotification({ update: true, count: 1 }));
+  //     // toast(<Message notification={payload.notification} />);
+  //   });
+  //   async function requestPermission() {
+  //     const permission = await Notification.requestPermission();
+  //     if (permission === "granted") {
+  //       // Generate Token
+  //       const token = await getToken(messaging, {
+  //         vapidKey:
+  //           "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
+  //       });
+  //       // console.log("Token Gen", token);
+  //       store.dispatch(setFCM(token));
+  //       // Send this token  to server ( db)
+  //     } else if (permission === "denied") {
+  //       alert("You denied for the notification");
+  //     }
+  //   }
+  //   // 
+  //   requestPermission();
+  // }, []);
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       if (navigator.serviceWorker) {
