@@ -56,25 +56,27 @@ function App() {
   }, []);
   useEffect(() => {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((err) => {
-          console.error('Service Worker registration failed:', err);
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('Service Worker registration failed:', err);
+          });
+
+        // Listen for messages from the service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          console.log('Message received from service worker:', event);
+          if (event.data && event.data.msg === 'backgroundMessage') {
+            const payload = event.data.data;
+            store.dispatch(updateNotification({ update: true, count: 1 }));
+            console.log('Background message received in React app:', payload);
+
+            // Handle the payload as needed in your React app
+          }
         });
-
-      // Listen for messages from the service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        console.log('Message received from service worker:', event);
-        if (event.data && event.data.msg === 'backgroundMessage') {
-          const payload = event.data.data;
-          store.dispatch(updateNotification({ update: true, count: 1 }));
-          console.log('Background message received in React app:', payload);
-
-          // Handle the payload as needed in your React app
-        }
-      });
+      }
     }
 
   }, []);
