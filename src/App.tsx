@@ -22,68 +22,87 @@ import UpdateFolderPage from './components/molecules/Dashboard/SingleAlbumPage/U
 import { setFCM, updateNotification } from './Redux/Slice/Dashboard/ExtraSlice';
 import EditMemberPage from './components/molecules/Dashboard/Member/EditNewMember';
 import EventCalendar from './components/organisms/Dashboard/EventCalendar';
-import { messaging } from "./firebase";
+import { app, messaging } from "./firebase";
 import { getToken, onMessage } from "firebase/messaging";
 function App() {
 
   const navigate = useNavigate();
-  onMessage(messaging, (payload) => {
-    console.log(payload);
-    store.dispatch(updateNotification({ update: true, count: 1 }));
-    // toast(<Message notification={payload.notification} />);
-  });
+  // if (app)
+  //   console.log(app)
 
 
-  async function requestPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      // Generate Token
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
-      });
-      // console.log("Token Gen", token);
-      store.dispatch(setFCM(token));
-      // Send this token  to server ( db)
-    } else if (permission === "denied") {
-      alert("You denied for the notification");
-    }
-  }
+
+  // async function requestPermission() {
+  //   const permission = await Notification.requestPermission();
+  //   if (permission === "granted") {
+  //     // Generate Token
+  //     const token = await getToken(messaging, {
+  //       vapidKey:
+  //         "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
+  //     });
+  //     // console.log("Token Gen", token);
+  //     store.dispatch(setFCM(token));
+  //     // Send this token  to server ( db)
+  //   } else if (permission === "denied") {
+  //     alert("You denied for the notification");
+  //   }
+  // }
 
   useEffect(() => {
     // Req user for notification permission
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+      store.dispatch(updateNotification({ update: true, count: 1 }));
+      // toast(<Message notification={payload.notification} />);
+    });
+    async function requestPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        // Generate Token
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
+        });
+        // console.log("Token Gen", token);
+        store.dispatch(setFCM(token));
+        // Send this token  to server ( db)
+      } else if (permission === "denied") {
+        alert("You denied for the notification");
+      }
+    }
+    // 
     requestPermission();
   }, []);
-  // useEffect(() => {
-  //   if ('serviceWorker' in navigator) {
-  //     if (navigator.serviceWorker) {
-  //       navigator.serviceWorker.register('/firebase-messaging-sw.js')
-  //         .then((registration) => {
-  //           console.log('Service Worker registered with scope:', registration.scope);
-  //         })
-  //         .catch((err) => {
-  //           console.error('Service Worker registration failed:', err);
-  //         });
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+          .then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch((err) => {
+            console.error('Service Worker registration failed:', err);
+          });
 
-  //       // Listen for messages from the service worker
-  //       navigator.serviceWorker.addEventListener('message', (event) => {
-  //         console.log('Message received from service worker:', event);
-  //         if (event.data && event.data.msg === 'backgroundMessage') {
-  //           const payload = event.data.data;
-  //           store.dispatch(updateNotification({ update: true, count: 1 }));
-  //           console.log('Background message received in React app:', payload);
+        // Listen for messages from the service worker
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          console.log('Message received from service worker:', event);
+          if (event.data && event.data.msg === 'backgroundMessage') {
+            const payload = event.data.data;
+            store.dispatch(updateNotification({ update: true, count: 1 }));
+            console.log('Background message received in React app:', payload);
 
-  //           // Handle the payload as needed in your React app
-  //         }
-  //       });
-  //     }
-  //   }
+            // Handle the payload as needed in your React app
+          }
+        });
+      }
+    }
 
-  // }, []);
+  }, []);
 
 
   useEffect(() => {
-
+    // alert("called")
 
     if (!localStorage.getItem('access_token')) {
 
