@@ -4,7 +4,7 @@ import { Albums, Folder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import Checkbox from '../../Login/Checkbox';
 import SubmitButton from '../../Login/SubmitButton';
-import { lockAlbum, unlockAlbum } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
+import { lockAlbum as lockAlbumAPI, unlockAlbum } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
 import LoadingDots from '../../Utlis/LoadinDots';
 import ReasonModal from './ReasonModal';
 // import { lockAlbum } from './albumSlice'; // Adjust the path to your Redux action
@@ -39,19 +39,19 @@ font-family: Urbanist,sans-serif;
   padding: 20px;
   border-radius: 5px;
   width: 650px;
-  height:500px;
+  height:514px;
   max-width: 80%;
   position: relative;
 `;
 
 const CloseButton = styled.button`
-width:150px;
+width:200px;
 height:54px;
 border:none;
 border-radius: 16px 16px 16px 16px;
 font-family: Urbanist, sans-serif;
-font-size: 16px;
-font-weight: 700;
+font-size: 18px;
+font-weight: 600;
 line-height: 19.2px;
 text-align: center;
 color: black;
@@ -139,7 +139,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
     const [showReasonModal, setShowReasonModal] = useState(false);
     const [reason, setReason] = useState('');
     const [selectedReason, setSelectedReason] = useState(0);
-    const [lockFolder, setLockFolder] = useState(false);
+    const [lockAlbum, setLockAlbum] = useState(false);
     const [activeButton, setActiveButton] = useState(true);
     const [folders, setFolders] = useState<Folder[] | []>([]);
     const { folderLoading, albums, isError, error, isFolderChange } = useAppSelector(state => state.album);
@@ -153,6 +153,10 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
         }
     }, [])
+    useEffect(() => {
+        handleSubmitButtonStatus()
+    }, [lockAlbum, selectedFolders])
+
     useEffect(() => {
 
         if (isError) {
@@ -191,20 +195,26 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
     }, [albums])
 
     const handleFolderChange = (folder: number) => {
-        setSelectedFolders((prev) => {
-            prev = prev.includes(folder) ? prev.filter((f) => f !== folder) : [...prev, folder]
-            handleSubmitButtonStatus(prev.length);
+        if (!lockAlbum)
+            setSelectedFolders((prev) => {
+                prev = prev.includes(folder) ? prev.filter((f) => f !== folder) : [...prev, folder]
 
-            return prev
-        }
-        );
+
+                return prev
+            }
+            );
 
     };
-    const handleSubmitButtonStatus = (len: number) => {
-        if (len > 0) {
+    const handleSubmitButtonStatus = () => {
+        if (lockAlbum) {
             setActiveButton(false);
         } else {
-            setActiveButton(true);
+
+            if (selectedFolders.length > 0) {
+                setActiveButton(false);
+            } else {
+                setActiveButton(true);
+            }
         }
     }
     const handleReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -213,12 +223,12 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
     const handleReasonSubmit = () => {
         const finalReason = selectedReason === 4 ? reason : selectedReason;
-        if (lockFolder) {
+        if (lockAlbum) {
             if (selectedReason === 4) {
-                dispatch(lockAlbum({ project_id: album.id, custom_reason: reason }))
+                dispatch(lockAlbumAPI({ project_id: album.id, custom_reason: reason }))
             } else {
 
-                dispatch(lockAlbum({ project_id: album.id, reason: selectedReason }))
+                dispatch(lockAlbumAPI({ project_id: album.id, reason: selectedReason }))
             }
             showSuccessToast("Your Album has been locked");
 
@@ -262,11 +272,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
                                     </div>
                                     <SubmitButton onClick={() => unlockAlbumFunc(album.id)} width={140} height={30} text='Unlock' needArrow={false} active={false} />
                                 </LockAlbumIconContainer> : <>
-                                    <Checkbox id="lockAlbum" checked={lockFolder} onChange={() => setLockFolder(value => {
-                                        if (!value) setActiveButton(false);
-                                        else setActiveButton(true);
-                                        return !value;
-                                    })} />
+                                    <Checkbox id="lockAlbum" checked={lockAlbum} onChange={() => setLockAlbum(value => !value)} />
                                     <LockAlbumLabel htmlFor='lockAlbum'>Lock Entire Album</LockAlbumLabel>
                                 </>
                             }
@@ -285,7 +291,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
                                         <Checkbox
                                             id={`fodlerCheckbox${folder.id}`}
-                                            checked={lockFolder || selectedFolders.includes(folder.id)}
+                                            checked={lockAlbum || selectedFolders.includes(folder.id)}
                                             onChange={() => handleFolderChange(folder.id)}
                                         />
                                     }
@@ -311,7 +317,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
                                 : */}
 
 
-                        <SubmitButton onClick={() => setShowReasonModal(true)} width={150} text='Lock' needArrow={false} active={activeButton} />
+                        <SubmitButton onClick={() => setShowReasonModal(true)} width={200} text='Lock' needArrow={false} active={activeButton} />
                         <CloseButton onClick={() => setShowModal(false)} >Cancel</CloseButton>
                         {/* } */}
 
