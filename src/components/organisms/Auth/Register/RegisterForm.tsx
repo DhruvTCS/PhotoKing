@@ -50,7 +50,7 @@ height: 56px;
 position: absolute;
 top: 0px;
 left:224px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 32px;
 font-weight: 600;
 line-height: 56px;
@@ -63,7 +63,7 @@ height: 16px;
 position: absolute;
 top:53px;
 left:137px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 20px;
 font-weight: 500;
 line-height: 56px;
@@ -79,7 +79,7 @@ const EmailContainer = styled.div`
 display:flex;
 flex-direction: column;
 
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -92,7 +92,7 @@ const NameContainer = styled.div`
 display:flex;
 flex-direction: column;
 margin-bottom:20px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -104,7 +104,7 @@ const EmailLabel = styled.label`
 width: 54px;
 height: 20px;
 margin-bottom:15px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -123,7 +123,7 @@ const EmailInput = styled.input`
 border:none;
 width:100%;
 margin-left:10px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 32px;
@@ -131,7 +131,7 @@ text-align: left;
 color: #292929;
 
 &::placeholder{
-    font-family: "Urbanist", sans-serif;
+    font-family: Urbanist, sans-serif;
     font-size: 18px;
     font-weight: 600;
     line-height: 32px;
@@ -158,7 +158,7 @@ const Label = styled.label`
 width: 54px;
 height: 20px;
 margin-bottom:15px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -184,7 +184,7 @@ left:0;
 `
 
 const CountryCodeText = styled.div`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 
 line-height: 32px;
@@ -217,7 +217,7 @@ justify-content: center;
 const CheckBoxLabel = styled.label`
 width: 113px;
 height: 32px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 17px;
 font-weight: 600;
 line-height: 32px;

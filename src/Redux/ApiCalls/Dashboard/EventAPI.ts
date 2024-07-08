@@ -2,12 +2,12 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiCall from "../AuthorizedApi";
 export const getAllEventsAPI = createAsyncThunk(
     'event/getAllEventsAPI',
-    async (data: any, { rejectWithValue }) => {
+    async (data: { start_date: string, end_date: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: '/project/user-event/',
-                data: data
+                url: `/project/user-event/?start_date=${data.start_date}&end_date=${data.end_date}`,
+
             })
 
             console.log(response.data);
@@ -19,10 +19,25 @@ export const getAllEventsAPI = createAsyncThunk(
 
 export const createEventAPI = createAsyncThunk(
     'event/createEventAPI',
-    async (data: { title: string, time: string, date: string, location: string, members: string }, { rejectWithValue }) => {
+    async (data: { title: string, start_time: string, start_date: string, end_time: string, end_date: string, location: string, members: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'POST',
+                url: '/project/user-event/',
+                data: data
+            })
+            console.log(response.data);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+export const updateEventAPI = createAsyncThunk(
+    'event/updateEventAPI',
+    async (data: { event_id: number, title: string, start_time: string, start_date: string, end_time: string, end_date: string, location: string, member_ids: number[] }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'PUT',
                 url: '/project/user-event/',
                 data: data
             })

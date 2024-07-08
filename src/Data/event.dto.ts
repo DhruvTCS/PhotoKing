@@ -14,10 +14,10 @@ export interface BackendEvent {
 
     id: number,
     title: string,
-    startDate: string,
-    startTime: string,
-    endDate: string,
-    endTime: string,
+    start_date: string,
+    start_time: string,
+    end_date: string,
+    end_time: string,
     location: string,
     members: {
         id: number,

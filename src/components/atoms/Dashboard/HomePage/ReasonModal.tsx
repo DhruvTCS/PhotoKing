@@ -27,7 +27,7 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background-color: white;
 color: black;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 
   padding: 20px;
   border-radius: 5px;
@@ -42,7 +42,7 @@ width:150px;
 height:54px;
 border:none;
 border-radius: 16px 16px 16px 16px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 16px;
 font-weight: 500;
 line-height: 19.2px;
@@ -66,7 +66,7 @@ margin-top:25px;
 const ReasonHeading = styled.div`
 width: 100%;
 height: 34px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 28px;
 font-weight: 600;
 line-height: 34px;
@@ -91,7 +91,7 @@ margin-bottom:5px;
 `
 
 const ReasonLabel = styled.label`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 18px;
 width:100%;
 font-weight: 500;

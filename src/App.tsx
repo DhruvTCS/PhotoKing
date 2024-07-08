@@ -27,11 +27,6 @@ import { getToken, onMessage } from "firebase/messaging";
 function App() {
 
   const navigate = useNavigate();
-  // if (app)
-  //   console.log(app)
-
-
-
   // async function requestPermission() {
   //   const permission = await Notification.requestPermission();
   //   if (permission === "granted") {

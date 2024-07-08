@@ -1,8 +1,9 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
 import { EventState } from '../../Slice/Dashboard/EventSlice';
-import { createEventAPI, deleteEventAPI, getAllEventsAPI } from '../../ApiCalls/Dashboard/EventAPI';
+import { createEventAPI, deleteEventAPI, getAllEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
 import { BackendEvent, EventType } from '../../../Data/event.dto';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 
 const convertToDateTime = (date: string, time: string): string => {
     const [hours, minutes, seconds] = time.split(':').map(Number)
@@ -30,8 +31,8 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
                     title: event.title,
                     location: event.location,
                     members: event.members,
-                    start: convertToDateTime(event.startDate, event.startTime),
-                    end: convertToDateTime(event.endDate, event.endTime),
+                    start: convertToDateTime(event.start_date, event.start_time),
+                    end: convertToDateTime(event.end_date, event.end_time),
 
                 })
             })
@@ -54,6 +55,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.isError = false;
             state.success = true;
             state.isEventUpdate = true;
+            showSuccessToast("Event Created Success")
             // state.Events = action.payload;
         }).addCase(createEventAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
@@ -61,7 +63,27 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
 
             console.log(action.payload);
             state.error = action.payload;
-        }).addCase(deleteEventAPI.pending, (state) => {
+        }).addCase(updateEventAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+            state.success = false;
+            state.error = {};
+        })
+        .addCase(updateEventAPI.fulfilled, (state, action: PayloadAction<EventType[]>) => {
+            state.loading = false;
+            state.isError = false;
+            state.success = true;
+            state.isEventUpdate = true;
+            showSuccessToast("Event Updated Success")
+            // state.Events = action.payload;
+        }).addCase(updateEventAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(deleteEventAPI.pending, (state) => {
             state.loading = true;
             state.isError = false;
             state.success = false;

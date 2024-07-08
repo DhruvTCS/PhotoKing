@@ -22,6 +22,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
     // Attach the access token to the request
     const headers = {
         'Authorization': `Bearer ${accessToken}`,
+        // 'ngrok-skip-browser-warning': true,
         ...options.headers,
     };
 
@@ -34,6 +35,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
         });
         return response.data;
     } catch (error: any) {
+        console.log(error)
         console.log("error above sending refresh token api");
         console.log(error.response);
         if ((error.response.status === 401) && refreshToken) {

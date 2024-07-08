@@ -48,7 +48,7 @@ height: 56px;
 position: absolute;
 top: 37px;
 left:238px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 32px;
 font-weight: 600;
 line-height: 56px;
@@ -61,7 +61,7 @@ height: 56px;
 position: absolute;
 top:84px;
 left:129px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 20px;
 font-weight: 500;
 line-height: 56px;
@@ -73,7 +73,7 @@ top:205px;
 left:52px;
 `
 const Label = styled.label`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -102,7 +102,7 @@ left:0;
 `
 
 const CountryCodeText = styled.div`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 
 line-height: 32px;
@@ -138,7 +138,7 @@ justify-content: center;
 const CheckBoxLabel = styled.label`
 width: 113px;
 height: 32px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 17px;
 font-weight: 600;
 line-height: 32px;

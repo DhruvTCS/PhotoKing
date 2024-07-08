@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import UnderLine from '../../../atoms/Login/UnderLine';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import SubmitButton from '../../../atoms/Login/SubmitButton';
-import { deleteEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
+import { createEventAPI, deleteEventAPI, updateEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
@@ -72,6 +72,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             setEndDateTime(formatedEnd);
             setEventName(currentEvent.title);
             setEventLocation(currentEvent.location);
+            setDeletePopUp(false)
         }
         else if (selectedSlot) {
             const start = new Date(selectedSlot.start);
@@ -93,6 +94,8 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             setEndDateTime('');
             setSelectedMembers([])
             setDeleteMember([]);
+            setIsUpdate(false);
+            setShowError(false);
             setEventMembers([]);
         }
     }, [selectedSlot, currentEvent]);
@@ -159,7 +162,10 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             const endTime = endDateTime.toString().slice(11, 16);
             console.log(startDate, endDate, startTime, endTime)
             // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
-            // dispatch(createEventAPI({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` }))
+            if (isUpdate && currentEvent)
+                dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
+            else
+                dispatch(createEventAPI({ start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, members: `[${selectedMembers}]` }))
             onClose()
         }
 
@@ -214,19 +220,19 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                         <UnderLine width={100} isPercent={true} />
                         <Errortext show={showError && eventName.length <= 0} message='Please provide event name.' />
                     </InputNameConatiner>
-                    <InputNameConatiner style={{ "cursor": "pointer" }} onClick={() => setLocationModal(true)}>
+                    <InputNameConatiner style={{ "cursor": "pointer" }}>
                         <ModalLabel>Location:</ModalLabel>
                         <ModalInput style={{ "cursor": "pointer" }}
                             type="text"
                             value={eventLocation}
                             onChange={(e) => setEventLocation(e.target.value)}
                             placeholder="Enter event's location"
-                            readOnly={true}
+                        // readOnly={true}
                         />
                         <UnderLine width={100} isPercent={true} />
                         <Errortext show={showError && eventLocation.length <= 0} message='Please provide event location.' />
                     </InputNameConatiner>
-                    {locationModal && <LocationPickerModal isOpen={locationModal} onClose={() => setLocationModal(false)} onSelect={(str) => console.log(str)} />}
+                    {false && <LocationPickerModal isOpen={locationModal} onClose={() => setLocationModal(false)} onSelect={(str) => console.log(str)} />}
                     <ModalDateConatiner>
                         <DateLable>Select Date & Time</DateLable>
                         <DateRangeConatiner>
@@ -329,7 +335,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                     {/* Add more members as needed */}
                     <SubmitConatiner>
 
-                        <SubmitButton text={isUpdate ? 'Update' : 'Create'} width={270} needArrow={false} onClick={handleSubmit} />
+                        <SubmitButton text={currentEvent ? 'Update' : 'Create'} width={270} needArrow={false} onClick={handleSubmit} />
                     </SubmitConatiner>
                 </ModalContent>
             </ModalOverlay>

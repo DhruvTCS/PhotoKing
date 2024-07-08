@@ -38,7 +38,7 @@ const BottomtextContainer = styled.div`
 margin:25px;
 `
 const StyledLink = styled.a`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 23px;
 font-weight: 600;
 line-height: 25px;

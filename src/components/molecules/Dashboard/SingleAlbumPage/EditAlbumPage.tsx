@@ -118,7 +118,7 @@ width: 21px;
 const ButtonText = styled.div`
 width: 29px;
 height: 17px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 14px;
 font-weight: 600;
 line-height: 16.8px;

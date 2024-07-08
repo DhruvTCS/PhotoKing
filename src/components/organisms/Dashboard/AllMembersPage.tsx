@@ -13,7 +13,7 @@ width: 100%;
 height: 100%;
 `;
 const MembersHeading = styled.p`
-font-family: "Urbanist";
+font-family: Urbanist;
 font-size: 19px;
 font-weight: 600;
 line-height: 22.8px;

@@ -33,7 +33,7 @@ cursor: pointer;
 const BackButtonText = styled.p`
 width: 140px;
 height: 23px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 19px;
 font-weight: 600;
 line-height: 22.8px;

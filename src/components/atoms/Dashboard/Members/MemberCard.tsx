@@ -42,7 +42,7 @@ margin-top:20px;
 
 `;
 const MemberName = styled.p`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 21.6px;
@@ -50,7 +50,7 @@ line-height: 21.6px;
 margin:0;
 `;
 const MemberRole = styled.p`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 400;
 line-height: 18px;

@@ -41,7 +41,7 @@ cursor: pointer;
 
 const BackButtonText = styled.p`
 height: 23px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 19px;
 font-weight: 600;
 line-height: 22.8px;
@@ -162,7 +162,7 @@ const InputFields = styled.div`
 text-align: left;
 `
 const Label = styled.label`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 15px;
 font-weight: 500;
 line-height: 20px;
@@ -186,7 +186,7 @@ const PhoneImage = styled.img`
 `
 
 const CountryCodeText = styled.div`
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 
 line-height: 32px;

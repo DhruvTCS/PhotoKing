@@ -42,7 +42,7 @@ const SearchBar: React.FC = () => {
   const dispatch = useAppDispatch();
   useEffect(() => {
     const searchTimeout = setTimeout(async () => {
-      if (inputData.length >= 4)
+      if (inputData.length >= 2)
         await SearchData(inputData, true, true);
       if (inputData.length == 0)
         dispatch(getAllAlbums(1))

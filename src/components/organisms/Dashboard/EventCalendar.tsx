@@ -55,6 +55,7 @@ const CalenderConatiner = styled.div`
 const EventCalendar: React.FC = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedSlot, setSelectedSlot] = useState<SlotInfo | null>(null)
+    const [currentEvents, setCurrentEvents] = useState<any[]>([]);
     const { members, isMemberFetched } = useAppSelector((state) => state.member)
     const [currentQuarter, setCurrentQuarter] = useState({
         start: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1),
@@ -65,8 +66,15 @@ const EventCalendar: React.FC = () => {
     )
     const dispatch = useAppDispatch()
     useEffect(() => {
+        // const timeout = setTimeout(() => {
+
         console.log(currentQuarter);
         fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
+        // }, 500)
+
+        return () => {
+            // clearTimeout(timeout);
+        }
     }, [currentQuarter]);
 
     useEffect(() => {
@@ -87,22 +95,65 @@ const EventCalendar: React.FC = () => {
             }
         }
         else if (isEventUpdate) {
-            // dispatch(
-            //     getAllEventsAPI({
-            //         start_date: '2024-01-15',
-            //         end_date: '2024-12-15',
-            //     }),
-            // )
+            let startyear = currentQuarter.start.getFullYear();
+            let startmonth = (currentQuarter.start.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+            let startday = currentQuarter.start.getDate().toString().padStart(2, '0');
+
+            // Format the date into 'yyyy-mm-dd'
+            let startDate = `${startyear}-${startmonth}-${startday}`;
+
+            let endYear = currentQuarter.end.getFullYear();
+            let endMonth = (currentQuarter.end.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+            let endDay = currentQuarter.end.getDate().toString().padStart(2, '0');
+
+            // Format the date into 'yyyy-mm-dd'
+            let endDate = `${endYear}-${endMonth}-${endDay}`;
+
+            console.log(currentEvents);
+            dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
         }
         return () => {
             dispatch(clearError())
         }
     }, [dispatch, isEventUpdate, isError])
+    useEffect(() => {
+        if (Events && Events.length > 0) {
+            let newEvents = Events.map(event => {
+                let newEvent = {
+                    title: event.title,
+                    members: event.members,
+                    location: event.location,
+                    start: new Date(event.start),
+                    end: new Date(event.end),
+                    id: event.id
+                }
+                return newEvent
+
+            })
+            setCurrentEvents(newEvents);
+        }
+    }, [Events])
 
     const fetchAndSetEvents = async (start: Date, end: Date) => {
         // const newEvents = await fetchEventsForQuarter(start, end);
         // setEvents(newEvents);
-        console.log(start, end);
+        let startyear = start.getFullYear();
+        let startmonth = (start.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        let startday = start.getDate().toString().padStart(2, '0');
+
+        // Format the date into 'yyyy-mm-dd'
+        let startDate = `${startyear}-${startmonth}-${startday}`;
+
+        let endYear = end.getFullYear();
+        let endMonth = (end.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        let endDay = end.getDate().toString().padStart(2, '0');
+
+        // Format the date into 'yyyy-mm-dd'
+        let endDate = `${endYear}-${endMonth}-${endDay}`;
+
+        console.log(currentEvents);
+        dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
+        // console.log(start.getDate(), end.getDate("yyyy-MM-dd"));
     };
 
     const handleNavigate = (date: Date, view: string, action: string) => {
@@ -147,13 +198,11 @@ const EventCalendar: React.FC = () => {
         handleCloseModal()
     }
 
-    return loading ? (
-        <LoaderContainer> <LoadingDots /></LoaderContainer>
-    ) : (
+    return (
         <CalenderConatiner>
             <Calendar
                 localizer={localizer}
-                events={eventsData}
+                events={currentEvents}
                 views={{ month: true, week: true, day: true }}
                 onSelectSlot={handleSelectSlot}
                 selectable={true}

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const InputStyle = styled.input<InputStyleProps>`
 border:none;
 width:${props => props.width}px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 32px;
@@ -19,7 +19,7 @@ color: #292929;
 
 background-color: transparent;
 &::placeholder{
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 32px;
@@ -35,22 +35,22 @@ opacity:50%;
 `
 
 interface InputProps {
-    value: string;
-    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    placeholder: string;
-    type: string;
-    name: string;
-    width: number;
-    id: string;
+  value: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  type: string;
+  name: string;
+  width: number;
+  id: string;
 
 }
 interface InputStyleProps {
-    width: number;
+  width: number;
 }
 const InputComponent: React.FC<InputProps> = ({ name, value, onChange, placeholder, type, width, id }) => {
-    return (
-        <InputStyle id={id} width={width} name={name} onChange={onChange} placeholder={placeholder} type={type} value={value} />
-    )
+  return (
+    <InputStyle id={id} width={width} name={name} onChange={onChange} placeholder={placeholder} type={type} value={value} />
+  )
 }
 
 export default InputComponent

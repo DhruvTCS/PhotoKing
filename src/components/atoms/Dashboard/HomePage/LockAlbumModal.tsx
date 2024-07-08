@@ -34,7 +34,7 @@ const ModalOverlay = styled.div`
 const ModalContent = styled.div`
   background-color: white;
 color: black;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 
   padding: 20px;
   border-radius: 5px;
@@ -49,9 +49,9 @@ width:150px;
 height:54px;
 border:none;
 border-radius: 16px 16px 16px 16px;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 16px;
-font-weight: 500;
+font-weight: 700;
 line-height: 19.2px;
 text-align: center;
 color: black;
@@ -95,7 +95,7 @@ align-items:center;
 
 `
 const LockAlbumLabel = styled.label`
-font-family: "Urbanist",san-serif;
+font-family:Urbanist;
 font-size: 13px;
 font-weight: 500;
 line-height: 34px;
@@ -103,7 +103,7 @@ text-align: left;
 margin-left: 5px;
 `
 const FolderListLable = styled.label`
-font-family: " Urbanist" ,san-serif;
+font-family: Urbanist ,san-serif;
 font-size: 23px;
 font-weight: 500;
 line-height: 34px;

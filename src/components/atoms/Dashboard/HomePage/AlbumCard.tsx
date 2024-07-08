@@ -11,6 +11,7 @@ import { Albums } from '../../../../Data/album.dto'
 import { useAppDispatch } from '../../../../Redux/Hooks'
 import { setCurrentAlbum } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
 import { useNavigate } from 'react-router-dom'
+import HideAlbumPopup from './HideAlbumPopup'
 interface CardProps {
   album: Albums
 }
@@ -117,7 +118,7 @@ const ItemName = styled.p`
   margin-left: 14px;
   width: 140px;
 height: 23px;
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist;
 font-size: 14px;
 font-weight: 500;
 line-height: 23px;
@@ -157,6 +158,7 @@ width: 15px;
 const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isHideAlbumPopUp, setIsHideAlbumPopUp] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -190,6 +192,10 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [menuOpen, showModal])
+
+  const handleHideAlbum = (id: number) => {
+    console.log("hide", id);
+  }
   return (
     // album.image ? album.image :
     <AlbumCardContainer backgroundImage={album.image} onClick={() => {
@@ -235,7 +241,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
           </MenuItem>
           <Hr />
 
-          <MenuItem>
+          <MenuItem onClick={() => setIsHideAlbumPopUp(pre => !pre)}>
             <ItemIcon src={HideIcon} />
             <ItemName>Hide Album</ItemName>
           </MenuItem>
@@ -245,6 +251,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
             <ItemIcon src={WatermarkIcon} />
             <ItemName>Add Watermark</ItemName>
           </MenuItem>
+          {isHideAlbumPopUp && <HideAlbumPopup cancel={() => setIsHideAlbumPopUp(false)} Hide={() => handleHideAlbum(album.id)} />}
           {showModal && (
             <LockAlbumModal
               album={album}

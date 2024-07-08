@@ -33,7 +33,7 @@ margin-left:14px;
 cursor:pointer;
 `;
 const ProfileName = styled.p`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 21.6px;
@@ -42,7 +42,7 @@ margin:0px;
 margin-bottom:3px;
 `;
 const ProfileRole = styled.p`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 15px;
 font-weight: 400;
 line-height: 18px;

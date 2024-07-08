@@ -379,7 +379,7 @@ const CancelButton = styled.button`
 width: 200px;
     border: none;
     border-radius: 16px 16px 16px 16px;
-    font-family: "Urbanist", sans-serif;
+    font-family: Urbanist, sans-serif;
     font-size: 22px;
     font-weight: 600;
     line-height: 19.2px;

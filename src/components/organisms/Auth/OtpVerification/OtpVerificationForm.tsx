@@ -45,7 +45,7 @@ const FormHeading = styled.p`
   position: absolute;
   top: 37px;
   left: 158px;
-  font-family: "Urbanist", sans-serif;
+  font-family: Urbanist, sans-serif;
   font-size: 30px;
   font-weight: 600;
   line-height: 56px;
@@ -58,7 +58,7 @@ const SubHeadingText = styled.p`
   position: absolute;
   top: 92px;
   left: 89px;
-  font-family: "Urbanist", sans-serif;
+  font-family: Urbanist, sans-serif;
   font-size: 20px;
   font-weight: 500;
   line-height: 25px;
@@ -70,7 +70,7 @@ const InputFields = styled.div`
   left: 52px;
 `;
 const Label = styled.label`
-  font-family: "Urbanist", sans-serif;
+  font-family: Urbanist, sans-serif;
   font-size: 15px;
   font-weight: 500;
   line-height: 20px;
@@ -121,7 +121,7 @@ const ResendOtpContainer = styled.div`
 const ResesndOtpText = styled.p<otpTextProps>`
   width: 100px;
   height: 32px;
-  font-family: "Urbanist", sans-serif;
+  font-family: Urbanist, sans-serif;
   font-size: 17px;
   font-weight: 600;
   line-height: 32px;
@@ -134,7 +134,7 @@ const ResesndOtpText = styled.p<otpTextProps>`
 const Timer = styled.p`
   width: 43px;
   height: 32px;
-  font-family: "Urbanist", sans-serif;
+  font-family: Urbanist, sans-serif;
   font-size: 17px;
   font-weight: 600;
   line-height: 32px;

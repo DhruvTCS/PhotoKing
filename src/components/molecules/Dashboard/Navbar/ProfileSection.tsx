@@ -19,7 +19,7 @@ border-radius:50%;
 `;
 const ProfileName = styled.p`
 color: #171717;
-font-family: "Urbanist", sans-serif;
+font-family: Urbanist, sans-serif;
 font-size: 20px;
 font-weight: 600;
 line-height: 24px;

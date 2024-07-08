@@ -122,7 +122,7 @@ justify-content:center;
 margin-left:14px;
 `;
 const ProfileName = styled.p`
-font-family: "Urbanist",sans-serif;
+font-family: Urbanist,sans-serif;
 font-size: 18px;
 font-weight: 600;
 line-height: 21.6px;

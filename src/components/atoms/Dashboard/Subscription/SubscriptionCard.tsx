@@ -69,7 +69,7 @@ margin-top:${props => props.isActivated ? '30px;' : '20px;'}
 `;
 
 const CardStorage = styled.p`
-font-family: "Urbanist";
+font-family: Urbanist;
 font-size: 36px;
 font-weight: 700;
 line-height: 46px;
@@ -78,7 +78,7 @@ margin:0px;
 `;
 
 const CardPrice = styled.p`
-font-family: "Urbanist";
+font-family: Urbanist;
 font-size: 17px;
 font-weight: 600;
 line-height: 20.4px;
@@ -88,7 +88,7 @@ margin:0px;
 `;
 
 const PlanType = styled.p`
-font-family: "Urbanist";
+font-family: Urbanist;
 font-size: 28px;
 font-style: italic;
 font-weight: 600;
