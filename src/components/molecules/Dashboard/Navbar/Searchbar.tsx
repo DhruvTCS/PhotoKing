@@ -4,6 +4,7 @@ import { FaSearch } from 'react-icons/fa'; // Install react-icons if not already
 import { useAppDispatch } from '../../../../Redux/Hooks';
 import { SearchData } from '../../../../Redux/ApiCalls/Dashboard/SearchAPI';
 import { getAllAlbums } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';
+import { getAllMembers } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 
 // Styled Components
 const SearchBarContainer = styled.div`
@@ -44,8 +45,10 @@ const SearchBar: React.FC = () => {
     const searchTimeout = setTimeout(async () => {
       if (inputData.length >= 2)
         await SearchData(inputData, true, true);
-      if (inputData.length == 0)
+      if (inputData.length == 0) {
         dispatch(getAllAlbums(1))
+        dispatch(getAllMembers());
+      }
     }, 1000)
 
     return () => {

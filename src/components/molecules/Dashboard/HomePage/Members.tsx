@@ -138,11 +138,12 @@ border-radius:50%;
 `;
 
 const Members: React.FC = () => {
-  const { members } = useAppSelector((state) => state.member)
+  const { members, isMemberFetched } = useAppSelector((state) => state.member)
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
   useEffect(() => {
-    dispatch(getAllMembers())
+    if (!isMemberFetched)
+      dispatch(getAllMembers())
   }, [dispatch])
   return (
     <MembersContainer>

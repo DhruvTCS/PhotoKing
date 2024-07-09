@@ -87,11 +87,11 @@ const AllMembersPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { members, loading, isError, success, error } = useAppSelector(state => state.member);
+  const { members, loading, isError, success, error, isMemberFetched } = useAppSelector(state => state.member);
   const [allMembers, setAllMembers] = useState<Member[] | []>([])
   useEffect(() => {
-
-    dispatch(getAllMembers());
+    if (!isMemberFetched)
+      dispatch(getAllMembers());
     return () => {
 
     }
