@@ -75,53 +75,42 @@ color: #5B463E;
 
 `
 const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean) => void }> = ({ setMenuOpen, menuOpen }) => {
-    const menuRef = useRef<HTMLDivElement>(null);
-    const navigate = useNavigate()
+  const menuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate()
 
-    const handleClickOutside = (event: MouseEvent) => {
-        if (
-            menuRef.current &&
-            !menuRef.current.contains(event.target as Node)
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node)
 
-        ) {
-            setMenuOpen(false);
-        }
-    };
-    useEffect(() => {
-        if (menuOpen) {
-            document.addEventListener('mousedown', handleClickOutside)
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [menuOpen])
+    ) {
+      setMenuOpen(false);
+    }
+  };
+  useEffect(() => {
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuOpen])
 
-    return (
-        <DropdownMenu menuOpen={menuOpen} ref={menuRef}>
+  return (
+    <DropdownMenu menuOpen={menuOpen} ref={menuRef}>
 
 
-            <MenuItem onClick={() => navigate('/dashboard/user/changePhoneNumber')}>
-                <ItemIcon src={PhonePNG} />
-                <ItemName>Change Phone Number</ItemName>
-            </MenuItem>
-            <Hr />
+      <MenuItem onClick={() => navigate('/dashboard/user/changePhoneNumber')}>
+        <ItemIcon src={PhonePNG} />
+        <ItemName>Change Phone Number</ItemName>
+      </MenuItem>
+      <Hr />
 
-            <MenuItem onClick={() => console.log()}>
-                <ItemIcon src={PhonePNG} />
-                <ItemName>Contact Us</ItemName>
-            </MenuItem>
-            <Hr />
+    </DropdownMenu>
 
-            <MenuItem>
-                <ItemIcon src={PhonePNG} />
-                <ItemName>Add Watermark</ItemName>
-            </MenuItem>
-
-        </DropdownMenu>
-
-    )
+  )
 }
 
 export default ProfileMenu
