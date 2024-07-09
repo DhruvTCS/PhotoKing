@@ -21,7 +21,7 @@ export interface Folder {
     resason: string | null;
     add_watermark: boolean;
     is_locked: boolean;
-    is_hide?: boolean;
+    is_hide: boolean;
     total_images: number;
     custom_reason?: string;
     images: {

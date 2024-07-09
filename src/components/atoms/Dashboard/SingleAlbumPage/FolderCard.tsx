@@ -5,7 +5,14 @@ import TestImageIcon from '../../../../assets/images/Extra/folderIconImage.png'
 import { useAppDispatch } from '../../../../Redux/Hooks';
 import { setCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 import { useNavigate } from 'react-router-dom';
-import HideIcon from '../../../../assets/Icons/DropDownMenu/hide.png'
+import HideIconPNG from '../../../../assets/Icons/DropDownMenu/hide.png'
+import DeletePopup from '../Folder/DeletePopup';
+import DeleteIconPNG from "../../../../assets/Icons/SingleAlbum/delete.png"
+import HideFolderPopup from '../Folder/HidePopup';
+
+import HideAlbumPNG from '../../../../assets/Icons/DropDownMenu/hideAlbumBig.png'
+
+import { deleteFolderAPI, hideFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 interface FolderCardProps {
     folder?: Folder,
     newFolder?: NewFolder,
@@ -118,6 +125,7 @@ display:flex;
 align-items: center;
 justify-content: space-between;
 position:relative;
+width: 100%;
 `;
 const MenuItem = styled.div`
   padding: 2px 16px;
@@ -133,8 +141,13 @@ const MenuItem = styled.div`
 `
 
 const ItemIcon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+`
+
+const HideIcon = styled.img`
+  width: 15px;
+  height: 15px;
 `
 
 const ItemName = styled.p`
@@ -143,8 +156,8 @@ const ItemName = styled.p`
   width: 140px;
 height: 23px;
 font-family: Urbanist;
-font-size: 14px;
-font-weight: 500;
+font-size: 16px;
+font-weight: 600;
 line-height: 23px;
 text-align: left;
 
@@ -161,19 +174,41 @@ const DropdownMenu = styled.div`
   top: 63px;
   right: 16px;
   background: white;
-  width: 173px;
-  height: 121px;
-  z-index: 4;
+  width: 183px;
+  height: 116px;
+  z-index: 5;
   border-radius: 10px;
   box-shadow: 0px 8px 222px 0px #00000026;
 
 `
+const HideFolderIcon = styled.img`
+height:20px;
+width:20px;
+// margin-left:10px;
+`;
+const HideConatinerIcon = styled.div`
+height:30px;
+width:30px;
+border-radius:50%;
+background: #AC22BB26;
+display:flex;
+align-items: center;
+justify-content: center;
+`;
+const FolderHeaderContainer = styled.div`
+display:flex;
+align-items: center;
+
+`;
 const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isNew }) => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [isDeletePopup, setIsDeletePopup] = useState(false);
+    const [isHidePopup, setIsHidePopup] = useState(false);
+
     const handleClickOutside = (event: MouseEvent) => {
         if (
             menuRef.current &&
@@ -184,37 +219,61 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
             setMenuOpen(false);
         }
     };
+
     const openMenu = (e: React.MouseEvent) => {
         e.stopPropagation();
-        setMenuOpen(pre => !pre);
-    }
+        setMenuOpen((prev) => !prev);
+    };
+
     useEffect(() => {
         if (menuOpen) {
-            document.addEventListener('mousedown', handleClickOutside)
+            document.addEventListener('mousedown', handleClickOutside);
         } else {
-            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('mousedown', handleClickOutside);
         }
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [menuOpen]);
+
+    const handleDeleteFolder = (id: number) => {
+        //  delete folder logic
+        dispatch(deleteFolderAPI({ folder_id: id }))
+    };
+
+    const handleCardClick = (e: React.MouseEvent) => {
+        if (!menuOpen && folder) {
+            dispatch(setCurrentFolder(folder));
+            navigate(`/dashboard/albums/folder/${folder.id}`);
         }
-    }, [menuOpen])
+    };
+    const handleHideFolder = (projectId: number, id: number, is_hide: boolean) => {
+        if (is_hide)
+            dispatch(hideFolderAPI({ project_id: projectId, folder_id: id, lock_type: "unhide" }));
+        else
+            dispatch(hideFolderAPI({ project_id: projectId, folder_id: id, lock_type: "hide" }));
+
+        setIsHidePopup(false);
+
+    }
     return (
         <div>
             {folder ?
-                <CardContainer onClick={() => {
-                    dispatch(setCurrentFolder(folder));
-                    navigate(`/dashboard/albums/folder/${folder.id}`)
-
-                }}>
+                <CardContainer onClick={handleCardClick}>
 
 
 
                     {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
                     <FolderHeader>
+                        {isDeletePopup && <DeletePopup text=" Are you sure you want to delete folder? " cancel={() => setIsDeletePopup(false)} Delete={() => handleDeleteFolder(folder.id)} />}
+                        {isHidePopup && <HideFolderPopup Hide={() => handleHideFolder(folder.project_id, folder.id, folder.is_hide)} cancel={() => setIsHidePopup(false)} is_hide={!folder.is_hide} />}
+                        <FolderHeaderContainer>
 
-                        <FolderName >
-                            {folder.name}
-                        </FolderName>
+                            <FolderName >
+                                {folder.name}
+                            </FolderName>
+                            {folder.is_hide ? <HideConatinerIcon><HideFolderIcon src={HideAlbumPNG} /></HideConatinerIcon> : null}
+                        </FolderHeaderContainer>
                         <MenuButton ref={buttonRef} onClick={openMenu}>
                             <Dot>.</Dot>
                             <Dot>.</Dot>
@@ -222,16 +281,19 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
                         </MenuButton>
                         {menuOpen &&
                             <DropdownMenu ref={menuRef} onClick={(e) => e.stopPropagation()}>
-                                <MenuItem>
-                                    <ItemIcon src={HideIcon} />
-                                    <ItemName>Delete</ItemName>
+                                <MenuItem onClick={(e: React.MouseEvent) => { e.stopPropagation(); setIsDeletePopup(true) }}>
+                                    <ItemIcon src={DeleteIconPNG} />
+                                    <ItemName>Delete Folder</ItemName>
                                 </MenuItem>
                                 <Hr />
+                                {folder.is_hide ? <MenuItem onClick={() => setIsHidePopup(true)}>
+                                    <HideIcon src={HideIconPNG} />
+                                    <ItemName>Unhide Folder</ItemName>
+                                </MenuItem> : <MenuItem onClick={() => setIsHidePopup(true)}>
+                                    <HideIcon src={HideIconPNG} />
+                                    <ItemName>Hide Folder</ItemName>
+                                </MenuItem>}
 
-                                <MenuItem onClick={() => console.log("Hide Folder")}>
-                                    <ItemIcon src={HideIcon} />
-                                    <ItemName>Hide</ItemName>
-                                </MenuItem>
                                 <Hr />
 
 

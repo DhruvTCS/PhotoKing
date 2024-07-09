@@ -4,6 +4,7 @@ import { SubscriptionReducer } from '../../Reducers/Dashboard/SubscriptionReduce
 import { SubscriptionType } from '../../../Data/subscription.dto';
 import { Notification } from '../../../Data/user.dto';
 import { NotificationReducer } from '../../Reducers/Dashboard/NotificationReducer';
+import { ChnageNumberReducer } from '../../Reducers/Dashboard/ChangePhoneNumberReducer';
 export interface ExtraState {
     loading: boolean;
     subscriptions: SubscriptionType[] | null;
@@ -14,6 +15,8 @@ export interface ExtraState {
     notifications: Notification[];
     isNotificationUpdated: boolean;
     totalNotifications: number;
+    changePhonenumberOrderId?: string;
+    isPhoneNumberChange?: boolean;
 }
 
 const initialState: ExtraState = {
@@ -44,15 +47,20 @@ const extraSlice = createSlice({
         updateNotification(state, action: PayloadAction<{ update: boolean, count: number }>) {
             state.isNotificationUpdated = action.payload.update;
             state.totalNotifications += action.payload.count;
+        },
+        removeOrderId(state) {
+            delete state.changePhonenumberOrderId;
+            state.isPhoneNumberChange = false;
         }
     },
     extraReducers: (builder) => {
         SubscriptionReducer(builder)
         NotificationReducer(builder)
+        ChnageNumberReducer(builder)
     },
 });
 
-export const { clearError, setFCM, updateNotification } = extraSlice.actions;
+export const { clearError, setFCM, updateNotification, removeOrderId } = extraSlice.actions;
 
 
 export default extraSlice.reducer;

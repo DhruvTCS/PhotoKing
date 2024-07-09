@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import DeleteIconPNG from '../../../../assets/Icons/SingleAlbum/delete.png'
+import HideAlbumPNG from '../../../../assets/Icons/DropDownMenu/hideAlbumBig.png'
 
 interface PopupProps {
-    Delete: () => void;
+    Hide: () => void;
     cancel: () => void;
-    text: string
+    is_hide: boolean;
 }
 
 const Container = styled.div`
@@ -31,8 +31,8 @@ justify-content: center;
 border-radius:32px;
 `;
 const IconContainer = styled.div`
-width: 69px;
-height: 69px;
+width: 90px;
+height: 90px;
 display: flex;
 align-items: center;
 justify-content: center;
@@ -53,7 +53,7 @@ font-size: 21px;
 font-weight: 500;
 line-height: 34px;
 text-align: center;
-
+color: black;
 `;
 const ButtonConatiner = styled.div`
 display: flex;
@@ -62,7 +62,7 @@ justify-content: center;
 margin-top:20px;
 `;
 const CancleButton = styled.button`
-width:120px;
+width:118px;
 height:60px;
 background: #EFEFEF;
 border-radius:16px;
@@ -77,7 +77,7 @@ color:black;
 cursor:pointer;
 `;
 const DeleteButton = styled.button`
-width:120px;
+width:118px;
 height:60px;
 background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
 border:none;
@@ -94,23 +94,24 @@ margin-left:10px;
 
 cursor:pointer;
 `;
-const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel, text }) => {
+const HideFolderPopup: React.FC<PopupProps> = ({ Hide, cancel, is_hide }) => {
     return (
         <Container>
             <Popup>
                 <IconContainer>
-                    <Icon src={DeleteIconPNG} />
+                    <Icon src={HideAlbumPNG} />
                 </IconContainer>
                 <PopUpText>
-                    {text}
+                    Are you sure you want to
+                    hide this folder?
                 </PopUpText>
                 <ButtonConatiner>
                     <CancleButton onClick={(e) => { e.stopPropagation(); cancel() }}>Cancel</CancleButton>
-                    <DeleteButton onClick={(e) => { e.stopPropagation(); Delete() }}>Delete</DeleteButton>
+                    <DeleteButton onClick={(e) => { e.stopPropagation(); Hide() }}>{is_hide ? 'Hide' : 'Unhide'}</DeleteButton>
                 </ButtonConatiner>
             </Popup>
         </Container>
     )
 }
 
-export default DeletePopup
+export default HideFolderPopup

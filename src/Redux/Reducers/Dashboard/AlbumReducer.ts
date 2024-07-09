@@ -3,6 +3,7 @@ import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
 import { createAlbumAPI, getAllAlbums, updateAlbumAPI } from '../../ApiCalls/Dashboard/AlbumAPI';
 import { Folder } from '../../../Data/album.dto';
 import { getFoldersForAlbum } from '../../ApiCalls/Dashboard/FolderApi';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(getAllAlbums.pending, (state) => {
@@ -44,6 +45,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         })
         .addCase(updateAlbumAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
+            showSuccessToast("Album updated successfully.")
             state.isUpdate = true;
 
         })
@@ -79,7 +81,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
                 }
             }
             state.folderLoading = false;
-
+            state.isFolderChange = false;
 
 
         })

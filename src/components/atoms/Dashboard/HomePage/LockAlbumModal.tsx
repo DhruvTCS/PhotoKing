@@ -76,9 +76,13 @@ const Title = styled.h2`
 const FolderList = styled.ul`
   list-style-type: none;
   padding: 0;
-  widht:100%;
-  height:300px;
+  width:100%;
+//   padding-right: 30px;
+  height:293px;
+  overflow-x: hidden;
+  overflow-y: auto;
   text-align: left;
+  position: relative;
 `;
 
 const FolderItem = styled.li`
@@ -126,7 +130,7 @@ width: 100%;
 `
 const UnlockFolderButtonContainer = styled.div`
 position: absolute;
-right:10px;
+right:40px;
 
 `;
 
@@ -174,7 +178,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
         }
     }, [isError])
     useEffect(() => {
-        if (isFolderChange) {
+        if (isFolderChange && album) {
             dispatch(getFoldersForAlbum(album.id));
         }
         return () => {
@@ -241,7 +245,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
                 // dispatch(lockFolderAPI({ project_id: album.id, reason: selectedReason }))
             }
-            showSuccessToast("Folder has been lo0cked.")
+            showSuccessToast("Folder has been locked.")
         }
         // dispatch(lockAlbum({ albumName, selectedFolders, reason: finalReason }));
 
@@ -299,7 +303,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
                                         {folder.name}
                                     </FolderListLable>
                                     {folder.is_locked ? <UnlockFolderButtonContainer>
-                                        <SubmitButton onClick={() => unlockFolder(folder.id)} width={120} height={30} text='Unlock Folder' needArrow={false} active={false} />
+                                        <SubmitButton onClick={() => unlockFolder(folder.id)} width={140} height={30} text='Unlock Folder' needArrow={false} active={false} />
                                     </UnlockFolderButtonContainer> : null}
                                 </FolderItem>
                                 <UnderLine width={657} />

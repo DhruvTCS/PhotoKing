@@ -41,15 +41,16 @@ interface InputProps {
   type: string;
   name: string;
   width: number;
+  readOnly?: boolean;
   id: string;
 
 }
 interface InputStyleProps {
   width: number;
 }
-const InputComponent: React.FC<InputProps> = ({ name, value, onChange, placeholder, type, width, id }) => {
+const InputComponent: React.FC<InputProps> = ({ name, value, onChange, placeholder, type, width, id, readOnly }) => {
   return (
-    <InputStyle id={id} width={width} name={name} onChange={onChange} placeholder={placeholder} type={type} value={value} />
+    <InputStyle id={id} width={width} name={name} onChange={onChange} placeholder={placeholder} type={type} value={value} readOnly={readOnly} />
   )
 }
 

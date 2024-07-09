@@ -170,10 +170,15 @@ margin-left:46px;
 `;
 const FolderList = styled.div`
 display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 50px;
+grid-template-columns: repeat(auto-fit, minmax(385px,30%));
+gap: 20px 50px;
+padding:10px 0px 10px 0px;
 width: 100%;
-height: 100%;
+height: 363px;
+overflow-y: auto;
+overflow-x: hidden;
+
+
 `;
 const NoFolderTextContainer = styled.div`
 height:100%;
@@ -234,7 +239,7 @@ const EditAlbumPage: React.FC = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isUpdate) {
-            showSuccessToast("Album Edited.");
+            // showSuccessToast("Album Edited.");
             navigate('/dashboard/');
         }
 
@@ -329,17 +334,7 @@ const EditAlbumPage: React.FC = () => {
             setActiveButton(true);
         }
     }
-    const sendImageToCloudinary = async () => {
-        if (slectedImage) {
-            // console.log(slectedImage);
-            const result = uploadToCloudinary1(slectedImage).then((data) => {
-                album.image = data;
-            }).catch(err => console.log(err));
-            console.log(result);
-            return result;
-        }
-        return 'false';
-    }
+
     const isValidDate = (dateString: string): boolean => {
         // Check the format with a regular expression
         const regex = /^(\d{4})\-(\d{2})\-(\d{2})$/;
@@ -399,6 +394,7 @@ const EditAlbumPage: React.FC = () => {
             return null;
         });
     }
+
 
     return (
         <AlbumPageContainer>

@@ -142,3 +142,34 @@ export const deleteFolderImagesAPI = createAsyncThunk(
         }
     });
 
+export const deleteFolderAPI = createAsyncThunk(
+    'album/deleteFolderAPI',
+    async (data: { folder_id: number }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/user/upload-image/?folder_id=${data.folder_id}`,
+                data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+export const hideFolderAPI = createAsyncThunk(
+    'album/hideFolderAPI',
+    async (data: { project_id: number, folder_id: number, lock_type: string }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'POST',
+                url: `/project/user/lock-folder/`,
+                data
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+

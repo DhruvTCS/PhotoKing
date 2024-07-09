@@ -92,8 +92,13 @@ const authSlice = createSlice({
         }>) {
             state.isRegister = true;
             state.temp_user = action.payload;
-        }
+        },
+        setUserPhoneNumber(state, action: PayloadAction<{ number: string }>) {
+            if (state.user)
+                state.user.phone_number = action.payload.number;
+        },
     },
+
     extraReducers: (builder) => {
         LoginReducer(builder);
         OTPVerificationReducer(builder);
@@ -102,7 +107,7 @@ const authSlice = createSlice({
     },
 });
 
-export const { setContactNumber, clearError, setToken, clearToken, setRemeberMe, setIsRegister } = authSlice.actions;
+export const { setContactNumber, clearError, setToken, clearToken, setRemeberMe, setIsRegister, setUserPhoneNumber } = authSlice.actions;
 
 
 export default authSlice.reducer;

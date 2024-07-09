@@ -34,6 +34,7 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
             state.apiStatus = action.payload.success;
             state.access_token = action.payload.data.access_token;
             state.refresh_token = action.payload.data.refresh_token;
+
             if (state.remeberMe) {
 
                 localStorage.setItem("access_token", action.payload.data.access_token);

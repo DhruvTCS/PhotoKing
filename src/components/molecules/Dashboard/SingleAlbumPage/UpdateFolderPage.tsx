@@ -14,6 +14,7 @@ import SelectedIconPNG from '../../../../assets/Icons/tick.png'
 import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup';
 import { deleteFolderImagesAPI, getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import DiscardPopUp from '../../../atoms/Dashboard/Folder/DiscardSelectedImagesPopup';
+import { removeCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 const PageConatiner = styled.div`
 margin-left: 30px;
 `;
@@ -287,6 +288,7 @@ const UpdateFolderPage = () => {
       setFolderImages(currentFolder.images);
       setSelectedFolderImages([])
     }
+
   }, [currentFolder]);
   useEffect(() => {
     if (isError && error && error.message) {
@@ -482,7 +484,7 @@ const UpdateFolderPage = () => {
       {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
         <PageBoady>
           <Conatiner1>
-            {deletModal && <DeletePopup cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} />}
+            {deletModal && <DeletePopup cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} text={'Are you sure you want to remove from favorites?'} />}
             <InputNameConatiner >
               <InputFolderLabel>Folder</InputFolderLabel>
 

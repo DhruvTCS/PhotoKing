@@ -24,6 +24,7 @@ import EditMemberPage from './components/molecules/Dashboard/Member/EditNewMembe
 import EventCalendar from './components/organisms/Dashboard/EventCalendar';
 import { app, messaging } from "./firebase";
 import { getToken, onMessage } from "firebase/messaging";
+import ChangePhoneNumber from './components/organisms/Dashboard/ChangePhoneNumber';
 function App() {
 
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ function App() {
             <Route path="subscriptions" element={<SubscriptionPage />} />
             <Route path="albums/share/:code" element={<ShareCodePage />} />
             <Route path="event" element={<EventCalendar />} />
+            <Route path="user/changePhoneNumber" element={<ChangePhoneNumber />} />
 
           </Route>
         </Routes>

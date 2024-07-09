@@ -355,7 +355,12 @@ const CreateNewAlbumPage: React.FC = () => {
                 return updatedFolders
             } else {
                 // Add new folder
-                return [...prevFolders, folder]
+                if (prevFolders.length == 5) {
+                    showErrorToast("You can create 5 folders at once.")
+                    return prevFolders;
+                }
+                else
+                    return [...prevFolders, folder]
             }
         })
         showSuccessToast('Folder added successfully.')

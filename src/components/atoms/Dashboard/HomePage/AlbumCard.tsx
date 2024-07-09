@@ -34,9 +34,13 @@ const AlbumCardContainer = styled.div<{ backgroundImage: string }>`
 
 const CardContent = styled.div`
   z-index: 2;
-  position: absolute;
-  bottom: 20px;
-  left: 162px;
+ width: 100%;
+    height: 100%;
+    padding-bottom: 25px;
+    justify-content: end;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 `
 
 const CardName = styled.h3`

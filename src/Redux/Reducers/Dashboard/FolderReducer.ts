@@ -1,7 +1,8 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { createFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
+import { createFolderAPI, deleteFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, hideFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
 import { Folder } from '../../../Data/album.dto';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockMultipleFoldersAPI.pending, (state) => {
@@ -113,6 +114,58 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
         })
         .addCase(deleteFolderImagesAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.folderLoading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(deleteFolderAPI.pending, (state) => {
+            state.folderLoading = true;
+
+
+        })
+        .addCase(deleteFolderAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
+            state.isFolderChange = true;
+            state.folderLoading = false;
+            showSuccessToast("Folder Deleted.");
+            if (state.currentAlbum)
+                state.currentAlbum.folders = []
+
+
+            // state.currentFolder=action.payload.folder_data;
+            // state.currentFolder?.total_images=action.payload.total_images;
+
+
+
+        })
+        .addCase(deleteFolderAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.folderLoading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(hideFolderAPI.pending, (state) => {
+            state.folderLoading = true;
+
+
+        })
+        .addCase(hideFolderAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
+            state.isFolderChange = true;
+            state.folderLoading = false;
+            showSuccessToast("Folder's status updated successfully.");
+            if (state.currentAlbum)
+                state.currentAlbum.folders = []
+
+
+            // state.currentFolder=action.payload.folder_data;
+            // state.currentFolder?.total_images=action.payload.total_images;
+
+
+
+        })
+        .addCase(hideFolderAPI.rejected, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
             state.isError = true;
 
