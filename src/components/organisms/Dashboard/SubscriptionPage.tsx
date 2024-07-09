@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks';
 import { subscriptionsPlansAPI } from '../../../Redux/ApiCalls/Dashboard/SubscriptionAPI';
 import { SubscriptionType } from '../../../Data/subscription.dto';
+import LoadingDots from '../../atoms/Utlis/LoadinDots';
 
 const PageContainer = styled.div`
 display:flex;
@@ -44,7 +45,15 @@ background: #FFFFFF80;
 margin-top:90px;
 border-radius:20px;
 display: flex;
+
 `
+const LoadingContainer = styled.div`
+height:100%;
+width: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+`;
 const SubscriptionPage: React.FC = () => {
     const dispatch = useAppDispatch();
     const { subscriptions, loading } = useAppSelector(state => state.extra);
@@ -78,7 +87,10 @@ const SubscriptionPage: React.FC = () => {
                     </SubHeading>
                 </HeadingContainer>
                 <PlanContainer>
-                    {(!loading && subscriptions) ? subscriptions?.map((subscription) => <SubscriptionCard card={subscription} isActivated={activeCard === subscription.id} onClick1={setActiveCard} />) : null}
+                    {loading ? <LoadingContainer><LoadingDots /></LoadingContainer> :
+                        (!loading && subscriptions) ? subscriptions?.map((subscription) => <SubscriptionCard card={subscription} isActivated={activeCard === subscription.id} onClick1={setActiveCard} />) : null
+
+                    }
 
                 </PlanContainer>
             </Container>
