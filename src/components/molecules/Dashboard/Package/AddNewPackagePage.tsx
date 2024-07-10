@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import BackButtonIconPng from '../../../../assets/Icons/SingleAlbum/back.png'
 import { useNavigate } from 'react-router-dom';
 import UnderLine from '../../../atoms/Login/UnderLine';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 const AddNewPackagePage: React.FC = () => {
   const [packageName, setPackageName] = useState('');
   const [price, setPrice] = useState('');
@@ -15,6 +17,9 @@ const AddNewPackagePage: React.FC = () => {
       setPrice(value);
     }
   }
+  useEffect(() => {
+    console.log(description)
+  }, [description])
   const navigate = useNavigate();
   return (
     <MainContainer>
@@ -39,6 +44,28 @@ const AddNewPackagePage: React.FC = () => {
               <UnderLine width={100} isPercent={true} />
             </InputContainer>
           </FormUpperContainer>
+          <FormLowerContainer>
+            <InputContainerDescription>
+              <InputLabel>Package Description</InputLabel>
+              <DescriptionTab>
+
+                <StyledDescriptionContainer
+                  value={description}
+                  onChange={setDescription}
+                  modules={{
+                    toolbar: [
+                      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                      [{ size: [] }],
+                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                      ['link'],
+                      ['clean']
+                    ]
+                  }}
+                />
+              </DescriptionTab>
+            </InputContainerDescription>
+          </FormLowerContainer>
         </Form>
       </MainForm>
     </MainContainer>
@@ -124,6 +151,13 @@ flex-direction: column;
 align-items: baseline;
 
 `;
+const InputContainerDescription = styled.div`
+display: flex;
+width:50%;
+flex-direction: column;
+align-items: baseline;
+
+`;
 const InputLabel = styled.label``;
 const Input = styled.input`
 width:100%;
@@ -141,4 +175,16 @@ color: #292929;
 outline: none;
 }
 `;
-const FormLowerContainer = styled.div``;
+const FormLowerContainer = styled.div`
+width:100%;
+padding-top:40px;
+`;
+const DescriptionTab = styled.div`
+margin-top:10px;
+`
+const StyledDescriptionContainer = styled(ReactQuill)`
+
+  .ql-container {
+    height: 250px; /* Adjust based on toolbar height and desired editor height */
+  }
+`
