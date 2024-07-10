@@ -63,7 +63,7 @@ font-size: 18px;
 font-weight: 600;
 line-height: 32px;
 text-align: left;
-color: balck;
+color: black;
 opacity:50%;
 }
 

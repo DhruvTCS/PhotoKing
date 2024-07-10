@@ -67,12 +67,3 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
         })
 
 };
-
-// 
-// "id": "18",
-// "country_code": "+91",
-// "phone_number": "8849827290",
-// "profile_image": "https://res.cloudinary.com/dcuwbzynm/image/upload/v1718603255/gthlwzqyka7kcbsczocy.png",
-// "name": "Pinkesh Patel",
-// "job_type": "Camera Man",
-// "user_id": null

@@ -33,7 +33,7 @@ const AlbumCardContainer = styled.div<{ backgroundImage: string }>`
 `
 
 const CardContent = styled.div`
-  z-index: 2;
+
  width: 100%;
     height: 100%;
     padding-bottom: 25px;
@@ -172,6 +172,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
     setMenuOpen(menuOpen => !menuOpen)
   }
   const openMenu = (e: React.MouseEvent) => {
+    console.log("called");
     e.stopPropagation();
     toggleMenu();
   }
@@ -215,7 +216,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
         <AlbumLockButton>
           <LockIconImg src={LockIcon}></LockIconImg>
         </AlbumLockButton> : null}
-      <MenuButton ref={buttonRef} onClick={openMenu}>
+      <MenuButton ref={buttonRef} onClick={(e) => { openMenu(e) }}>
         <Dot>.</Dot>
         <Dot>.</Dot>
         <Dot>.</Dot>
@@ -231,17 +232,21 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
 
           <MenuItem onClick={(e) => {
             e.stopPropagation();
-            navigate(`/dashboard/albums/share/${album.project_code}`);
             dispatch(setCurrentAlbum(album))
+            navigate(`/dashboard/albums/share/${album.project_code}`);
           }}>
-            <ItemIcon src={ShareAlbumIcon} />
+            <ItemIcon src={GenerateEventIcon} />
             <ItemName>Share Album Code</ItemName>
           </MenuItem>
           <Hr />
 
-          <MenuItem>
-            <ItemIcon src={GenerateEventIcon} />
-            <ItemName>Generate Event Code</ItemName>
+          <MenuItem onClick={(e) => {
+            e.stopPropagation();
+            dispatch(setCurrentAlbum(album))
+            navigate(`/dashboard/albums/redeemUsers/${album.id}`);
+          }} >
+            <ItemIcon src={ShareAlbumIcon} />
+            <ItemName>Redeem Code Users</ItemName>
           </MenuItem>
           <Hr />
 

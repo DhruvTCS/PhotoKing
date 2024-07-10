@@ -265,7 +265,7 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
 
                     {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
                     <FolderHeader>
-                        {isDeletePopup && <DeletePopup text=" Are you sure you want to delete folder? " cancel={() => setIsDeletePopup(false)} Delete={() => handleDeleteFolder(folder.id)} />}
+                        {isDeletePopup && <DeletePopup buttonText='Delete' text=" Are you sure you want to delete folder? " cancel={() => setIsDeletePopup(false)} Delete={() => handleDeleteFolder(folder.id)} />}
                         {isHidePopup && <HideFolderPopup Hide={() => handleHideFolder(folder.project_id, folder.id, folder.is_hide)} cancel={() => setIsHidePopup(false)} is_hide={!folder.is_hide} />}
                         <FolderHeaderContainer>
 

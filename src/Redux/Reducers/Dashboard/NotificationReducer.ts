@@ -14,11 +14,14 @@ export const NotificationReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isNotificationUpdated = false;
             state.notifications = [];
+            state.allNotiifications = action.payload;
             state.isError = false;
+
             action.payload.forEach(notification => {
                 if (!notification.is_seen) {
                     state.notifications.push(notification);
                 }
+
             });
             state.totalNotifications = state.notifications.length;
         })
@@ -36,7 +39,7 @@ export const NotificationReducer = (builder: ActionReducerMapBuilder<ExtraState>
         .addCase(seenNotification.fulfilled, (state, action: PayloadAction<Notification[]>) => {
             state.loading = false;
             state.isError = false;
-            state.isNotificationUpdated = true;
+            state.isNotificationUpdated = false;
             // state.notifications = action.payload;
         })
         .addCase(seenNotification.rejected, (state, action: PayloadAction<any>) => {

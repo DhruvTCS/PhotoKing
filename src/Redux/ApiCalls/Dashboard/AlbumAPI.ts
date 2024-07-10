@@ -99,3 +99,36 @@ export const updateAlbumAPI = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     });
+
+export const getAllRedeemUserAPI = createAsyncThunk(
+    'album/getAllRedeemUserAPI',
+    async (data: { album_id: number }, { rejectWithValue }) => {
+        try {
+
+            const response = await apiCall({
+                method: 'GET',
+                url: `/project/redeem-user-list/?album_id=${data.album_id}`,
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });
+
+
+export const removeRedeemUserAPI = createAsyncThunk(
+    'album/removeRedeemUserAPI',
+    async (data: { album_id: number, user_id: number }, { rejectWithValue }) => {
+        try {
+
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/redeem-user-list/?album_id=${data.album_id}&user_id=${data.user_id}`,
+            })
+            console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });

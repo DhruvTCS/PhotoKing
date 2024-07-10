@@ -484,7 +484,7 @@ const UpdateFolderPage = () => {
       {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
         <PageBoady>
           <Conatiner1>
-            {deletModal && <DeletePopup cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} text={'Are you sure you want to remove from favorites?'} />}
+            {deletModal && <DeletePopup buttonText='Delete' cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} text={'Are you sure you want to remove from favorites?'} />}
             <InputNameConatiner >
               <InputFolderLabel>Folder</InputFolderLabel>
 

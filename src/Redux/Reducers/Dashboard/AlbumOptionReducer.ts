@@ -1,6 +1,7 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { lockAlbum, unlockAlbum } from '../../ApiCalls/Dashboard/AlbumAPI';
+import { getAllRedeemUserAPI, lockAlbum, removeRedeemUserAPI, unlockAlbum } from '../../ApiCalls/Dashboard/AlbumAPI';
+import { User } from '../../../Data/user.dto';
 export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockAlbum.pending, (state) => {
@@ -31,6 +32,36 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
             state.loading = false;
             state.isError = true;
             state.isUpdate = false
+            console.log(action.payload);
+            state.error = action.payload;
+        }).addCase(getAllRedeemUserAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+        })
+        .addCase(getAllRedeemUserAPI.fulfilled, (state, action: PayloadAction<User[]>) => {
+            state.loading = false;
+            state.redeemUsers = action.payload;
+            state.isRedeemUserUpdates = false;
+
+        })
+        .addCase(getAllRedeemUserAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+            console.log(action.payload);
+            state.error = action.payload;
+        }).addCase(removeRedeemUserAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+        })
+        .addCase(removeRedeemUserAPI.fulfilled, (state, action: PayloadAction<User[]>) => {
+            state.loading = false;
+            state.isRedeemUserUpdates = true;;
+            // state.redeemUsers = action.payload;
+
+        })
+        .addCase(removeRedeemUserAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
             console.log(action.payload);
             state.error = action.payload;
         })

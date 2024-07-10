@@ -6,10 +6,8 @@ import Album from '../assets/Icons/Sidebar/album.png'
 import AlbumWhite from '../assets/Icons/Sidebar/album_white.png'
 import Member from '../assets/Icons/Sidebar/members.png'
 import MemberWhite from '../assets/Icons/Sidebar/members_white.png'
-import Mobile from '../assets/Icons/Sidebar/changepassword.png'
-import MobileWhite from '../assets/Icons/Sidebar/changepassword_white.png'
-import AboutUs from '../assets/Icons/Sidebar/aboutus.png'
-import AboutUsWhite from '../assets/Icons/Sidebar/aboutus_white.png'
+import PackagePNG from '../assets/Icons/Sidebar/package.png'
+import PackageWhite from '../assets/Icons/Sidebar/package-white.png'
 import ContactUs from '../assets/Icons/Sidebar/contactus.png'
 import ContactUsWhite from '../assets/Icons/Sidebar/contactus_white.png'
 import Privacy from '../assets/Icons/Sidebar/privacypolicy.png'
@@ -51,10 +49,10 @@ export const sidebarOptions = [
         redirection: "/dashboard/event"
     },
     {
-        key: "Contact Us",
-        icon: ContactUs,
-        whiteIcon: ContactUsWhite,
-        redirection: "/dashboard/contactus"
+        key: "My Packages",
+        icon: PackagePNG,
+        whiteIcon: PackageWhite,
+        redirection: "/dashboard/packages/all"
     },
     {
         key: "Privacy Policy",

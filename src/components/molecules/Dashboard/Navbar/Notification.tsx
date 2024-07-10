@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import NotificationIconPng from './../../../../assets/Icons/notificationIcon.png'
-import NotificationMenu from '../../../atoms/Utlis/NotificationMenu';
+import NotificationMenu from '../../../atoms/Dashboard/Navbar/NotificationMenu';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { Notification as NotificationType } from '../../../../Data/user.dto';
 import { getAllNotificationAPI } from '../../../../Redux/ApiCalls/Dashboard/NotificationAPI';
@@ -63,11 +63,12 @@ const Notification: React.FC = () => {
     }, [isNotificationUpdated, notifications, totalNotifications])
     const dispatch = useAppDispatch();
     useEffect(() => {
-        if (!isOpen && isNotificationUpdated) {
+        if (isNotificationUpdated) {
+            console.log("called in this", isNotificationUpdated);
             dispatch(getAllNotificationAPI());
         }
 
-    }, [isOpen, dispatch, isNotificationUpdated])
+    }, [dispatch, isNotificationUpdated])
     return (
         <NotifcationContainer >
             {isOpen ? <NotificationMenu isOpen={isOpen} handleIsOpen={() => setIsOpen(pre => !pre)} /> : null}

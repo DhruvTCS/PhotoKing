@@ -25,6 +25,10 @@ import EventCalendar from './components/organisms/Dashboard/EventCalendar';
 import { app, messaging } from "./firebase";
 import { getToken, onMessage } from "firebase/messaging";
 import ChangePhoneNumber from './components/organisms/Dashboard/ChangePhoneNumber';
+import AllNotificationPage from './components/organisms/Dashboard/AllNotificationPage';
+import RedeemUser from './components/atoms/Dashboard/HomePage/RedeemUser';
+import AllPackagesPage from './components/organisms/Dashboard/AllPackagesPage';
+import AddNewPackagePage from './components/molecules/Dashboard/Package/AddNewPackagePage';
 function App() {
 
   const navigate = useNavigate();
@@ -43,32 +47,32 @@ function App() {
   //     alert("You denied for the notification");
   //   }
   // }
+  onMessage(messaging, (payload) => {
+    console.log(payload);
+    store.dispatch(updateNotification({ update: true, count: 1 }));
+    // toast(<Message notification={payload.notification} />);
+  });
+  useEffect(() => {
+    // Req user for notification permission
 
-  // useEffect(() => {
-  //   // Req user for notification permission
-  //   onMessage(messaging, (payload) => {
-  //     console.log(payload);
-  //     store.dispatch(updateNotification({ update: true, count: 1 }));
-  //     // toast(<Message notification={payload.notification} />);
-  //   });
-  //   async function requestPermission() {
-  //     const permission = await Notification.requestPermission();
-  //     if (permission === "granted") {
-  //       // Generate Token
-  //       const token = await getToken(messaging, {
-  //         vapidKey:
-  //           "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
-  //       });
-  //       // console.log("Token Gen", token);
-  //       store.dispatch(setFCM(token));
-  //       // Send this token  to server ( db)
-  //     } else if (permission === "denied") {
-  //       alert("You denied for the notification");
-  //     }
-  //   }
-  //   // 
-  //   requestPermission();
-  // }, []);
+    async function requestPermission() {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        // Generate Token
+        const token = await getToken(messaging, {
+          vapidKey:
+            "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
+        });
+        // console.log("Token Gen", token);
+        store.dispatch(setFCM(token));
+        // Send this token  to server ( db)
+      } else if (permission === "denied") {
+        alert("You denied for the notification");
+      }
+    }
+    // 
+    requestPermission();
+  }, []);
   useEffect(() => {
     if ('serviceWorker' in navigator) {
       if (navigator.serviceWorker) {
@@ -131,8 +135,12 @@ function App() {
             <Route path="albums/folder/:id" element={<UpdateFolderPage />} />
             <Route path="subscriptions" element={<SubscriptionPage />} />
             <Route path="albums/share/:code" element={<ShareCodePage />} />
+            <Route path="albums/redeemUsers/:id" element={<RedeemUser />} />
             <Route path="event" element={<EventCalendar />} />
             <Route path="user/changePhoneNumber" element={<ChangePhoneNumber />} />
+            <Route path="user/allNotifications" element={<AllNotificationPage />} />
+            <Route path="package/create/new" element={<AddNewPackagePage />} />
+            <Route path="packages/all" element={<AllPackagesPage />} />
 
           </Route>
         </Routes>

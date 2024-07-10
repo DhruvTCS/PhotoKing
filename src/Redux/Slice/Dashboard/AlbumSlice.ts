@@ -5,6 +5,7 @@ import { AlbumReducer } from '../../Reducers/Dashboard/AlbumReducer';
 import { Albums, Folder } from '../../../Data/album.dto';
 import { AlbumOptionReducer } from '../../Reducers/Dashboard/AlbumOptionReducer';
 import { FolderReducer } from '../../Reducers/Dashboard/FolderReducer';
+import { User } from '../../../Data/user.dto';
 
 export interface AlbumState {
     loading: boolean;
@@ -18,7 +19,9 @@ export interface AlbumState {
     currentAlbum?: Albums;
     currentFolder?: Folder;
     isFolderChange: boolean;
+    redeemUsers: User[]
     success: boolean;
+    isRedeemUserUpdates: boolean;
     isSearchData: boolean;
 }
 
@@ -34,6 +37,8 @@ const initialState: AlbumState = {
     isFolderChange: true,
     success: false,
     isSearchData: false,
+    isRedeemUserUpdates: false,
+    redeemUsers: []
 }
 
 
@@ -81,6 +86,9 @@ const albumSlice = createSlice({
         },
         setCurrentFolder(state, action: PayloadAction<Folder>) {
             state.currentFolder = action.payload;
+        },
+        setIsRedeemUserUpdates(state, action: PayloadAction<boolean>) {
+            state.isRedeemUserUpdates = action.payload;
         }
 
     },
@@ -91,7 +99,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
+export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setIsRedeemUserUpdates, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

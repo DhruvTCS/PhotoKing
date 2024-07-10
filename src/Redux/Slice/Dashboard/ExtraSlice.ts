@@ -13,6 +13,7 @@ export interface ExtraState {
     success: boolean;
     fcm_token?: string;
     notifications: Notification[];
+    allNotiifications: Notification[];
     isNotificationUpdated: boolean;
     totalNotifications: number;
     changePhonenumberOrderId?: string;
@@ -26,6 +27,7 @@ const initialState: ExtraState = {
     isError: false,
     success: false,
     notifications: [],
+    allNotiifications: [],
     isNotificationUpdated: true,
     totalNotifications: 0
 

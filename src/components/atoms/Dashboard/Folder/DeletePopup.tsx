@@ -5,7 +5,8 @@ import DeleteIconPNG from '../../../../assets/Icons/SingleAlbum/delete.png'
 interface PopupProps {
     Delete: () => void;
     cancel: () => void;
-    text: string
+    text: string,
+    buttonText: string
 }
 
 const Container = styled.div`
@@ -79,6 +80,7 @@ cursor:pointer;
 const DeleteButton = styled.button`
 width:120px;
 height:60px;
+// background: red;
 background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
 border:none;
 box-shadow: 0px 4px 18px 0px #A720B966;
@@ -94,7 +96,7 @@ margin-left:10px;
 
 cursor:pointer;
 `;
-const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel, text }) => {
+const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel, text, buttonText }) => {
     return (
         <Container>
             <Popup>
@@ -106,7 +108,7 @@ const DeletePopup: React.FC<PopupProps> = ({ Delete, cancel, text }) => {
                 </PopUpText>
                 <ButtonConatiner>
                     <CancleButton onClick={(e) => { e.stopPropagation(); cancel() }}>Cancel</CancleButton>
-                    <DeleteButton onClick={(e) => { e.stopPropagation(); Delete() }}>Delete</DeleteButton>
+                    <DeleteButton onClick={(e) => { e.stopPropagation(); Delete() }}>{buttonText}</DeleteButton>
                 </ButtonConatiner>
             </Popup>
         </Container>
