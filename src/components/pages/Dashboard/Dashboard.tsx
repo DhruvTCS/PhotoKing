@@ -80,12 +80,7 @@ const Dashboard: React.FC = () => {
         setIsexpand(pre => !pre);
     }
     const dispatch = useAppDispatch();
-    useEffect(() => {
-        if (isAuthticated && access_token) {
-            dispatch(getAllNotificationAPI());
-        }
 
-    }, [isAuthticated, access_token])
     useEffect(() => {
         if (isError) {
             console.log("error in loadind dashboard")

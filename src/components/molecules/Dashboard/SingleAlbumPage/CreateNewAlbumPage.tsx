@@ -187,6 +187,10 @@ const RemoveButtonConatiner = styled.div`
   cursor: pointer;
   background: #FF3333;
   box-shadow: 0px 4px 14px 0px #00000080;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+
 
 
 height:19px;

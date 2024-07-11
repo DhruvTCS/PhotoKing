@@ -139,7 +139,7 @@ function App() {
             <Route path="event" element={<EventCalendar />} />
             <Route path="user/changePhoneNumber" element={<ChangePhoneNumber />} />
             <Route path="user/allNotifications" element={<AllNotificationPage />} />
-            <Route path="package/create/new" element={<AddNewPackagePage />} />
+            <Route path="package/single" element={<AddNewPackagePage />} />
             <Route path="packages/all" element={<AllPackagesPage />} />
 
           </Route>

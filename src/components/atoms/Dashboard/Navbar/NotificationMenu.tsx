@@ -76,12 +76,7 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
     const listRef = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
     const navigate = useNavigate()
-    const handleSeenChange = useCallback((id: number) => {
 
-        dispatch(seenNotification({ notification_id: id }));
-
-
-    }, []);
 
     const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
         entries.forEach(entry => {
@@ -94,11 +89,10 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
 
                         return newSeen;
                     });
-                    handleSeenChange(id);
                 }
             }
         });
-    }, [seenIds, handleSeenChange]);
+    }, [seenIds]);
     const handleMarskallNotificationAsRead = () => {
         // const remainNot=[];
         console.log("calledd")
@@ -108,7 +102,7 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
             if (!seenIds.includes(not.id)) {
                 console.log(not.id)
                 seenIds.push(not.id);
-                dispatch(seenNotification({ notification_id: not.id }));
+                dispatch(seenNotification({ notification_ids: seenIds }));
             }
             handleIsOpen();
         })
@@ -139,8 +133,8 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
         (event: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
                 handleIsOpen();
-                // if (isNotificationUpdated)W
-                dispatch(getAllNotificationAPI());
+
+                dispatch(seenNotification({ notification_ids: seenIds }));
                 console.log('done')
                 if (seenIds.length > 0) {
                     sendSeenNotifications(seenIds);

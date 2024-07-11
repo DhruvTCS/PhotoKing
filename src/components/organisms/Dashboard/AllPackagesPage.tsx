@@ -1,11 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BackButtonIconPng from '../../../assets/Icons/SingleAlbum/back.png'
 import { useNavigate } from 'react-router-dom'
 import PlusSignIconPNG from '../../../assets/Icons/addIcon.png'
+import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks'
+import { getAllPackageAPI } from '../../../Redux/ApiCalls/Dashboard/PackageAPI'
+import { Package } from '../../../Data/package.dto'
+import PackageItem from '../../atoms/Dashboard/Package/PackageItem'
+import UnderLine from '../../atoms/Login/UnderLine'
+import { clearCurrentPackage, clearError } from '../../../Redux/Slice/Dashboard/PackageSlice'
+import LoadingDots from '../../atoms/Utlis/LoadinDots'
 
 const AllPackagesPage: React.FC = () => {
     const navigate = useNavigate();
+    const { packages, isError, error, isPackageUpdate, loading } = useAppSelector(state => state.package);
+    const { user } = useAppSelector(state => state.auth)
+    const [currentPackages, setCurrentPackages] = useState<Package[]>([])
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        if (isPackageUpdate && user) {
+            dispatch(getAllPackageAPI({ user_id: user.id }));
+        }
+        else if (packages) {
+            setCurrentPackages(packages);
+        }
+        return () => {
+            dispatch(clearError())
+        }
+    }, [isPackageUpdate, packages]);
+
     return (
         <Container>
             <BackButtonContainer onClick={() => navigate(-1)} >
@@ -19,7 +42,8 @@ const AllPackagesPage: React.FC = () => {
                 </Header>
                 <AddAlbumButton
                     onClick={() => {
-                        navigate('/dashboard/package/create/new')
+                        dispatch(clearCurrentPackage())
+                        navigate('/dashboard/package/single')
                     }}
                 >
                     <PlusSignContainer>
@@ -28,6 +52,18 @@ const AllPackagesPage: React.FC = () => {
                     <ButtonText>ADD</ButtonText>
                 </AddAlbumButton>
             </HeaderContainer>
+            <MainPackageContainer>
+                {loading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
+                    currentPackages.length === 0 ? <NoPackagetext>No package created yet.</NoPackagetext> :
+                        currentPackages.map(packageData =>
+                            <>
+                                <PackageItem packageData={packageData} />
+                                <UnderLine width={100} isPercent={true} />
+                            </>
+                        )
+                }
+
+            </MainPackageContainer>
         </Container>
     )
 }
@@ -37,17 +73,24 @@ export default AllPackagesPage
 
 
 const Container = styled.div`
-// margin-left:30px;`;
+cursor: pointer;
+height:100%;
+margin-left:30px;
+`
 const HeaderContainer = styled.div`
 display: flex;
 align-items:center;
+// margin-left:;
+width:100%;
+
+
 `;
 
 const BackButtonContainer = styled.div`
 display:flex;
 flex-direction:row;
 width:98%;
-margin-left:30px;
+// margin-left:30px;
 align-items:center;
 cursor:pointer;
 
@@ -122,3 +165,27 @@ const ButtonText = styled.div`
   text-align: left;
   color: #a720b9;
 `
+const MainPackageContainer = styled.div`
+
+margin-top:30px;
+width:96%;
+height:100%;
+`;
+const LoadingContainer = styled.div`
+height:70%;
+width:91%;
+display:flex;
+align-items: center;
+justify-content: center;
+`
+const NoPackagetext = styled.div`
+height:70%;
+width:91%;
+display:flex;
+align-items: center;
+justify-content: center;
+font-family: 'Urbanist', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 16.8px;
+`;

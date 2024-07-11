@@ -6,7 +6,7 @@ export const getAllNotificationAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: '/account/notification/'
+                url: '/account/notification/?notification_type=unseen'
             })
             console.log(response.data);
             return response.data;
@@ -16,7 +16,7 @@ export const getAllNotificationAPI = createAsyncThunk(
     });
 export const seenNotification = createAsyncThunk(
     'extra/seenNotification',
-    async (data: { notification_id: number }, { rejectWithValue }) => {
+    async (data: { notification_ids: number[] }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'PUT',

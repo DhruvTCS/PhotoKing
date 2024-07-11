@@ -39,7 +39,7 @@ export const NotificationReducer = (builder: ActionReducerMapBuilder<ExtraState>
         .addCase(seenNotification.fulfilled, (state, action: PayloadAction<Notification[]>) => {
             state.loading = false;
             state.isError = false;
-            state.isNotificationUpdated = false;
+            state.isNotificationUpdated = true;
             // state.notifications = action.payload;
         })
         .addCase(seenNotification.rejected, (state, action: PayloadAction<any>) => {
