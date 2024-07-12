@@ -10,6 +10,7 @@ import { getEventFormTokenAPI } from '../../../../Redux/ApiCalls/Dashboard/Event
 import LoadingDots from '../../Utlis/LoadinDots';
 import { useNavigate, useParams } from 'react-router-dom';
 import { removeCurrentFormToken } from '../../../../Redux/Slice/Dashboard/ExtraSlice';
+import ShareButton from '../ShareCode/ShareButtonModal';
 const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
@@ -30,7 +31,7 @@ font-family: Urbanist,sans-serif;
   padding: 20px;
   border-radius: 5px;
   width: 500px;
-  height:470px;
+  height:600px;
   max-width: 80%;
   position: relative;
 `;
@@ -50,8 +51,8 @@ justify-content: center;
 `;
 
 const QrCodeContainer = styled.div`
-width: 240px;
-height: 240px;
+width: 300px;
+height: 300px;
 border-radius:70px;
 background: #FFFFFF;
 box-shadow: 0px 14px 44px 0px #00000026;
@@ -67,6 +68,7 @@ position: relative;
 
 const EventCodeContainer = styled.div`
 width:84%;
+margin-top:50px;
 `;
 const CodeContainer = styled.div`
 display:flex;
@@ -181,14 +183,15 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
                     <ModalBody>
                         <QrCodeContainer>
                             <QrCodeDiv>
-                                <QRCode value={url} size={140} />
+                                <QRCode value={url} size={177} />
                             </QrCodeDiv>
 
+                            <ShareButton shareUrl={url} />
 
                         </QrCodeContainer>
                         <EventCodeContainer>
                             <EventCodeLabel>
-                                Event Code
+                                Form URL
                             </EventCodeLabel>
                             <CodeContainer>
                                 <EventCodeText type="text" value={url} readOnly />
