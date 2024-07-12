@@ -162,6 +162,10 @@ const CountryCode = styled.input`
   &:focus {
     outline: none;
   }
+    @media (max-width: ${breakpoints.mobile}) {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
 `
 const DateContainer = styled.div`
   display: flex;
