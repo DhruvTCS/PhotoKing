@@ -55,6 +55,9 @@ const extraSlice = createSlice({
         removeOrderId(state) {
             delete state.changePhonenumberOrderId;
             state.isPhoneNumberChange = false;
+        },
+        removeCurrentFormToken(state) {
+            delete state.eventFromToken;
         }
     },
     extraReducers: (builder) => {
@@ -65,7 +68,7 @@ const extraSlice = createSlice({
     },
 });
 
-export const { clearError, setFCM, updateNotification, removeOrderId } = extraSlice.actions;
+export const { clearError, setFCM, updateNotification, removeOrderId, removeCurrentFormToken } = extraSlice.actions;
 
 
 export default extraSlice.reducer;

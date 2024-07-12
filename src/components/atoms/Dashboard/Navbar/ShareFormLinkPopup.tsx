@@ -8,6 +8,8 @@ import { showErrorToast, showSuccessToast } from '../../Utlis/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { getEventFormTokenAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI';
 import LoadingDots from '../../Utlis/LoadinDots';
+import { useNavigate, useParams } from 'react-router-dom';
+import { removeCurrentFormToken } from '../../../../Redux/Slice/Dashboard/ExtraSlice';
 const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
@@ -71,7 +73,14 @@ display:flex;
 align-items: center;
 justify-content: space-between;
 `;
-const EventCodeText = styled.p``;
+const EventCodeText = styled.input`
+width: 100%;
+border:none;
+
+&:focus{
+outline:none;
+}
+`;
 const CopyIcon = styled.img`
 height:25px;
 width: 25px;
@@ -124,6 +133,7 @@ interface ShareFormLinkProps {
 const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
     const [url, setUrl] = useState<string>('')
     const dispatch = useAppDispatch();
+    const params = useParams()
     const { loading, isError, error, eventFromToken } = useAppSelector(state => state.extra)
     useEffect(() => {
         if (isError) {
@@ -132,20 +142,30 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
             } else {
                 showErrorToast("Something went wrong! Please try again later.")
             }
-        } else {
-            console.log("loading popup.");
-            // dispatch(getEventFormTokenAPI());
         }
-    }, [isError, error])
+
+
+    }, [isError])
     useEffect(() => {
+
+        dispatch(getEventFormTokenAPI());
+
+        return () => {
+            dispatch(removeCurrentFormToken());
+        }
+    }, [dispatch])
+
+    useEffect(() => {
+        // console.log(eventFromToken)
         if (eventFromToken) {
-            setUrl(`http://localhost:3000/share/form/${eventFromToken}`)
+            console.log("set url")
+            setUrl(`http://${window.location.host}/share/form/${eventFromToken}`)
         }
     }, [eventFromToken])
     const handleCopy = () => {
         // setIsCopy(true);
         navigator.clipboard.writeText(url);
-        showSuccessToast("Code copied to clipboard.")
+        showSuccessToast("Url copied to clipboard.")
         // alert('Link copied to clipboard!');
 
     };
@@ -161,7 +181,7 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
                     <ModalBody>
                         <QrCodeContainer>
                             <QrCodeDiv>
-                                <QRCode value={`url`} size={140} />
+                                <QRCode value={url} size={140} />
                             </QrCodeDiv>
 
 
@@ -171,9 +191,8 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
                                 Event Code
                             </EventCodeLabel>
                             <CodeContainer>
-                                <EventCodeText>
-                                    {url}
-                                </EventCodeText>
+                                <EventCodeText type="text" value={url} readOnly />
+
 
                                 <CopyIcon src={CopyPNG} onClick={() => handleCopy()} />
 

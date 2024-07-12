@@ -149,7 +149,7 @@ function App() {
             <Route path="packages/all" element={<AllPackagesPage />} />
 
           </Route>
-          <Route path="/share/form" element={<EventForm />} />
+          <Route path="/share/form/:data" element={<EventForm />} />
         </Routes>
         <ToastContainer />
       </div>

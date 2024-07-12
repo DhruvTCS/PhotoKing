@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiCall from "../AuthorizedApi";
+import axios from "axios";
+import { getHostUrl } from "../getHotUrl";
 export const getAllEventsAPI = createAsyncThunk(
     'event/getAllEventsAPI',
     async (data: { start_date: string, end_date: string }, { rejectWithValue }) => {
@@ -56,23 +58,39 @@ export const deleteEventAPI = createAsyncThunk(
                 url: `/project/user-event/?event_id=${data.id}`,
 
             })
-            console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
     });
-export const getEventFormTokenAPI = createAsyncThunk('event/deleteEventAPI',
+export const getEventFormTokenAPI = createAsyncThunk(
+    'event/getEventFormTokenAPI',
     async (_, { rejectWithValue }) => {
         try {
             const response = await apiCall({
-                method: 'DELETE',
-                url: `/project/user-event/?event_id=`,
+                method: 'GET',
+                url: `/account/user/form-token/`,
 
             })
-            console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
     })
+
+export const submitEventFormAPI = createAsyncThunk(
+    'event/submitEventFormAPI',
+    async (data: any, { rejectWithValue }) => {
+        try {
+            const response = await axios({
+                method: 'POST',
+                url: `${getHostUrl()}/project/customer-event/`,
+                data
+
+            })
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    })
+
