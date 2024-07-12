@@ -92,9 +92,6 @@ const ShareButton: React.FC<ShareButtonProps> = ({ shareUrl }) => {
                                     <Icon onClick={() => handleShare('facebook')}>
                                         <SocialIcon src={FacebookPNG} />
                                     </Icon>
-                                    <Icon onClick={() => handleShare('instagram')}>
-                                        <SocialIcon src={InstaPNG} />
-                                    </Icon>
                                     <Icon onClick={() => handleShare('telegram')}>
                                         <SocialIcon src={TelegramPNG} />
                                     </Icon>
