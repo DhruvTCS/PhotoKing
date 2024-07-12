@@ -324,7 +324,7 @@ const EditMemberPage: React.FC = () => {
                         style={{ display: 'none' }}
                         ref={fileInputRef}
                     />
-                    <MemberImage src={imagePreview.length > 0 ? imagePreview : DefaultImagePNG} />
+                    <MemberImage src={(imagePreview && imagePreview.length > 0) ? imagePreview : DefaultImagePNG} />
                     <ImageIconContainer >
                         <AddMemberIcon src={MemberIconPNG} />
                     </ImageIconContainer>
