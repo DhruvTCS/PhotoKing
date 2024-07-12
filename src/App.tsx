@@ -2,7 +2,7 @@ import React, { useEffect, } from 'react';
 import './App.css';
 
 import Auth from './components/pages/Auth/Auth';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './Redux/Store';
 import LoginForm from './components/organisms/Auth/Login/LoginForm';
@@ -29,6 +29,7 @@ import AllNotificationPage from './components/organisms/Dashboard/AllNotificatio
 import RedeemUser from './components/atoms/Dashboard/HomePage/RedeemUser';
 import AllPackagesPage from './components/organisms/Dashboard/AllPackagesPage';
 import AddNewPackagePage from './components/molecules/Dashboard/Package/AddNewPackagePage';
+import EventForm from './components/pages/ShareCreateEventForm/EventForm';
 function App() {
 
   const navigate = useNavigate();
@@ -100,11 +101,16 @@ function App() {
 
   }, []);
 
+  const location = useLocation();
 
   useEffect(() => {
     // alert("called")
+    const path = location.pathname;
+    console.log(path)
+    if (path.startsWith("/share/form")) {
 
-    if (!localStorage.getItem('access_token')) {
+    }
+    else if (!localStorage.getItem('access_token')) {
 
       navigate('/auth/login');
     } else {
@@ -143,6 +149,7 @@ function App() {
             <Route path="packages/all" element={<AllPackagesPage />} />
 
           </Route>
+          <Route path="/share/form" element={<EventForm />} />
         </Routes>
         <ToastContainer />
       </div>

@@ -5,6 +5,7 @@ import { SubscriptionType } from '../../../Data/subscription.dto';
 import { Notification } from '../../../Data/user.dto';
 import { NotificationReducer } from '../../Reducers/Dashboard/NotificationReducer';
 import { ChnageNumberReducer } from '../../Reducers/Dashboard/ChangePhoneNumberReducer';
+import { ExtraReducer } from '../../Reducers/Dashboard/ExtraReducer';
 export interface ExtraState {
     loading: boolean;
     subscriptions: SubscriptionType[] | null;
@@ -18,6 +19,7 @@ export interface ExtraState {
     totalNotifications: number;
     changePhonenumberOrderId?: string;
     isPhoneNumberChange?: boolean;
+    eventFromToken?: string;
 }
 
 const initialState: ExtraState = {
@@ -59,6 +61,7 @@ const extraSlice = createSlice({
         SubscriptionReducer(builder)
         NotificationReducer(builder)
         ChnageNumberReducer(builder)
+        ExtraReducer(builder)
     },
 });
 

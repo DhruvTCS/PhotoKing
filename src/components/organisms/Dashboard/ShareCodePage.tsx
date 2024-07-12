@@ -70,6 +70,7 @@ text-align: left;
 margin-bottom:0;
 `;
 const QrCodeDiv = styled.div``;
+
 const EventCodeConatiner = styled.div`
 width:400px;
 margin-top:150px;

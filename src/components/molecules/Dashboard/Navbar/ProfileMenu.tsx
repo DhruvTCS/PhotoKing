@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import PhonePNG from "../../../../assets/Icons/Sidebar/changepassword.png"
+import EventFormPNG from '../../../../assets/Icons/Sidebar/calendar.png'
 import { useNavigate } from 'react-router-dom';
+import ShareEventFormLinkPopup from '../../../atoms/Dashboard/Navbar/ShareFormLinkPopup';
 
 const fadeIn = keyframes`
   from {
@@ -76,6 +78,7 @@ color: #5B463E;
 `
 const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean) => void }> = ({ setMenuOpen, menuOpen }) => {
   const menuRef = useRef<HTMLDivElement>(null);
+  const [isShareFormPopUp, setIsShareFormPopUp] = useState(false);
   const navigate = useNavigate()
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -101,10 +104,16 @@ const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean)
   return (
     <DropdownMenu menuOpen={menuOpen} ref={menuRef}>
 
-
+      {isShareFormPopUp && <ShareEventFormLinkPopup onClose={() => setIsShareFormPopUp(false)} />}
       <MenuItem onClick={() => navigate('/dashboard/user/changePhoneNumber')}>
         <ItemIcon src={PhonePNG} />
         <ItemName>Change Phone Number</ItemName>
+      </MenuItem>
+      <Hr />
+
+      <MenuItem onClick={() => setIsShareFormPopUp(true)}>
+        <ItemIcon src={EventFormPNG} />
+        <ItemName>Share Event Form</ItemName>
       </MenuItem>
       <Hr />
 
