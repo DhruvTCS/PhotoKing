@@ -1,5 +1,5 @@
 // App.js
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import UnderLine from '../../atoms/Login/UnderLine'
 
@@ -82,7 +82,7 @@ const Label = styled.label`
 const Input = styled.input`
   padding-top: 10px;
   width: 98%;
-  color:black;
+  color: black;
   font-size: 18px;
   font-weight: 500;
   line-height: 18px;
@@ -115,22 +115,28 @@ const InputMainDateContainer = styled.div`
 `
 
 const Button = styled.button`
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #007bff;
-  color: white;
-  font-size: 1rem;
+  padding: 15px;
+  border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
-
+  border: none;
+  font-family: Urbanist, sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 19.2px;
+  text-align: center;
+  cursor: pointer;
+  background: linear-gradient(360deg, #9c44bd 0%, #c62bc9 100%);
+  box-shadow: 0px 4px 14px 0px #86169680;
+  color: #ffffff;
+  
   &:hover {
-    background-color: #0056b3;
+    background: linear-gradient(360deg, #7a11a1 0%, #c62bc9 100%);
   }
 
   @media (max-width: ${breakpoints.mobile}) {
     padding: 8px;
-    font-size: 0.9rem;
+    font-size: 25px;
   }
 `
 const ContactContainer = styled.div`
@@ -153,6 +159,7 @@ const DateContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: baseline;
+  cursor: pointer;
 `
 const App = () => {
   const [customerName, setCustomerName] = useState<string>('')
@@ -161,9 +168,18 @@ const App = () => {
   const [eventLocation, setEventLocation] = useState<string>('')
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
+  const startDateRef = useRef<HTMLInputElement>(null)
+  const endDateRef = useRef<HTMLInputElement>(null)
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
-    console.log(customerName, customerPhoneNumber, eventName, eventLocation, startDate, endDate)
+    console.log(
+      customerName,
+      customerPhoneNumber,
+      eventName,
+      eventLocation,
+      startDate,
+      endDate,
+    )
     // Handle form submission
   }
   const onChangeData = (name: string, value: string) => {
@@ -217,13 +233,15 @@ const App = () => {
 
   return (
     <Container>
-      <Form >
+      <Form>
         <FormField>
           <InputContainer>
-            <Label >Customer Name</Label>
+            <Label>Customer Name</Label>
             <Input
               type="text"
-              onChange={(e) => { console.log(e.target.value); onChangeData('customer_name', e.target.value) }}
+              onChange={(e) => {
+                onChangeData('customer_name', e.target.value)
+              }}
               value={customerName}
             />
           </InputContainer>
@@ -241,7 +259,9 @@ const App = () => {
                 name="phone"
                 required
                 value={customerPhoneNumber}
-                onChange={(e) => onChangeData('customer_phone', e.target.value)}
+                onChange={(e) =>
+                  onChangeData('customer_contact', e.target.value.toString())
+                }
               />
             </ContactContainer>
           </InputContainer>
@@ -265,12 +285,12 @@ const App = () => {
           <Label htmlFor="name">Event Date</Label>
           <InputMainDateContainer>
             <InputDateContainer>
-              <DateContainer>
+              <DateContainer onClick={() => startDateRef.current?.showPicker()}>
                 <Label htmlFor="from_date">From</Label>
                 <Input
                   type="datetime-local"
                   id="from_date"
-
+                  ref={startDateRef}
                   name="from_date"
                   onChange={(e) => onChangeData('start_date', e.target.value)}
                   value={startDate}
@@ -280,12 +300,13 @@ const App = () => {
               <UnderLine width={100} isPercent={true} />
             </InputDateContainer>
             <InputDateContainer>
-              <DateContainer>
+              <DateContainer onClick={() => endDateRef.current?.showPicker()}>
                 <Label htmlFor="to_date">To</Label>
                 <Input
                   type="datetime-local"
                   id="to_date "
                   name="to_date"
+                  ref={endDateRef}
                   onChange={(e) => onChangeData('end_date', e.target.value)}
                   value={endDate}
                   required
@@ -298,12 +319,14 @@ const App = () => {
         <FormField>
           <InputContainer>
             <Label htmlFor="location">Event Location</Label>
-            <Input type="text"
+            <Input
+              type="text"
               id="location"
               name="location"
               onChange={(e) => onChangeData('event_location', e.target.value)}
               value={eventLocation}
-              required />
+              required
+            />
           </InputContainer>
           <UnderLine width={100} isPercent={true} />
         </FormField>
