@@ -18,7 +18,7 @@ margin-left:30px;
 margin-top:9px;
 `;
 const ChangePhoneHeader = styled.div``;
-const ChangePhonetext = styled.p`
+const ChangePhoneText = styled.p`
 font-family: Urbanist;
 font-size: 19px;
 font-weight: 600;
@@ -244,9 +244,9 @@ const ChangePhoneNumber: React.FC = () => {
                 <BackButtonText>Back</BackButtonText>
             </BackButtonContainer>
             <ChangePhoneHeader>
-                <ChangePhonetext>
+                <ChangePhoneText>
                     Change Phone Number
-                </ChangePhonetext>
+                </ChangePhoneText>
             </ChangePhoneHeader>
             <InputContainer>
                 <InputField>
