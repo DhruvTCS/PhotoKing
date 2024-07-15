@@ -41,7 +41,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const selectionRef = useRef<HTMLSelectElement>(null);
     const [addMemberMenu, setAddMemberMenu] = useState(false);
     const [activeButton, setActiveButton] = useState(false);
-    const [deletMember, setDeleteMember] = useState<number[]>([]);
+    const [deleteMember, setDeleteMember] = useState<number[]>([]);
     const selectMenuRef = useRef<HTMLDivElement>(null)
     const [isUpdate, setIsUpdate] = useState(false);
     // const navigate = useNavigate();
@@ -127,7 +127,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
 
     const handleMember = (id: number) => {
-        if (deletMember.includes(id)) {
+        if (deleteMember.includes(id)) {
             setDeleteMember(pre => pre.filter(member => member !== id));
             eventMembers.push(id);
         } else {
@@ -172,8 +172,8 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         // onSubmit(eventData);
     };
     const handleDeleteMember = (id: number) => {
-        if (!deletMember.includes(id) && eventMembers.includes(id)) {
-            setDeleteMember([...deletMember, id]);
+        if (!deleteMember.includes(id) && eventMembers.includes(id)) {
+            setDeleteMember([...deleteMember, id]);
             setEventMembers(pre => pre.filter(member => member !== id));
         }
     }
@@ -602,6 +602,9 @@ align-items: center;
 `;
 const SubmitConatiner = styled.div`
 margin-top:10px;
+display:flex;
+align-items: center;
+justify-content: center;
 `;
 const DeleteIcon = styled.img`
 height:25px;

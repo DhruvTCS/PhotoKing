@@ -32,6 +32,9 @@ margin-left:13px;
 const DownIconComp = styled.img`
 
 `;
+const UpIconComp = styled.img`
+transform:rotate(180deg);
+`;
 
 const DownIconContainer = styled.div`
 margin-left:18px;
@@ -49,8 +52,12 @@ const ProfileSection: React.FC = () => {
 
             <ProfileName >{user ? user.name : 'Photo King'}</ProfileName>
             <DownIconContainer>
-
-                <DownIconComp src={downIconPNG} height={10} width={20} onClick={() => { setMenuOpen(pre => !pre) }} />
+                {
+                    menuOpen ?
+                        <UpIconComp src={downIconPNG} height={10} width={20} onClick={() => { setMenuOpen(false) }} />
+                        :
+                        <DownIconComp src={downIconPNG} height={10} width={20} onClick={() => { setMenuOpen(true) }} />
+                }
             </DownIconContainer>
 
         </ProfileSectionContainer>

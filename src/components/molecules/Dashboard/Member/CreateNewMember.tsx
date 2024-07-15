@@ -8,7 +8,7 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import InputComponent from '../../../atoms/Login/InputComponent';
 import phoneIcon from '../../../../assets/Icons/phone.svg'
-import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
+import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
@@ -53,7 +53,7 @@ margin-left:11px;
 `;
 
 
-const BoadyContainer = styled.div`
+const BodyContainer = styled.div`
 width: 96%;
 height: 530px;
 border-radius: 10px;
@@ -309,17 +309,13 @@ const CreateNewMemberPage: React.FC = () => {
             dispatch(createNewMemberAPI(formData))
         }
     }
-    const showErrorMessgae = () => {
-        console.log("calledddd")
-
-    }
     return (
         <NewMemberPageContainer>
             <BackButtonContainer >
                 <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
                 <BackButtonText>Add new member</BackButtonText>
             </BackButtonContainer>
-            <BoadyContainer>
+            <BodyContainer>
                 <ImageContainer onClick={handleDivClick}>
                     <input
                         type="file"
@@ -379,13 +375,13 @@ const CreateNewMemberPage: React.FC = () => {
                         </InputContainerContact>
                     </InputFields>
                 </PhoneContainer>
-                <SubmitButtonContainer onClick={() => { showErrorMessgae() }}>
+                <SubmitButtonContainer >
                     {loading ? <LoadingDots /> :
 
                         <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} />
                     }
                 </SubmitButtonContainer>
-            </BoadyContainer>
+            </BodyContainer>
         </NewMemberPageContainer>
     )
 }

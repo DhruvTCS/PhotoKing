@@ -2,15 +2,15 @@ import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { MemberState } from '../../Slice/Dashboard/MemberSlice';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
 import { ExtraState } from '../../Slice/Dashboard/ExtraSlice';
-import { changePhoneNumberAPI, chnagePhoneNumberOtpAPI } from '../../ApiCalls/Auth/user';
+import { changePhoneNumberAPI, changePhoneNumberOtpAPI } from '../../ApiCalls/Auth/user';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const ChnageNumberReducer = (builder: ActionReducerMapBuilder<ExtraState>) => {
-    builder.addCase(chnagePhoneNumberOtpAPI.pending, (state) => {
+    builder.addCase(changePhoneNumberOtpAPI.pending, (state) => {
         state.loading = true;
         state.isError = false;
         state.error = {};
     })
-        .addCase(chnagePhoneNumberOtpAPI.fulfilled, (state, action: PayloadAction<
+        .addCase(changePhoneNumberOtpAPI.fulfilled, (state, action: PayloadAction<
             {
                 orderId: string,
                 role: number | null,
@@ -23,7 +23,7 @@ export const ChnageNumberReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.changePhonenumberOrderId = action.payload.orderId;
             // state.isPhoneNumberChang;
         })
-        .addCase(chnagePhoneNumberOtpAPI.rejected, (state, action: PayloadAction<any>) => {
+        .addCase(changePhoneNumberOtpAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
 

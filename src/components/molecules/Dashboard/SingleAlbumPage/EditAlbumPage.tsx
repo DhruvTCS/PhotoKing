@@ -4,7 +4,7 @@ import AddCoverImageIconPng from '../../../../assets/Icons/SingleAlbum/addImage.
 import UnderLine from '../../../atoms/Login/UnderLine';
 import PlusSignIconPNG from '../../../../assets/Icons/addIcon.png'
 import SubmitButton from '../../../atoms/Login/SubmitButton';
-import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
+import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary';
 import { Folder, NewAlbum, NewFolder } from '../../../../Data/album.dto';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI';

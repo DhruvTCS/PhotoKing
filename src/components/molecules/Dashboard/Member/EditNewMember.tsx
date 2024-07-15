@@ -8,7 +8,7 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import InputComponent from '../../../atoms/Login/InputComponent';
 import phoneIcon from '../../../../assets/Icons/phone.svg'
-import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cludinary';
+import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI, updateMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
@@ -53,7 +53,7 @@ margin-left:11px;
 `;
 
 
-const BoadyContainer = styled.div`
+const BodyContainer = styled.div`
 width: 96%;
 height: 530px;
 border-radius: 10px;
@@ -315,7 +315,7 @@ const EditMemberPage: React.FC = () => {
                 <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
                 <BackButtonText>Add new member</BackButtonText>
             </BackButtonContainer>
-            <BoadyContainer>
+            <BodyContainer>
                 <ImageContainer onClick={handleDivClick}>
                     <input
                         type="file"
@@ -376,7 +376,7 @@ const EditMemberPage: React.FC = () => {
                         <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} active={!activeButton} />
                     }
                 </SubmitButtonContainer>
-            </BoadyContainer>
+            </BodyContainer>
         </NewMemberPageContainer>
     )
 }

@@ -30,6 +30,7 @@ import RedeemUser from './components/atoms/Dashboard/HomePage/RedeemUser';
 import AllPackagesPage from './components/organisms/Dashboard/AllPackagesPage';
 import AddNewPackagePage from './components/molecules/Dashboard/Package/AddNewPackagePage';
 import EventForm from './components/pages/ShareCreateEventForm/EventForm';
+import UserCreatedEvents from './components/organisms/Dashboard/UserCreatedEvents';
 function App() {
 
   const navigate = useNavigate();
@@ -143,6 +144,8 @@ function App() {
             <Route path="albums/share/:code" element={<ShareCodePage />} />
             <Route path="albums/redeemUsers/:id" element={<RedeemUser />} />
             <Route path="event" element={<EventCalendar />} />
+            <Route path="events/userCreated" element={<UserCreatedEvents />} />
+
             <Route path="user/changePhoneNumber" element={<ChangePhoneNumber />} />
             <Route path="user/allNotifications" element={<AllNotificationPage />} />
             <Route path="package/single" element={<AddNewPackagePage />} />

@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiCall from "../AuthorizedApi";
 
-export const chnagePhoneNumberOtpAPI = createAsyncThunk(
-    'auth/chnagePhoneNumberOtpAPI',
+export const changePhoneNumberOtpAPI = createAsyncThunk(
+    'auth/changePhoneNumberOtpAPI',
     async (credentials: { phone_number: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
