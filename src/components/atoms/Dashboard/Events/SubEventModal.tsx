@@ -445,6 +445,7 @@ const SubEventModal: React.FC<SubEventModal> = ({
   const setLocation = (loc: string) => {
     setLocationList([...locationList, loc])
     setLocationPickerModal(false);
+    setIsLocationListOpen(false);
     setEventLocation(loc)
   }
   return (

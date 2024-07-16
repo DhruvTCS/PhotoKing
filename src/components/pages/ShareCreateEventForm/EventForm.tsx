@@ -467,14 +467,14 @@ const EventForm = () => {
                 <InputContainer>
                   <AddSubEventHeaderContainer>
                     <Label htmlFor="name">Sub Events</Label>
-                    <AddSubEventButton
+                    {subEvents.length <= 10 && <AddSubEventButton
                       onClick={() => {
                         setCurrentSubEvent(null)
                         setIsSubEventModal(true)
                       }}
                     >
                       +
-                    </AddSubEventButton>
+                    </AddSubEventButton>}
                   </AddSubEventHeaderContainer>
                   <SubEventsList>
                     {subEvents.map((event) => (
