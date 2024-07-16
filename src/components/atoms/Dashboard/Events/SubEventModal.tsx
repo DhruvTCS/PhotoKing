@@ -427,12 +427,13 @@ const SubEventModal: React.FC<SubEventModal> = ({
       addSubEvent({
         sub_event_name: eventName,
         sub_event_location: eventLocation,
-        sub_event_end_date: end_date,
-        sub_event_end_time: end_time,
-        sub_event_start_date: start_date,
-        sub_event_start_time: start_time,
+        starting_date: start_date,
+        starting_time: start_time,
+        ending_date: end_date,
+        ending_time: end_time,
         sub_event_end_date_time: endDate,
         sub_event_start_date_time: startDate,
+        sub_event_coordinates: "test coordinates",
         id: id,
       })
     }
@@ -443,6 +444,7 @@ const SubEventModal: React.FC<SubEventModal> = ({
   }
   const setLocation = (loc: string) => {
     setLocationList([...locationList, loc])
+    setLocationPickerModal(false);
     setEventLocation(loc)
   }
   return (

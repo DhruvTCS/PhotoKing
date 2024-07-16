@@ -40,10 +40,11 @@ export interface EnteredSubEventType {
     id: number;
     sub_event_name: string;
     sub_event_location: string;
-    sub_event_start_time: string;
-    sub_event_start_date: string;
-    sub_event_end_time: string;
-    sub_event_end_date: string;
+    starting_time: string;
+    starting_date: string;
+    ending_date: string;
+    ending_time: string;
     sub_event_start_date_time: string;
     sub_event_end_date_time: string;
+    sub_event_coordinates: string;
 }

@@ -144,7 +144,7 @@ const CountryCode = styled.input`
   &:focus {
     outline: none;
   }
-    @media (max-width: ${breakpoints.mobile}) {
+  @media (max-width: ${breakpoints.mobile}) {
     padding: 8px;
     font-size: 0.9rem;
   }
@@ -197,44 +197,44 @@ const TextContainer = styled.div`
   text-align: center;
 `
 const SubEventsList = styled.div`
-display: flex;
-flex-wrap:wrap;
-`;
+  display: flex;
+  flex-wrap: wrap;
+`
 const AddSubEventHeaderContainer = styled.div`
-display: flex;
-align-items: center;
-justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `
 const AddSubEventButton = styled.button`
-font-size:20px;
-border:1px solid gray;
-font-weight: 400;
-background-color:transparent;
-border-radius:50%;
-color: gray;
-cursor:pointer;
-`;
+  font-size: 20px;
+  border: 1px solid gray;
+  font-weight: 400;
+  background-color: transparent;
+  border-radius: 50%;
+  color: gray;
+  cursor: pointer;
+`
 
 const SubEventNameContainer = styled.div`
-display:flex;
-align-items: center;
-padding:10px;
-margin:10px 0px 0px 10px;
-@media (max-width: ${breakpoints.mobile}) {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0px 0px 10px;
+  @media (max-width: ${breakpoints.mobile}) {
     padding: 4px;
     font-size: 0.9rem;
   }
-border:1px solid gray;
-border-radius:10px;
-`;
+  border: 1px solid gray;
+  border-radius: 10px;
+`
 
 const SubEventName = styled.input`
-border:none;
-background-color:transparent;
-max-width:83px;
-&:focus{
-outline:none;
-}
+  border: none;
+  background-color: transparent;
+  max-width: 83px;
+  &:focus {
+    outline: none;
+  }
 `
 
 const CloseButton = styled.span`
@@ -243,20 +243,23 @@ const CloseButton = styled.span`
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
-  text-align:end;
-`;
+  text-align: end;
+`
 const EventForm = () => {
   const [customerName, setCustomerName] = useState<string>('')
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState<string>('')
   const [eventName, setEventName] = useState<string>('')
-  const [locationList, setLocationList] = useState<string[]>([]);
+  const [locationList, setLocationList] = useState<string[]>([])
 
   const [showError, setShowError] = useState(false)
-  const [currentSubEvent, setCurrentSubEvent] = useState<EnteredSubEventType | null>(null)
+  const [
+    currentSubEvent,
+    setCurrentSubEvent,
+  ] = useState<EnteredSubEventType | null>(null)
   const [formToken, setFormToken] = useState('')
-  const [isSubEventModal, setIsSubEventModal] = useState(true);
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [subEvents, setSubEvents] = useState<EnteredSubEventType[]>([]);
+  const [isSubEventModal, setIsSubEventModal] = useState(false)
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+  const [subEvents, setSubEvents] = useState<EnteredSubEventType[]>([])
   const { success, isError, error, loading } = useAppSelector(
     (state) => state.extra,
   )
@@ -272,17 +275,25 @@ const EventForm = () => {
       showErrorToast('Invalid Link, Please Contact your studio owner.')
       navigate('/auth/login.')
     }
-  }, [params['data']]);
+  }, [params['data']])
 
   const handleAddSubEvents = (subEvent: EnteredSubEventType) => {
-    let filteredSubEvents = subEvents.filter(e => e.id !== subEvent.id)
-    setSubEvents([...filteredSubEvents, subEvent]);
-    setIsSubEventModal(false);
-
+    let filteredSubEvents = subEvents.filter((e) => e.id !== subEvent.id)
+    setSubEvents([...filteredSubEvents, subEvent])
+    setIsSubEventModal(false)
+  }
+  const handleRemoveSubEvents = (subEvent: EnteredSubEventType) => {
+    let filteredSubEvents = subEvents.filter((e) => e.id !== subEvent.id)
+    setSubEvents(filteredSubEvents)
+  }
+  const validSubEvents = (subEvents: EnteredSubEventType[]) => {
+    if (subEvents.length > 0) return true
+    else return false
   }
   useEffect(() => {
     if (isError) {
-      if (error && error.message) showErrorToast(error.message + " Please Contact your studio owner.")
+      if (error && error.message)
+        showErrorToast(error.message + ' Please Contact your studio owner.')
       else showErrorToast('Something went wrong! Please contact studio owner.')
     } else if (success) {
       showSuccessToast('Event created successfully.')
@@ -295,20 +306,20 @@ const EventForm = () => {
       validCustomerName(customerName) &&
       customerPhoneNumber &&
       validPhoneNumber(customerPhoneNumber.toString()) &&
-      validEventName(eventName)
+      validEventName(eventName) &&
+      validSubEvents(subEvents)
     ) {
-      console.log('event created.')
-      // dispatch(
-      // submitEventFormAPI({
-      //   token: formToken,
-      //   customer_name: customerName,
-      //   event_location: eventLocation,
-      //   event_name: eventName,
-      //   phone_number: '+91' + customerPhoneNumber.toString(),
-      //   event_date: start_date,
-      //   event_time: start_time,
-      // }),
-      // )
+
+      dispatch(
+        submitEventFormAPI({
+          token: formToken,
+          customer_name: customerName,
+          sub_events: subEvents,
+          event_name: eventName,
+          phone_number: '+91' + customerPhoneNumber.toString(),
+
+        }),
+      )
     } else setShowError(true)
   }
   const onChangeData = (name: string, value: string) => {
@@ -355,7 +366,16 @@ const EventForm = () => {
           </SubmittedFormContainer>
         ) : (
           <>
-            {isSubEventModal && <SubEventModal locationList={locationList} setLocationList={setLocationList} currentLength={subEvents.length} addSubEvent={handleAddSubEvents} currentSubEvent={currentSubEvent} onClose={() => setIsSubEventModal(false)} />}
+            {isSubEventModal && (
+              <SubEventModal
+                locationList={locationList}
+                setLocationList={setLocationList}
+                currentLength={subEvents.length}
+                addSubEvent={handleAddSubEvents}
+                currentSubEvent={currentSubEvent}
+                onClose={() => setIsSubEventModal(false)}
+              />
+            )}
             <FormField>
               <InputContainer>
                 <Label>Customer Name</Label>
@@ -423,23 +443,46 @@ const EventForm = () => {
             <FormField>
               <InputContainer>
                 <AddSubEventHeaderContainer>
-
                   <Label htmlFor="name">Sub Events</Label>
-                  <AddSubEventButton onClick={() => { setCurrentSubEvent(null); setIsSubEventModal(true) }}>+
-
+                  <AddSubEventButton
+                    onClick={() => {
+                      setCurrentSubEvent(null)
+                      setIsSubEventModal(true)
+                    }}
+                  >
+                    +
                   </AddSubEventButton>
                 </AddSubEventHeaderContainer>
                 <SubEventsList>
-                  {subEvents.map(event =>
-                    <SubEventNameContainer onClick={() => { setCurrentSubEvent(event); setIsSubEventModal(true) }}>
-                      <SubEventName type='text' value={event.sub_event_name} readOnly />
-                      <CloseButton>&times;</CloseButton>
+                  {subEvents.map((event) => (
+                    <SubEventNameContainer
+                      onClick={() => {
+                        setCurrentSubEvent(event)
+                        setIsSubEventModal(true)
+                      }}
+                    >
+                      <SubEventName
+                        type="text"
+                        value={event.sub_event_name}
+                        readOnly
+                      />
+                      <CloseButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveSubEvents(event)
+                        }}
+                      >
+                        &times;
+                      </CloseButton>
                     </SubEventNameContainer>
-                  )}
+                  ))}
                 </SubEventsList>
               </InputContainer>
               <UnderLine width={100} isPercent={true} />
-
+              <Errortext
+                message="Please Add sub events"
+                show={showError && !validSubEvents(subEvents)}
+              />
             </FormField>
             {loading ? (
               <LoadingDots />
