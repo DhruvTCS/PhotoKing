@@ -14,6 +14,8 @@ flex-direction: column;
 overflow-x:hidden;
 overflow-y:hidden;
 position: relative;
+align-items: center;
+justify-content: center;
 
 
 `
@@ -25,17 +27,20 @@ gap: 0px;
 opacity: 0px;
 display: flex;
 flex-direction: row;
-overflow: hidden;
+align-items: center;
+justify-content:center;
 `
 const FormContainer = styled.div`
 display:flex;
 flex-direction: column;
-position: absolute;
-top: 140px;
-left: 1100px;
+position: relative;
+// position: absolute;
 `
 const BottomtextContainer = styled.div`
-margin:25px;
+width:100%;
+align-items: center;
+display: flex;
+justify-content:center;
 `
 const StyledLink = styled.a`
 font-family: Urbanist, sans-serif;
@@ -84,9 +89,9 @@ const Login: React.FC = () => {
     return (
         <AuthContainer>
 
-            <GradientDiv1 />
+            {/* <GradientDiv1 />
             <GradientDiv2 />
-            <GradientDiv3 />
+            <GradientDiv3 /> */}
             <AuthPageContainer>
 
                 <AuthLeftImageContainer />

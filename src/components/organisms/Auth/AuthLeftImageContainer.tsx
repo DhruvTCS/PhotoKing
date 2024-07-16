@@ -7,11 +7,12 @@ import ImageContainer from '../../molecules/Login/ImageContainer'
 const MainLeftContainer = styled.div`
 
 width: 845px;
-height: 789.58px;
-position: absolute;
-top:0px;
-left:200px;
-gap: 0px;
+height: 854px;
+position: relative;
+// position: absolute;
+// top:0px;
+// left:200px;
+// gap: 0px;
 border: 11px 0px 0px 0px;
 border-radius: 100px 0px 0px 0px;
 `

@@ -7,7 +7,7 @@ export const showSuccessToast = (message: string) => {
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
-        pauseOnHover: true,
+        pauseOnHover: false,
         draggable: true,
         progress: undefined,
         progressStyle: { background: '#4caf50' },
@@ -17,7 +17,7 @@ export const showSuccessToast = (message: string) => {
 export const showErrorToast = (message: string) => {
     toast.error(message, {
         position: 'top-center',
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

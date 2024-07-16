@@ -1,6 +1,7 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { UserState } from '../../Slice/Auth/AuthSlice';
 import { loginUser } from '../../ApiCalls/Auth/login';
+import { showErrorToast } from '../../../components/atoms/Utlis/Toast';
 export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -18,6 +19,8 @@ export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             state.loading = false;
             if (action.payload.data.role === null && !state.isRegister) {
                 state.isError = true;
+
+                showErrorToast("Please Register First.");
                 state.error = {
                     status: 402,
                     message: "Please Register first"

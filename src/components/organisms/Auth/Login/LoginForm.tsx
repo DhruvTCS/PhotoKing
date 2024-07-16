@@ -180,7 +180,6 @@ const LoginForm: React.FC = () => {
         if (isError) {
             if (error) {
                 if (error.status === 402) {
-                    showErrorToast("Please Register first");
                     navigate('/auth/signup')
                 } else if (error.status == 401) {
 
