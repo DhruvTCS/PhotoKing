@@ -15,7 +15,7 @@ interface otpTextProps {
 }
 
 const OtplVerificationFormContainer = styled.div`
-  width: 100%;
+  width: 425px;
   max-width: 548px;
   height: auto;
   background-color: white;
