@@ -13,6 +13,8 @@ import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
+
+import imageCompression from 'browser-image-compression';
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 const NewMemberPageContainer = styled.div`
 height:100%;
@@ -57,7 +59,6 @@ const BodyContainer = styled.div`
 width: 96%;
 height: 530px;
 border-radius: 10px;
-opacity: 0.7;
 background: #FFFFFFCC;
 margin-top:20px;
 
@@ -225,7 +226,6 @@ const CreateNewMemberPage: React.FC = () => {
     const [contact, setContact] = useState<string>('');
     const [activeButton, setActiveButton] = useState<boolean>(false);
     const [showError, setShowError] = useState<boolean>(false);
-    const [requireFiled, setReduireFiled] = useState<number[]>([0, 1, 2, 3, 4]);
     const dispatch = useAppDispatch();
     const { loading, isError, success, error } = useAppSelector(state => state.member)
     useEffect(() => {
@@ -237,7 +237,6 @@ const CreateNewMemberPage: React.FC = () => {
     };
     useEffect(() => {
         if (success) {
-            showSuccessToast("Member added successfully");
             navigate(-1);
         } else if (isError) {
             if (error && error.message) {
@@ -254,20 +253,53 @@ const CreateNewMemberPage: React.FC = () => {
 
     }, [success, isError, dispatch])
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // setAlbum({ ...album, image: file });
-                setSelectedImage(prefile => {
+            let file = event.target.files[0]
 
-                    return file;
-                })
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            if (file.size / 1024 / 1024 > 2) {
 
+                const compressedBlob = await compressImage(file); // Your image compression function
+                file = blobToFile(compressedBlob, file.name);
+                console.log(file);
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+
+                    setImagePreview(reader.result as string)
+                }
+            } else {
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setImagePreview(reader.result as string)
+                }
+            }
+        }
+
+
+    }
+    const blobToFile = (blob: Blob, fileName: string): File => {
+        return new File([blob], fileName, { type: blob.type });
+    };
+    const compressImage = async (file: File): Promise<Blob> => {
+        const options = {
+            maxSizeMB: 1,          // Maximum size in MB
+            maxWidthOrHeight: 1920, // Max width or height
+            useWebWorker: true      // Use web worker for faster compression
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            return compressedBlob;
+        } catch (error) {
+            console.error('Error compressing image:', error);
+            throw error;
         }
     };
     const isValidData = () => {
@@ -280,17 +312,7 @@ const CreateNewMemberPage: React.FC = () => {
         const phoneRegex = /^[0-9]{10}$/;
         return phoneRegex.test(phoneNumber);
     };
-    const sendImageToCloudinary = async () => {
-        if (selectedImage) {
-            // console.log(selectedImage);
-            const result = uploadToCloudinary1(selectedImage).then((data) => {
-                return data;
-            }).catch(err => console.log(err));
 
-            return result;
-        }
-        return 'false';
-    }
     const handleSubmit = () => {
         if (!activeButton) {
             setShowError(true);

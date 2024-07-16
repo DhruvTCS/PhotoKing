@@ -8,6 +8,8 @@ import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary'
 import { Folder, NewAlbum, NewFolder } from '../../../../Data/album.dto'
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
 import { createAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI'
+
+import imageCompression from 'browser-image-compression';
 import { useNavigate } from 'react-router-dom'
 import {
     clearError,
@@ -213,9 +215,11 @@ const CreateNewAlbumPage: React.FC = () => {
         media_type: 1,
         image: '',
     })
-    const [imagePreview, setImagePreview] = useState<string | null>(null)
+    const [imagePreview, setImagePreview] = useState<string>('')
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
+    const [isCompressing, setIsCompressing] = useState<boolean>(false);
     const [activeButton, setActiveButton] = useState(true)
+    const [selectedFileName, setSelectedFileName] = useState('')
     const [folders, setFolders] = useState<NewFolder[] | []>([])
     const [createFolderModal, setCreateFolderModal] = useState(false)
     const dispatch = useAppDispatch()
@@ -228,7 +232,6 @@ const CreateNewAlbumPage: React.FC = () => {
     const navigate = useNavigate()
     useEffect(() => {
         if (isUpdate) {
-            showSuccessToast('New Album Created.')
             navigate('/dashboard/')
         }
 
@@ -255,22 +258,57 @@ const CreateNewAlbumPage: React.FC = () => {
         // This function will be called every time `state` changes
         isValidAlbum(album)
     }, [selectedImage, album])
-    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        // console.log(event.target.files)
+    const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0]
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                // setAlbum({ ...album, image: file });
-                setSelectedImage((prefile) => {
-                    return file
-                })
-                setImagePreview(reader.result as string)
+            let file = event.target.files[0]
+            setSelectedFileName(file.name);
+            if (file.size / 1024 / 1024 > 2) {
+                setIsCompressing(true);
+                const compressedBlob = await compressImage(file); // Your image compression function
+                file = blobToFile(compressedBlob, file.name);
+                console.log(file);
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setIsCompressing(false);
+                    setImagePreview(reader.result as string)
+                }
+            } else {
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setImagePreview(reader.result as string)
+                }
             }
-            reader.readAsDataURL(file)
+
             isValidAlbum(album)
         }
+
+
     }
+    const blobToFile = (blob: Blob, fileName: string): File => {
+        return new File([blob], fileName, { type: blob.type });
+    };
+    const compressImage = async (file: File): Promise<Blob> => {
+        const options = {
+            maxSizeMB: 1,          // Maximum size in MB
+            maxWidthOrHeight: 1920, // Max width or height
+            useWebWorker: true      // Use web worker for faster compression
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            return compressedBlob;
+        } catch (error) {
+            console.error('Error compressing image:', error);
+            throw error;
+        }
+    };
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target
@@ -308,6 +346,8 @@ const CreateNewAlbumPage: React.FC = () => {
         return true
     }
     const handleDivClick = () => {
+        if (fileInputRef.current)
+            fileInputRef.current.value = '';
         fileInputRef.current?.click()
     }
     const handleSubmit = async () => {
@@ -373,7 +413,7 @@ const CreateNewAlbumPage: React.FC = () => {
         showSuccessToast('Folder added successfully.')
     }
     const removeImageandPreview = () => {
-        setImagePreview(null);
+        setImagePreview('');
         setSelectedImage(null)
     }
     return (
@@ -381,7 +421,7 @@ const CreateNewAlbumPage: React.FC = () => {
             <UperContainer>
                 <UploadImageContainer onClick={() => handleDivClick()}>
                     <UploadImageText>Cover Photo</UploadImageText>
-                    {imagePreview ? (
+                    {imagePreview.length > 0 ? (
                         <ImagePreviewConatiner>
                             <CoverImagePreview src={imagePreview} />
                             <RemoveButtonConatiner onClick={(e) => { e.stopPropagation(); removeImageandPreview() }}>
@@ -392,7 +432,7 @@ const CreateNewAlbumPage: React.FC = () => {
                         <>
                             <UploadImageIconContainer>
                                 <UploadImageIcon src={AddCoverImageIconPng} />
-                                <UploadImageIconText>Add Cover Photo</UploadImageIconText>
+                                <UploadImageIconText>{isCompressing ? `Uploading....` : `Add Cover Photo`}</UploadImageIconText>
                             </UploadImageIconContainer>
                         </>
                     )}

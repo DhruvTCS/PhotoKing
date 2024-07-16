@@ -13,7 +13,9 @@ import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI, updateMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
-import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
+import { showErrorToast } from '../../../atoms/Utlis/Toast';
+
+import imageCompression from 'browser-image-compression';
 const NewMemberPageContainer = styled.div`
 height:100%;
 width:100%;
@@ -57,7 +59,6 @@ const BodyContainer = styled.div`
 width: 96%;
 height: 530px;
 border-radius: 10px;
-opacity: 0.7;
 background: #FFFFFFCC;
 margin-top:20px;
 
@@ -226,11 +227,30 @@ const EditMemberPage: React.FC = () => {
         isValidData();
     }, [selectedImage, name, jobType, contact, countryCode])
     const handleDivClick = () => {
+
         fileInputRef.current?.click();
     };
+    const blobToFile = (blob: Blob, fileName: string): File => {
+        return new File([blob], fileName, { type: blob.type });
+    };
+    const compressImage = async (file: File): Promise<Blob> => {
+        const options = {
+            maxSizeMB: 1,          // Maximum size in MB
+            maxWidthOrHeight: 1920, // Max width or height
+            useWebWorker: true      // Use web worker for faster compression
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            return compressedBlob;
+        } catch (error) {
+            console.error('Error compressing image:', error);
+            throw error;
+        }
+    };
+
     useEffect(() => {
         if (success) {
-            showSuccessToast("Member edited successfully");
             navigate('/dashboard/members/all');
         } else if (isError) {
             if (error && error.message) {
@@ -256,22 +276,37 @@ const EditMemberPage: React.FC = () => {
         }
 
     }, [currentMember])
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // setAlbum({ ...album, image: file });
-                setSelectedImage(prefile => {
+            let file = event.target.files[0]
 
-                    return file;
-                })
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
+            if (file.size / 1024 / 1024 > 2) {
 
+                const compressedBlob = await compressImage(file); // Your image compression function
+                file = blobToFile(compressedBlob, file.name);
+                console.log(file);
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+
+                    setImagePreview(reader.result as string)
+                }
+            } else {
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setImagePreview(reader.result as string)
+                }
+            }
         }
-    };
+
+
+    }
     const isValidData = () => {
         // console.log("validate calling");
         if (name.length > 0 && jobType.length > 0 && (selectedImage || currentMember?.profile_image) && validatePhoneNumber(contact) && countryCode.length > 0 && countryCode.length <= 4) {
@@ -313,7 +348,7 @@ const EditMemberPage: React.FC = () => {
         <NewMemberPageContainer>
             <BackButtonContainer >
                 <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
-                <BackButtonText>Add new member</BackButtonText>
+                <BackButtonText>Update member</BackButtonText>
             </BackButtonContainer>
             <BodyContainer>
                 <ImageContainer onClick={handleDivClick}>

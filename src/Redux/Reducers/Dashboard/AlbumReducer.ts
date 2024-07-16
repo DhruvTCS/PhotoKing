@@ -32,6 +32,8 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(createAlbumAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isUpdate = true;
+
+            showSuccessToast('New Album Created.')
         })
         .addCase(createAlbumAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;

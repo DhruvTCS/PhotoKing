@@ -1,6 +1,7 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { MemberState } from '../../Slice/Dashboard/MemberSlice';
 import { createNewMemberAPI, getAllMembers, updateMemberAPI } from '../../ApiCalls/Dashboard/MembersAPI';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => {
     builder.addCase(getAllMembers.pending, (state) => {
         state.loading = true;
@@ -38,7 +39,8 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.success = true;
             state.isMemberFetched = false;
-            state.isMemberFetched = false;
+
+            showSuccessToast("Member created successfully");
         })
         .addCase(createNewMemberAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
@@ -55,8 +57,8 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.success = true;
             state.isMemberFetched = false;
-            state.isMemberFetched = false;
 
+            showSuccessToast("Member edited successfully");
         })
         .addCase(updateMemberAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;

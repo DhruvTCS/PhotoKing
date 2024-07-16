@@ -17,6 +17,8 @@ import AddFolderModal from '../../../atoms/Dashboard/SingleAlbumPage/CreateFolde
 import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 
+import imageCompression from 'browser-image-compression';
+import Errortext from '../../../atoms/Utlis/Errortext';
 
 const AlbumPageContainer = styled.div`
  height:94%;
@@ -232,10 +234,13 @@ const EditAlbumPage: React.FC = () => {
     const [album, setAlbum] = useState<NewAlbum>({ name: "", date: "", media_type: 1, image: "" });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [slectedImage, setSelectedImage] = useState<File | null>(null);
+    const [showError, setShowError] = useState<boolean>(false);
     const [loadFirstTime, setLoadingFirstTime] = useState(true);
     const [activeButton, setActiveButton] = useState(true);
     const [folders, setFolders] = useState<Folder[] | []>([]);
     const dispatch = useAppDispatch();
+
+    const [isCompressing, setIsCompressing] = useState<boolean>(false);
     const dateRef = useRef<HTMLInputElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
@@ -296,49 +301,84 @@ const EditAlbumPage: React.FC = () => {
 
     useEffect(() => {
         // This function will be called every time `state` changes
-        if (!loadFirstTime)
-            isValidAlbum(album);
+        if (isAlbumChange()) {
+            setActiveButton(false);
+        } else {
+            setActiveButton(true);
+        }
     }, [slectedImage, album]);
-    const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setLoadingFirstTime(false)
+    const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
+        console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                // setAlbum({ ...album, image: file });
-                setSelectedImage(prefile => {
+            let file = event.target.files[0]
+            if (file.size / 1024 / 1024 > 2) {
+                setIsCompressing(true);
+                const compressedBlob = await compressImage(file); // Your image compression function
+                file = blobToFile(compressedBlob, file.name);
+                console.log(file);
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setIsCompressing(false);
+                    setImagePreview(reader.result as string)
+                }
+            } else {
+                const reader = new FileReader()
+                reader.readAsDataURL(file)
+                reader.onloadend = () => {
+                    // setAlbum({ ...album, image: file });
+                    setSelectedImage(file)
+                    setImagePreview(reader.result as string)
+                }
+            }
+        }
 
-                    return file;
-                })
-                setImagePreview(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-            isValidAlbum(album);
+
+    }
+    const validData = () => {
+        if (album.name.length > 0 && album.date.length > 0 && isValidDate(album.date) && (album.image.length > 0 || slectedImage)) return true;
+        else return false;
+
+    }
+    const isAlbumChange = () => {
+        console.log(album.name !== currentAlbum?.name)
+        if (album.name !== currentAlbum?.name || album.date !== currentAlbum?.date || album.image !== currentAlbum?.image || slectedImage) return true;
+        else return false;
+    }
+    const blobToFile = (blob: Blob, fileName: string): File => {
+        return new File([blob], fileName, { type: blob.type });
+    };
+    const compressImage = async (file: File): Promise<Blob> => {
+        const options = {
+            maxSizeMB: 1,          // Maximum size in MB
+            maxWidthOrHeight: 1920, // Max width or height
+            useWebWorker: true      // Use web worker for faster compression
+        };
+
+        try {
+            const compressedBlob = await imageCompression(file, options);
+            return compressedBlob;
+        } catch (error) {
+            console.error('Error compressing image:', error);
+            throw error;
         }
     };
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target;
         setLoadingFirstTime(false)
-        // isValidAlbum(album);
         setAlbum(album => {
             // album = { ...album, [name]: value }
             if (name == "date" || (name == 'name' && value.length < 25)) {
                 // console.log(name == "date" || (name == 'name' && value.length < 25 && value !== album.name))
                 album = { ...album, [name]: value }
             }
-            // isValidAlbum(album);
             return album;
         });
     }
-    const isValidAlbum = (album: NewAlbum) => {
-        // console.log(isValidDate(album.date));
-        if ((isValidDate(album.date) || (album.name.length > 3 && album.name !== currentAlbum?.name)) && (album.image.length !== 0 || slectedImage)) {
-            setActiveButton(false);
-        } else {
-            setActiveButton(true);
-        }
-    }
+
 
     const isValidDate = (dateString: string): boolean => {
         // Check the format with a regular expression
@@ -354,21 +394,28 @@ const EditAlbumPage: React.FC = () => {
         return true;
     };
     const handleDivClick = () => {
+        if (fileInputRef.current)
+            fileInputRef.current.value = '';
         fileInputRef.current?.click();
     };
     const handleSubmit = async () => {
-        if (currentAlbum) {
-            const formData = new FormData();
-            console.log(album);
-            dispatch(setAlbumLoading())
-            if (slectedImage) {
-                formData.append('image', slectedImage);
-            }
-            formData.append('project_id', `${currentAlbum?.id}`);
-            formData.append('name', album.name);
-            formData.append('date', album.date);
-            dispatch(updateAlbumAPI(formData));
+        if (!validData()) {
+            setShowError(true);
+        } else {
 
+            if (currentAlbum) {
+                const formData = new FormData();
+                console.log(album);
+                dispatch(setAlbumLoading())
+                if (slectedImage) {
+                    formData.append('image', slectedImage);
+                }
+                formData.append('project_id', `${currentAlbum?.id}`);
+                formData.append('name', album.name);
+                formData.append('date', album.date);
+                dispatch(updateAlbumAPI(formData));
+
+            }
         }
 
     }
@@ -394,10 +441,7 @@ const EditAlbumPage: React.FC = () => {
             album.image = '';
             return album;
         })
-        setSelectedImage(img => {
-            isValidAlbum(album);
-            return null;
-        });
+        setSelectedImage(null);
     }
 
 
@@ -418,8 +462,9 @@ const EditAlbumPage: React.FC = () => {
                         <UploadImageIconContainer >
 
                             <UploadImageIcon src={AddCoverImageIconPng} />
-                            <UploadImageIconText >Add Cover Photo</UploadImageIconText>
+                            <UploadImageIconText >{isCompressing ? 'Uploading...' : 'Add Cover Image'}</UploadImageIconText>
                         </UploadImageIconContainer>
+                        <Errortext show={showError && (album.image.length === 0 && !slectedImage)} message='Please upload image.' />
                     </div>
                     )}
                     <input
@@ -435,11 +480,13 @@ const EditAlbumPage: React.FC = () => {
                         <InputLabel>Name</InputLabel>
                         <Input type="text" name="name" placeholder='Photo King' onChange={onChange} value={album.name} />
                         <UnderLine width={478} />
+                        <Errortext show={showError && album.name.length === 0} message={`Please provide valid album's name.`} />
                     </InputContainer>
                     <InputContainer onClick={() => { dateRef.current?.showPicker() }}>
                         <InputLabel>Creation Date</InputLabel>
                         <Input type="date" name='date' ref={dateRef} placeholder='dd/mm/yyyy' onChange={onChange} value={album.date} />
                         <UnderLine width={478} />
+                        <Errortext show={showError && album.date.length === 0} message={`Please provide valid album's date.`} />
                     </InputContainer>
                 </UplaodDataContainer>
             </UperContainer>
