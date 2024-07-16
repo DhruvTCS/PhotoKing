@@ -29,14 +29,36 @@ const Container = styled.div`
   background: #f8edfa;
   padding: 20px;
 `
-
-const Form = styled.div`
-  display: flex;
+const MainConTainer = styled.div`
+display: flex;
   flex-direction: column;
+  align-items: center;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+
+  @media (max-width: ${breakpoints.mobile}) {
+    padding: 15px;
+    box-shadow: none;
+  }
+
+  @media (min-width: ${breakpoints.tablet}) {
+    max-width: 500px;
+  }
+
+  @media (min-width: ${breakpoints.desktop}) {
+    max-width: 600px;
+  }
+`;
+const Form = styled.div`
+  display: flex;
+  flex-direction: column;
+  
+  background: white;
+  padding: 20px;
   max-width: 400px;
   width: 100%;
 
@@ -348,156 +370,159 @@ const EventForm = () => {
 
   return (
     <Container>
-      <LogoContainer onClick={() => navigate('/dashboard/')}>
-        <LogoImage />
+      <MainConTainer>
 
-        <TextContainer>Photo King</TextContainer>
-      </LogoContainer>
+        <LogoContainer onClick={() => navigate('/dashboard/')}>
+          <LogoImage />
 
-      <Form>
-        {isFormSubmitted ? (
-          <SubmittedFormContainer>
-            <MessageHeader>Thank You for Choosing Us!</MessageHeader>
-            <MessageText>
-              We appreciate you selecting our studio to capture the special
-              moments of your life's event. We're excited to work with you and
-              make your memories unforgettable.
-            </MessageText>
-          </SubmittedFormContainer>
-        ) : (
-          <>
-            {isSubEventModal && (
-              <SubEventModal
-                locationList={locationList}
-                setLocationList={setLocationList}
-                currentLength={subEvents.length}
-                addSubEvent={handleAddSubEvents}
-                currentSubEvent={currentSubEvent}
-                onClose={() => setIsSubEventModal(false)}
-              />
-            )}
-            <FormField>
-              <InputContainer>
-                <Label>Customer Name</Label>
-                <Input
-                  type="text"
-                  onChange={(e) => {
-                    onChangeData('customer_name', e.target.value)
-                  }}
-                  value={customerName}
+          <TextContainer>Photo King</TextContainer>
+        </LogoContainer>
+        <Form>
+          {isFormSubmitted ? (
+            <SubmittedFormContainer>
+              <MessageHeader>Thank You for Choosing Us!</MessageHeader>
+              <MessageText>
+                We appreciate you selecting our studio to capture the special
+                moments of your life's event. We're excited to work with you and
+                make your memories unforgettable.
+              </MessageText>
+            </SubmittedFormContainer>
+          ) : (
+            <>
+              {isSubEventModal && (
+                <SubEventModal
+                  locationList={locationList}
+                  setLocationList={setLocationList}
+                  currentLength={subEvents.length}
+                  addSubEvent={handleAddSubEvents}
+                  currentSubEvent={currentSubEvent}
+                  onClose={() => setIsSubEventModal(false)}
                 />
-              </InputContainer>
-              <UnderLine width={100} isPercent={true} />
-              <Errortext
-                show={showError && !validCustomerName(customerName)}
-                message={'Please provide valid customer name.'}
-              />
-            </FormField>
-
-            <FormField>
-              <InputContainer>
-                <Label htmlFor="phone">Phone Number</Label>
-                <ContactContainer>
-                  <CountryCode type="text" readOnly={true} value={'+91'} />
+              )}
+              <FormField>
+                <InputContainer>
+                  <Label>Customer Name</Label>
                   <Input
-                    type="number"
-                    id="phone"
-                    name="phone"
-                    value={customerPhoneNumber}
-                    onChange={(e) =>
-                      onChangeData(
-                        'customer_contact',
-                        e.target.value.toString(),
-                      )
-                    }
-                  />
-                </ContactContainer>
-              </InputContainer>
-              <UnderLine width={100} isPercent={true} />
-              <Errortext
-                show={
-                  showError &&
-                  !customerPhoneNumber &&
-                  !validPhoneNumber(customerPhoneNumber.toString())
-                }
-                message={'Please provide valid customer contact details.'}
-              />
-            </FormField>
-            <FormField>
-              <InputContainer>
-                <Label htmlFor="name">Event Name</Label>
-                <Input
-                  type="text"
-                  id="name"
-                  name="name"
-                  onChange={(e) => onChangeData('event_name', e.target.value)}
-                  value={eventName}
-                />
-              </InputContainer>
-              <UnderLine width={100} isPercent={true} />
-              <Errortext
-                show={showError && !validEventName(eventName)}
-                message={'Please provide valid event name.'}
-              />
-            </FormField>
-            <FormField>
-              <InputContainer>
-                <AddSubEventHeaderContainer>
-                  <Label htmlFor="name">Sub Events</Label>
-                  <AddSubEventButton
-                    onClick={() => {
-                      setCurrentSubEvent(null)
-                      setIsSubEventModal(true)
+                    type="text"
+                    onChange={(e) => {
+                      onChangeData('customer_name', e.target.value)
                     }}
-                  >
-                    +
-                  </AddSubEventButton>
-                </AddSubEventHeaderContainer>
-                <SubEventsList>
-                  {subEvents.map((event) => (
-                    <SubEventNameContainer
+                    value={customerName}
+                  />
+                </InputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext
+                  show={showError && !validCustomerName(customerName)}
+                  message={'Please provide valid customer name.'}
+                />
+              </FormField>
+
+              <FormField>
+                <InputContainer>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <ContactContainer>
+                    <CountryCode type="text" readOnly={true} value={'+91'} />
+                    <Input
+                      type="number"
+                      id="phone"
+                      name="phone"
+                      value={customerPhoneNumber}
+                      onChange={(e) =>
+                        onChangeData(
+                          'customer_contact',
+                          e.target.value.toString(),
+                        )
+                      }
+                    />
+                  </ContactContainer>
+                </InputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext
+                  show={
+                    showError &&
+                    !customerPhoneNumber &&
+                    !validPhoneNumber(customerPhoneNumber.toString())
+                  }
+                  message={'Please provide valid customer contact details.'}
+                />
+              </FormField>
+              <FormField>
+                <InputContainer>
+                  <Label htmlFor="name">Event Name</Label>
+                  <Input
+                    type="text"
+                    id="name"
+                    name="name"
+                    onChange={(e) => onChangeData('event_name', e.target.value)}
+                    value={eventName}
+                  />
+                </InputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext
+                  show={showError && !validEventName(eventName)}
+                  message={'Please provide valid event name.'}
+                />
+              </FormField>
+              <FormField>
+                <InputContainer>
+                  <AddSubEventHeaderContainer>
+                    <Label htmlFor="name">Sub Events</Label>
+                    <AddSubEventButton
                       onClick={() => {
-                        setCurrentSubEvent(event)
+                        setCurrentSubEvent(null)
                         setIsSubEventModal(true)
                       }}
                     >
-                      <SubEventName
-                        type="text"
-                        value={event.sub_event_name}
-                        readOnly
-                      />
-                      <CloseButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRemoveSubEvents(event)
+                      +
+                    </AddSubEventButton>
+                  </AddSubEventHeaderContainer>
+                  <SubEventsList>
+                    {subEvents.map((event) => (
+                      <SubEventNameContainer
+                        onClick={() => {
+                          setCurrentSubEvent(event)
+                          setIsSubEventModal(true)
                         }}
                       >
-                        &times;
-                      </CloseButton>
-                    </SubEventNameContainer>
-                  ))}
-                </SubEventsList>
-              </InputContainer>
-              <UnderLine width={100} isPercent={true} />
-              <Errortext
-                message="Please Add sub events"
-                show={showError && !validSubEvents(subEvents)}
-              />
-            </FormField>
-            {loading ? (
-              <LoadingDots />
-            ) : (
-              <Button
-                onClick={() => {
-                  handleSubmit()
-                }}
-              >
-                Submit
-              </Button>
-            )}
-          </>
-        )}
-      </Form>
+                        <SubEventName
+                          type="text"
+                          value={event.sub_event_name}
+                          readOnly
+                        />
+                        <CloseButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveSubEvents(event)
+                          }}
+                        >
+                          &times;
+                        </CloseButton>
+                      </SubEventNameContainer>
+                    ))}
+                  </SubEventsList>
+                </InputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext
+                  message="Please Add sub events"
+                  show={showError && !validSubEvents(subEvents)}
+                />
+              </FormField>
+              {loading ? (
+                <LoadingDots />
+              ) : (
+                <Button
+                  onClick={() => {
+                    handleSubmit()
+                  }}
+                >
+                  Submit
+                </Button>
+              )}
+            </>
+          )}
+        </Form>
+
+      </MainConTainer>
     </Container>
   )
 }
