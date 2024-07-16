@@ -166,8 +166,10 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
     }, [eventFromToken])
     const handleCopy = () => {
         // setIsCopy(true);
-        navigator.clipboard.writeText(url);
-        showSuccessToast("Url copied to clipboard.")
+        navigator.clipboard.writeText(url).then(() => {
+
+            showSuccessToast("Url copied to clipboard.")
+        });
         // alert('Link copied to clipboard!');
 
     };

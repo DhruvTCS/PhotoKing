@@ -268,7 +268,7 @@ const SelectionMenu = styled.div<{ menuOpen: boolean }>`
 
 const LocationMenuHeader = styled.div`
   display: flex;
-  align-items: center;
+  align-items: baseline;
   width: 92%;
   justify-content: space-between;
   padding: 10px;
