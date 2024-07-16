@@ -25,27 +25,6 @@ display:flex;
 align-items: center;
 justify-content: center;
 `;
-const eventsData = [
-
-    {
-        id: 2,
-        title: 'Surat Marriage shoot',
-        start: new Date('Mon Jul 15 2024 18:00:00 GMT +0530(India Standard Time)'),
-        end: new Date('Mon Jul 15 2024 22:00:00 GMT +0530(India Standard Time)'),
-        location: 'done',
-        members: [
-            {
-                id: 5,
-                member: 52,
-            },
-            {
-                id: 6,
-                member: 48,
-            },
-        ],
-    },
-    // Add more events as needed
-]
 
 const CalenderConatiner = styled.div`
   height: 900px;

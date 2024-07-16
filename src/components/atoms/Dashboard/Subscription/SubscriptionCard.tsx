@@ -126,7 +126,9 @@ color:${props => props.isActivated ? `white` : `#848199`} ;
 
 `;
 const ButtonContainer = styled.div`
-
+display:flex;
+align-items: center;
+justify-content: center;
 `;
 const SubmitButton = styled.button<{ isActivated: boolean }>`
 width: 207px;

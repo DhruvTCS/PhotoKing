@@ -1,8 +1,8 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
 import { EventState } from '../../Slice/Dashboard/EventSlice';
-import { createEventAPI, deleteEventAPI, getAllEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
-import { BackendEvent, EventType } from '../../../Data/event.dto';
+import { createEventAPI, deleteEventAPI, getAllEventsAPI, getUserCreatedEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
+import { BackendEvent, EventType, UserCreatedEvents } from '../../../Data/event.dto';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 
 const convertToDateTime = (date: string, time: string): string => {
@@ -97,6 +97,27 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             // state.Events = action.payload;
         })
         .addCase(deleteEventAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(getUserCreatedEventsAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+            state.success = false;
+            // state.error = {};
+        })
+        .addCase(getUserCreatedEventsAPI.fulfilled, (state, action: PayloadAction<UserCreatedEvents[]>) => {
+            state.loading = false;
+            console.log(action.payload)
+            if (action.payload === null) state.userCreatedEvents = [];
+            else
+                state.userCreatedEvents = action.payload;
+            // state.Events = action.payload;
+        })
+        .addCase(getUserCreatedEventsAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
 

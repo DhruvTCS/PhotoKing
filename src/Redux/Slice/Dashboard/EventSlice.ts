@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Error } from '../../../Data/error.dto';
 
-import { EventType } from '../../../Data/event.dto';
+import { EventType, UserCreatedEvents } from '../../../Data/event.dto';
 import { EventReducer } from '../../Reducers/Dashboard/EventReducer';
 export interface EventState {
     loading: boolean;
@@ -11,6 +11,7 @@ export interface EventState {
     success: boolean;
     isEventUpdate: boolean;
     currentEvent?: EventType;
+    userCreatedEvents?: UserCreatedEvents[];
 }
 
 const initialState: EventState = {
@@ -20,6 +21,7 @@ const initialState: EventState = {
     error: {},
     isError: false,
     success: false,
+
 
 
 

@@ -101,19 +101,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     }, [selectedSlot, currentEvent]);
 
 
-    useEffect(() => {
-        if (addMemberMenu) {
-            document.addEventListener('mousedown', handleClickOutside)
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [addMemberMenu])
-    useEffect(() => {
-        IsValidData();
-    }, [eventName, startDateTime, endDateTime])
+
 
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -140,19 +128,30 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         }
 
     }
-    const IsValidData = () => {
 
-        // console.log(startDate, startTime);
-        if (eventName.length > 0 && eventName.length <= 25 && startDateTime.length !== 0 && endDateTime.length !== 0) {
-            setActiveButton(true);
-        } else {
-            setActiveButton(false);
-        }
-    };
+    const validEventName = (name: string) => {
+        if (name.length > 0 && name.length < 35) {
+            return true;
+        } else return false;
+    }
+    const validDateTime = (startDateTime: Date, endDateTime: Date) => {
+        if (
+            startDateTime.toString().length !== 0 &&
+            endDateTime.toString().length !== 0 &&
+            startDateTime < endDateTime
+        )
+            return true
+        else return false
+    }
+    const validateLocation = (location: string) => {
+        if (location.length > 0 && location.length < 300) return true
+        else return false
+    }
+
+
 
     const handleSubmit = () => {
-        if (new Date(startDateTime) > new Date(endDateTime)) showErrorToast("Please enter valid date and time.")
-        if (!activeButton) {
+        if (!validDateTime(new Date(startDateTime), new Date(endDateTime)) || !validateLocation(eventLocation) || !validEventName(eventName)) {
             setShowError(true);
         }
         else {
@@ -214,11 +213,11 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                         <ModalInput
                             type="text"
                             value={eventName}
-                            onChange={(e) => setEventName(e.target.value)}
+                            onChange={(e) => { if (e.target.value.length < 35) setEventName(e.target.value) }}
                             placeholder="Enter event name"
                         />
                         <UnderLine width={100} isPercent={true} />
-                        <Errortext show={showError && eventName.length <= 0} message='Please provide event name.' />
+                        <Errortext show={showError && !validEventName(eventName)} message='Please provide valid event name.' />
                     </InputNameConatiner>
                     <InputNameConatiner style={{ "cursor": "pointer" }}>
                         <ModalLabel>Location:</ModalLabel>
@@ -242,7 +241,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 </FromDateLable>
                                 <Fromdate type='datetime-local' ref={startDateRef} onChange={(e) => setStartDateTime(e.target.value)} placeholder='Select date and time' value={startDateTime} />
                                 <UnderLine width={100} isPercent={true} />
-                                <Errortext show={showError && startDateTime.length <= 0} message='Please provide date and time.' />
+
                             </FromDateConatiner>
                             <FromDateConatiner onClick={() => endDateRef.current?.showPicker()}>
                                 <FromDateLable>
@@ -250,9 +249,10 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 </FromDateLable>
                                 <Fromdate type='datetime-local' ref={endDateRef} onChange={(e) => setEndDateTime(e.target.value)} placeholder='Select date and time' value={endDateTime} />
                                 <UnderLine width={100} isPercent={true} />
-                                <Errortext show={showError && endDateTime.length <= 0} message='Please provide date and time.' />
+
                             </FromDateConatiner>
                         </DateRangeConatiner>
+                        <Errortext message='Please provide valid dates.' show={showError && !validDateTime(new Date(startDateTime), new Date(endDateTime))} />
                         {/* <UnderLine width={100} isPercent={true} /> */}
                         <MemberSelecetionConatiner>
                             <SelectMemberHeadingConatiner>

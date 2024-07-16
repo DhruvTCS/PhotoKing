@@ -2,6 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import MemberImagePNG from '../../../../assets/images/Extra/memberImage.png'
 import { Member } from '../../../../Data/member.dto';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../../Redux/Hooks';
+import { setCurrentMember } from '../../../../Redux/Slice/Dashboard/MemberSlice';
 interface MembercardProps {
     member: Member
 
@@ -59,8 +62,14 @@ margin:0;
 margin-top:3px;
 `;
 const MemberCard: React.FC<MembercardProps> = ({ member }) => {
+    const navigate = useNavigate()
+    const dispatch = useAppDispatch();
     return (
-        <MemberCardContainer >
+        <MemberCardContainer onClick={() => {
+            dispatch(setCurrentMember(member))
+            navigate(`/dashboard/members/edit/${member.id}`)
+        }
+        }>
             <MemberImageContainer>
                 <MemberImage src={member.profile_image} />
             </MemberImageContainer>

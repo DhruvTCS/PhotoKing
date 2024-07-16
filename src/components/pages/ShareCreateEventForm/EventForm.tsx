@@ -10,6 +10,8 @@ import { submitEventFormAPI } from '../../../Redux/ApiCalls/Dashboard/EventAPI'
 import CompanyLogo from '../../molecules/Logo/CompanyLogo'
 import LogoImage from '../../atoms/Utlis/LogoImage'
 import LoadingDots from '../../atoms/Utlis/LoadinDots'
+import SubEventModal from '../../atoms/Dashboard/Events/SubEventModal'
+import { EnteredSubEventType } from '../../../Data/event.dto'
 
 const breakpoints = {
   mobile: '480px',
@@ -65,15 +67,6 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
 `
-const InputDateContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 45%;
-  @media (max-width: ${breakpoints.tablet}) {
-    width: 100%;
-    color: green;
-  }
-`
 const Label = styled.label`
   font-family: Urbanist;
   font-size: 18px;
@@ -109,17 +102,6 @@ const Input = styled.input`
     padding: 8px;
     font-size: 0.9rem;
   }
-`
-const InputMainDateContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-top: 15px;
-  border: 1px solid grey;
-  border-radius: 10px;
-  padding: 10px;
-
-  justify-content: space-between;
 `
 
 const Button = styled.button`
@@ -167,12 +149,7 @@ const CountryCode = styled.input`
     font-size: 0.9rem;
   }
 `
-const DateContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  cursor: pointer;
-`
+
 const SubmittedFormContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -219,18 +196,67 @@ const TextContainer = styled.div`
   line-height: 43.04px;
   text-align: center;
 `
+const SubEventsList = styled.div`
+display: flex;
+flex-wrap:wrap;
+`;
+const AddSubEventHeaderContainer = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
+`
+const AddSubEventButton = styled.button`
+font-size:20px;
+border:1px solid gray;
+font-weight: 400;
+background-color:transparent;
+border-radius:50%;
+color: gray;
+cursor:pointer;
+`;
+
+const SubEventNameContainer = styled.div`
+display:flex;
+align-items: center;
+padding:10px;
+margin:10px 0px 0px 10px;
+@media (max-width: ${breakpoints.mobile}) {
+    padding: 4px;
+    font-size: 0.9rem;
+  }
+border:1px solid gray;
+border-radius:10px;
+`;
+
+const SubEventName = styled.input`
+border:none;
+background-color:transparent;
+max-width:83px;
+&:focus{
+outline:none;
+}
+`
+
+const CloseButton = styled.span`
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align:end;
+`;
 const EventForm = () => {
   const [customerName, setCustomerName] = useState<string>('')
   const [customerPhoneNumber, setCustomerPhoneNumber] = useState<string>('')
   const [eventName, setEventName] = useState<string>('')
-  const [eventLocation, setEventLocation] = useState<string>('')
-  const [startDate, setStartDate] = useState('')
-  const [endDate, setEndDate] = useState('')
-  const startDateRef = useRef<HTMLInputElement>(null)
+  const [locationList, setLocationList] = useState<string[]>([]);
+
   const [showError, setShowError] = useState(false)
-  const endDateRef = useRef<HTMLInputElement>(null)
+  const [currentSubEvent, setCurrentSubEvent] = useState<EnteredSubEventType | null>(null)
   const [formToken, setFormToken] = useState('')
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false)
+  const [isSubEventModal, setIsSubEventModal] = useState(true);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [subEvents, setSubEvents] = useState<EnteredSubEventType[]>([]);
   const { success, isError, error, loading } = useAppSelector(
     (state) => state.extra,
   )
@@ -246,7 +272,14 @@ const EventForm = () => {
       showErrorToast('Invalid Link, Please Contact your studio owner.')
       navigate('/auth/login.')
     }
-  }, [params['data']])
+  }, [params['data']]);
+
+  const handleAddSubEvents = (subEvent: EnteredSubEventType) => {
+    let filteredSubEvents = subEvents.filter(e => e.id !== subEvent.id)
+    setSubEvents([...filteredSubEvents, subEvent]);
+    setIsSubEventModal(false);
+
+  }
   useEffect(() => {
     if (isError) {
       if (error && error.message) showErrorToast(error.message + " Please Contact your studio owner.")
@@ -262,23 +295,20 @@ const EventForm = () => {
       validCustomerName(customerName) &&
       customerPhoneNumber &&
       validPhoneNumber(customerPhoneNumber.toString()) &&
-      validEventName(eventName) &&
-      validDateTime(new Date(startDate), new Date(endDate)) &&
-      validateLocation(eventLocation)
+      validEventName(eventName)
     ) {
-      const { start_date, start_time } = setEventDate(startDate, endDate)
       console.log('event created.')
-      dispatch(
-        submitEventFormAPI({
-          token: formToken,
-          customer_name: customerName,
-          event_location: eventLocation,
-          event_name: eventName,
-          phone_number: '+91' + customerPhoneNumber.toString(),
-          event_date: start_date,
-          event_time: start_time,
-        }),
-      )
+      // dispatch(
+      // submitEventFormAPI({
+      //   token: formToken,
+      //   customer_name: customerName,
+      //   event_location: eventLocation,
+      //   event_name: eventName,
+      //   phone_number: '+91' + customerPhoneNumber.toString(),
+      //   event_date: start_date,
+      //   event_time: start_time,
+      // }),
+      // )
     } else setShowError(true)
   }
   const onChangeData = (name: string, value: string) => {
@@ -287,10 +317,6 @@ const EventForm = () => {
     else if (name === 'customer_contact' && value.length <= 10)
       setCustomerPhoneNumber(value)
     else if (name === 'event_name' && value.length <= 25) setEventName(value)
-    else if (name === 'event_location' && value.length <= 200)
-      setEventLocation(value)
-    else if (name === 'start_date') setStartDate(value)
-    else if (name === 'end_date') setEndDate(value)
   }
   const validCustomerName = (name: string) => {
     if (name.length > 0 && name.length < 30) {
@@ -306,48 +332,6 @@ const EventForm = () => {
 
   const validEventName = (eventNames: string) => {
     if (eventNames.length > 0 && eventNames.length < 40) return true
-    else return false
-  }
-  const setEventDate = (startDateTime: string, endDateTime: string) => {
-    const formattedStartDateTime = giveFormattedDateTime(startDateTime)
-    const formattedEndDateTime = giveFormattedDateTime(endDateTime)
-    const start_time = formattedStartDateTime.formattedTime
-    const start_date = formattedStartDateTime.formattedDate
-    const end_date = formattedEndDateTime.formattedDate
-    const end_time = formattedEndDateTime.formattedTime
-    return { start_date, start_time, end_time, end_date }
-  }
-  const giveFormattedDateTime = (fdate: string) => {
-    const date = new Date(fdate)
-
-    // Extract year, month, and day
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, '0')
-
-    // Format date as yyyy-mm-dd
-    const formattedDate = `${year}-${month}-${day}`
-
-    // Extract hours, minutes, and seconds
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    const seconds = String(date.getSeconds()).padStart(2, '0')
-
-    // Format time as HH:MM:SS
-    const formattedTime = `${hours}:${minutes}:${seconds}`
-    return { formattedDate, formattedTime }
-  }
-  const validDateTime = (startDateTime: Date, endDateTime: Date) => {
-    if (
-      startDateTime.toString().length !== 0 &&
-      endDateTime.toString().length !== 0 &&
-      startDateTime < endDateTime
-    )
-      return true
-    else return false
-  }
-  const validateLocation = (location: string) => {
-    if (location.length > 0 && location.length < 300) return true
     else return false
   }
 
@@ -371,6 +355,7 @@ const EventForm = () => {
           </SubmittedFormContainer>
         ) : (
           <>
+            {isSubEventModal && <SubEventModal locationList={locationList} setLocationList={setLocationList} currentLength={subEvents.length} addSubEvent={handleAddSubEvents} currentSubEvent={currentSubEvent} onClose={() => setIsSubEventModal(false)} />}
             <FormField>
               <InputContainer>
                 <Label>Customer Name</Label>
@@ -436,69 +421,25 @@ const EventForm = () => {
               />
             </FormField>
             <FormField>
-              <Label htmlFor="name">Event Date</Label>
-              <InputMainDateContainer>
-                <InputDateContainer>
-                  <DateContainer
-                    onClick={() => startDateRef.current?.showPicker()}
-                  >
-                    <Label htmlFor="from_date">From</Label>
-                    <Input
-                      type="datetime-local"
-                      id="from_date"
-                      ref={startDateRef}
-                      name="from_date"
-                      onChange={(e) =>
-                        onChangeData('start_date', e.target.value)
-                      }
-                      value={startDate}
-                    />
-                  </DateContainer>
-                  <UnderLine width={100} isPercent={true} />
-                </InputDateContainer>
-                <InputDateContainer>
-                  <DateContainer
-                    onClick={() => endDateRef.current?.showPicker()}
-                  >
-                    <Label htmlFor="to_date">To</Label>
-                    <Input
-                      type="datetime-local"
-                      id="to_date "
-                      name="to_date"
-                      ref={endDateRef}
-                      onChange={(e) => onChangeData('end_date', e.target.value)}
-                      value={endDate}
-                    />
-                  </DateContainer>
-                  <UnderLine width={100} isPercent={true} />
-                </InputDateContainer>
-              </InputMainDateContainer>
-              <Errortext
-                show={
-                  showError &&
-                  !validDateTime(new Date(startDate), new Date(endDate))
-                }
-                message={'Please provide valid event date.'}
-              />
-            </FormField>
-            <FormField>
               <InputContainer>
-                <Label htmlFor="location">Event Location</Label>
-                <Input
-                  type="text"
-                  id="location"
-                  name="location"
-                  onChange={(e) =>
-                    onChangeData('event_location', e.target.value)
-                  }
-                  value={eventLocation}
-                />
+                <AddSubEventHeaderContainer>
+
+                  <Label htmlFor="name">Sub Events</Label>
+                  <AddSubEventButton onClick={() => { setCurrentSubEvent(null); setIsSubEventModal(true) }}>+
+
+                  </AddSubEventButton>
+                </AddSubEventHeaderContainer>
+                <SubEventsList>
+                  {subEvents.map(event =>
+                    <SubEventNameContainer onClick={() => { setCurrentSubEvent(event); setIsSubEventModal(true) }}>
+                      <SubEventName type='text' value={event.sub_event_name} readOnly />
+                      <CloseButton>&times;</CloseButton>
+                    </SubEventNameContainer>
+                  )}
+                </SubEventsList>
               </InputContainer>
               <UnderLine width={100} isPercent={true} />
-              <Errortext
-                show={showError && !validateLocation(eventLocation)}
-                message={'Please provide valid event location.'}
-              />
+
             </FormField>
             {loading ? (
               <LoadingDots />

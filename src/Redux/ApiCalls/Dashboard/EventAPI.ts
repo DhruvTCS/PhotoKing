@@ -94,3 +94,18 @@ export const submitEventFormAPI = createAsyncThunk(
         }
     })
 
+export const getUserCreatedEventsAPI = createAsyncThunk(
+    'event/getUserCreatedEventsAPI',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'GET',
+                url: `/project/customer-event/`,
+
+
+            })
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    })
