@@ -31,6 +31,7 @@ import AllPackagesPage from './components/organisms/Dashboard/AllPackagesPage';
 import AddNewPackagePage from './components/molecules/Dashboard/Package/AddNewPackagePage';
 import EventForm from './components/pages/ShareCreateEventForm/EventForm';
 import UserCreatedEvents from './components/organisms/Dashboard/UserCreatedEvents';
+import SubEventPage from './components/molecules/Dashboard/UserEvents/SubEventPage';
 function App() {
 
   const navigate = useNavigate();
@@ -145,6 +146,7 @@ function App() {
             <Route path="albums/redeemUsers/:id" element={<RedeemUser />} />
             <Route path="event" element={<EventCalendar />} />
             <Route path="events/userCreated" element={<UserCreatedEvents />} />
+            <Route path="events/userCreated/single" element={<SubEventPage />} />
 
             <Route path="user/changePhoneNumber" element={<ChangePhoneNumber />} />
             <Route path="user/allNotifications" element={<AllNotificationPage />} />

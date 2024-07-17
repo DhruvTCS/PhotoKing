@@ -6,7 +6,7 @@ export const getFoldersForAlbum = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: `/project/user/get-folder/?project_id=${albumId}`
+                url: `/project/user/get-folder/?project_id=${albumId}&fetch=all`
             })
             console.log(response);
             return response.data;

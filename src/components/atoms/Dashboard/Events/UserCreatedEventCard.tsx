@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { UserCreatedEvents } from '../../../../Data/event.dto'
 import ViewUserCreatedEventModal from './ViewUserCreatedEventModal'
+import { useAppDispatch } from '../../../../Redux/Hooks'
+import { setUserCreatedEvent } from '../../../../Redux/Slice/Dashboard/EventSlice'
+import { useNavigate } from 'react-router-dom'
 
 interface UserCreatedEventCardProps {
     userEvent: UserCreatedEvents
@@ -9,6 +12,8 @@ interface UserCreatedEventCardProps {
 
 const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({ userEvent }) => {
     const [fullEventModal, setFullEventModal] = useState(false);
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     function getEventDates(event: UserCreatedEvents) {
         if (!event.sub_events || event.sub_events.length === 0) {
@@ -31,6 +36,10 @@ const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({ userEvent }
             starting_date: minStartingDate,
             ending_date: maxEndingDate
         };
+    }
+    const handleViewFullEvent = () => {
+        dispatch(setUserCreatedEvent(userEvent))
+        navigate('/dashboard/events/userCreated/single')
     }
     return (
         <Container>
@@ -63,7 +72,7 @@ const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({ userEvent }
                         </DateContainer>
                     </EventDateContainer>
                 </EventDataBody>
-                <ViewFullEventDiv onClick={() => setFullEventModal(true)}>
+                <ViewFullEventDiv onClick={() => handleViewFullEvent()}>
                     <ViewEventText>
                         See Full Event
                     </ViewEventText>

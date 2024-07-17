@@ -12,6 +12,7 @@ export interface EventState {
     isEventUpdate: boolean;
     currentEvent?: EventType;
     userCreatedEvents?: UserCreatedEvents[];
+    currentCreatedEvent?: UserCreatedEvents;
 }
 
 const initialState: EventState = {
@@ -42,6 +43,12 @@ const eventSlice = createSlice({
         },
         clearCurrentEvent(state) {
             delete state.currentEvent;
+        },
+        setUserCreatedEvent(state, action: PayloadAction<UserCreatedEvents>) {
+            state.currentCreatedEvent = action.payload;
+        },
+        removeUserCreatedEvent(state) {
+            delete state.currentCreatedEvent;
         }
 
     },
@@ -50,7 +57,7 @@ const eventSlice = createSlice({
     },
 });
 
-export const { clearError, setCurrentEvent, clearCurrentEvent } = eventSlice.actions;
+export const { clearError, setCurrentEvent, clearCurrentEvent, setUserCreatedEvent, removeUserCreatedEvent } = eventSlice.actions;
 
 
 export default eventSlice.reducer;
