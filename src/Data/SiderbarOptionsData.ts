@@ -8,14 +8,12 @@ import Member from '../assets/Icons/Sidebar/members.png'
 import MemberWhite from '../assets/Icons/Sidebar/members_white.png'
 import PackagePNG from '../assets/Icons/Sidebar/package.png'
 import PackageWhite from '../assets/Icons/Sidebar/package-white.png'
-import ContactUs from '../assets/Icons/Sidebar/contactus.png'
-import ContactUsWhite from '../assets/Icons/Sidebar/contactus_white.png'
 import Privacy from '../assets/Icons/Sidebar/privacypolicy.png'
 import PrivacyWhite from '../assets/Icons/Sidebar/privacypolicy_white.png'
 import Calander from '../assets/Icons/Sidebar/calendar.png'
 import CalenderWhite from '../assets/Icons/Sidebar/calendarWhite.png'
-import Logout from '../assets/Icons/Sidebar/logout.png'
-import LogOutWhite from '../assets/Icons/Sidebar/logout_white.png'
+import CustomerEvent from '../assets/Icons/Sidebar/customer_events.png'
+import CustomerEventWhite from '../assets/Icons/Sidebar/customer_events_white.png'
 
 export const sidebarOptions = [
     {
@@ -55,19 +53,13 @@ export const sidebarOptions = [
         redirection: "/dashboard/packages/all"
     },
     {
-        key: "Privacy Policy",
-        icon: Privacy,
-        whiteIcon: PrivacyWhite,
-        redirection: "/dashboard/privacy"
+        key: "Customers Events",
+        icon: CustomerEvent,
+        whiteIcon: CustomerEventWhite,
+        redirection: "/dashboard/events/userCreated"
     },
 
-    {
-        key: "Logout",
-        isPng: true,
-        icon: Logout,
-        whiteIcon: LogOutWhite,
-        redirection: "/dashboard/logout"
-    }
+
 ]
 
 export interface OptionProps {

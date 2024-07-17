@@ -21,12 +21,7 @@ export interface UserState {
     access_token: string | null;
     refresh_token: string | null;
     remeberMe: boolean;
-    temp_user: {
-        name: string;
-        email: string;
-        phone_number: string;
-        country_code: string;
-    } | null;
+    otp?: string;
     subscription_plans?: any;
 
 }
@@ -45,7 +40,6 @@ const initialState: UserState = {
     refresh_token: null,
     remeberMe: false,
     isRegister: false,
-    temp_user: null,
 
 };
 
@@ -84,19 +78,14 @@ const authSlice = createSlice({
         setRemeberMe(state, action: PayloadAction<boolean>) {
             state.remeberMe = action.payload;
         },
-        setIsRegister(state, action: PayloadAction<{
-            name: string;
-            email: string;
-            phone_number: string;
-            country_code: string;
-        }>) {
-            state.isRegister = true;
-            state.temp_user = action.payload;
-        },
+
         setUserPhoneNumber(state, action: PayloadAction<{ number: string }>) {
             if (state.user)
                 state.user.phone_number = action.payload.number;
         },
+        setReduxOtp(state, action: PayloadAction<string>) {
+            state.otp = action.payload;
+        }
     },
 
     extraReducers: (builder) => {
@@ -107,7 +96,7 @@ const authSlice = createSlice({
     },
 });
 
-export const { setContactNumber, clearError, setToken, clearToken, setRemeberMe, setIsRegister, setUserPhoneNumber } = authSlice.actions;
+export const { setContactNumber, clearError, setToken, clearToken, setRemeberMe, setUserPhoneNumber, setReduxOtp } = authSlice.actions;
 
 
 export default authSlice.reducer;

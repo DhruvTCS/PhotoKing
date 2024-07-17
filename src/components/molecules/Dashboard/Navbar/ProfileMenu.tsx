@@ -2,10 +2,13 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled, { keyframes } from 'styled-components'
 import PhonePNG from "../../../../assets/Icons/Sidebar/changepassword.png"
 import EventFormPNG from '../../../../assets/Icons/Sidebar/calendar.png'
-import UserCreatedEventsPNG from '../../../../assets/Icons/userCreatedEvents.png'
-import { useNavigate } from 'react-router-dom';
+import LogOutPNG from '../../../../assets/Icons/Sidebar/logout.png'
+import { useLocation, useNavigate } from 'react-router-dom';
 import ShareEventFormLinkPopup from '../../../atoms/Dashboard/Navbar/ShareFormLinkPopup';
 
+import { useAppDispatch } from '../../../../Redux/Hooks'
+import { clearToken } from '../../../../Redux/Slice/Auth/AuthSlice'
+import LogoutPopup from '../../../atoms/Dashboard/HomePage/LogOutPopUp'
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -35,7 +38,7 @@ const DropdownMenu = styled.div<{ menuOpen: boolean }>`
   right: -4px;
   background: white;
   width: 225px;
-  height: 277px;
+  height: 130px;
   z-index: 5;
   border-radius: 10px;
   display: ${({ menuOpen }) => (menuOpen ? 'block' : 'none')};
@@ -81,7 +84,13 @@ const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean)
   const menuRef = useRef<HTMLDivElement>(null);
   const [isShareFormPopUp, setIsShareFormPopUp] = useState(false);
   const navigate = useNavigate()
+  const [logoutPopup, setLogoutPopup] = useState(false);
+  const dispatch = useAppDispatch()
 
+  const logoutFunc = () => {
+    dispatch(clearToken());
+    setLogoutPopup(false);
+  }
   const handleClickOutside = (event: MouseEvent) => {
     if (
       menuRef.current &&
@@ -104,22 +113,17 @@ const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean)
 
   return (
     <DropdownMenu menuOpen={menuOpen} ref={menuRef}>
-
-      {isShareFormPopUp && <ShareEventFormLinkPopup onClose={() => setIsShareFormPopUp(false)} />}
+      {logoutPopup && <LogoutPopup Delete={() => logoutFunc()} cancel={() => setLogoutPopup(false)} />}
       <MenuItem onClick={() => navigate('/dashboard/user/changePhoneNumber')}>
         <ItemIcon src={PhonePNG} />
         <ItemName>Change Phone Number</ItemName>
       </MenuItem>
       <Hr />
 
-      <MenuItem onClick={() => setIsShareFormPopUp(true)}>
-        <ItemIcon src={EventFormPNG} />
-        <ItemName>Share Event Form</ItemName>
-      </MenuItem>
-      <Hr />
-      <MenuItem onClick={() => navigate("/dashboard/events/userCreated")}>
-        <ItemIcon src={UserCreatedEventsPNG} />
-        <ItemName>User created Events</ItemName>
+
+      <MenuItem onClick={() => setLogoutPopup(true)}>
+        <ItemIcon src={LogOutPNG} />
+        <ItemName>Log Out</ItemName>
       </MenuItem>
       <Hr />
 

@@ -5,6 +5,7 @@ import { showErrorToast } from '../../../components/atoms/Utlis/Toast';
 export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(loginUser.pending, (state) => {
         state.loading = true;
+        state.isRegister = false;
         state.error = {};
     })
         .addCase(loginUser.fulfilled, (state, action: PayloadAction<{
@@ -17,21 +18,17 @@ export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             }
         }>) => {
             state.loading = false;
-            if (action.payload.data.role === null && !state.isRegister) {
-                state.isError = true;
 
-                showErrorToast("Please Register First.");
-                state.error = {
-                    status: 402,
-                    message: "Please Register first"
-                }
-            } else if (action.payload.data.role !== 3 && !state.isRegister) {
+            if (action.payload.data.role !== 3 && action.payload.data.role !== null) {
                 state.isError = true;
                 state.error = {
                     status: 401,
                     message: "You are not authorized to perform this action"
                 }
             } else {
+                if (action.payload.data.role === null) {
+                    state.isRegister = true;
+                }
                 state.orderId = action.payload.data.orderId;
                 state.apiStatus = true;
             }

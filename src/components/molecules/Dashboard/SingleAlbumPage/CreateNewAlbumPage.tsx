@@ -150,7 +150,7 @@ const FoldersHeaderText = styled.p``
 const FolderList = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
+  gap: 1px 50px;
   width: 100%;
   height: 100%;
 `
@@ -489,7 +489,7 @@ const CreateNewAlbumPage: React.FC = () => {
                 />
                 <FoldersHeader>
                     <FolderHeadertext>Folders</FolderHeadertext>
-                    <AddMemberButton onClick={() => setCreateFolderModal(true)}>
+                    <AddMemberButton onClick={() => folders.length < 5 ? setCreateFolderModal(true) : showErrorToast("You can create 5 folders while creating album.")}>
                         <PlusSignContainer>
                             <PlusSignIcon src={PlusSignIconPNG}></PlusSignIcon>
                         </PlusSignContainer>

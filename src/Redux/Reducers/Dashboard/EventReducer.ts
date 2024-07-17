@@ -2,7 +2,7 @@ import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
 import { EventState } from '../../Slice/Dashboard/EventSlice';
 import { createEventAPI, deleteEventAPI, getAllEventsAPI, getUserCreatedEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
-import { BackendEvent, EventType, UserCreatedEvents } from '../../../Data/event.dto';
+import { BackendEvent, EnteredSubEventType, EventType, UserCreatedEvents } from '../../../Data/event.dto';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 
 const convertToDateTime = (date: string, time: string): string => {
@@ -109,12 +109,35 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.success = false;
             // state.error = {};
         })
-        .addCase(getUserCreatedEventsAPI.fulfilled, (state, action: PayloadAction<UserCreatedEvents[]>) => {
+        .addCase(getUserCreatedEventsAPI.fulfilled, (state, action: PayloadAction<{
+            event: {
+                id: string,
+                customer_name: string,
+                phone_number: string,
+                token: string,
+                event_name: string,
+            },
+            sub_events: EnteredSubEventType[]
+        }[]>) => {
             state.loading = false;
             console.log(action.payload)
+            console.log(action.payload)
             if (action.payload === null) state.userCreatedEvents = [];
-            else
-                state.userCreatedEvents = action.payload;
+            else {
+                state.userCreatedEvents = [];
+                action.payload.forEach(payload => {
+                    state.userCreatedEvents?.push({
+                        id: parseInt(payload.event.id),
+                        customer_name: payload.event.customer_name,
+                        phone_number: payload.event.phone_number,
+                        token: payload.event.token,
+                        event_name: payload.event.event_name,
+                        sub_events: payload.sub_events,
+                    })
+                })
+                console.log(state.userCreatedEvents)
+            }
+
             // state.Events = action.payload;
         })
         .addCase(getUserCreatedEventsAPI.rejected, (state, action: PayloadAction<any>) => {

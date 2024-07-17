@@ -122,22 +122,12 @@ const Sidebar: React.FC<{ isExpand: boolean; toggelExpand: () => void }> = ({
 }) => {
     const [activeTab, setActiveTab] = useState(sidebarOptions[0])
     const navigate = useNavigate();
-    const [logoutPopup, setLogoutPopup] = useState(false);
+
     const location = useLocation()
-    const dispatch = useAppDispatch()
-
-    const logoutFunc = () => {
-        dispatch(clearToken());
-        setLogoutPopup(false);
-    }
     const handleClick = (clickedTab: any) => {
-        if (clickedTab.key === 'Logout') {
-            setLogoutPopup(true);
 
-        } else {
-            setActiveTab(clickedTab)
-            navigate(clickedTab.redirection)
-        }
+        setActiveTab(clickedTab)
+        navigate(clickedTab.redirection)
     }
     const currentPath = location.pathname
     // const navigate = useNavigate();
@@ -150,7 +140,6 @@ const Sidebar: React.FC<{ isExpand: boolean; toggelExpand: () => void }> = ({
     }, [currentPath])
     return (
         <SidebarContainer isExpand={isExpand}>
-            {logoutPopup ? <LogoutPopup Delete={logoutFunc} cancel={() => setLogoutPopup(false)} /> : null}
             <ActionSidebarconatiner isExpand={isExpand}>
                 {isExpand ? (
                     <CancleSidebar

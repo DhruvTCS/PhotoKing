@@ -9,11 +9,13 @@ height:119px;
 position:relative;
 width:98%;
 display:flex;
+align-items:center;
+justify-content:space-between;
 margin-left:24px;
 `
 const ProfilerContainer = styled.div`
-width:300px;
-position:absolute;
+
+// position:absolute;
 top:30px;
 right:20px;
 height:50px;
@@ -21,7 +23,7 @@ display:flex;
 flex-direction:row;
 `
 const SearchBarContainer = styled.div`
-position:absolute;
+// position:absolute;
 top:30px;
 left:10px;
 `;

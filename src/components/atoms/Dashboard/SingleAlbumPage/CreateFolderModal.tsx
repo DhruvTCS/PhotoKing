@@ -12,222 +12,221 @@ import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png';
 import LoadingDots from '../../Utlis/LoadinDots';
 
 interface AddFolderModalProps {
-    isOpen: boolean;
-    onRequestClose: () => void;
-    onSubmit: (folder: NewFolder) => void;
-    currentFolder: NewFolder | null;
-    setCurrentFolder: (data: NewFolder | null) => void;
+  isOpen: boolean;
+  onRequestClose: () => void;
+  onSubmit: (folder: NewFolder) => void;
+  currentFolder: NewFolder | null;
+  setCurrentFolder: (data: NewFolder | null) => void;
 }
 
 const AddFolderModal: React.FC<AddFolderModalProps> = ({
-    isOpen,
-    onRequestClose,
-    onSubmit,
-    currentFolder,
-    setCurrentFolder,
+  isOpen,
+  onRequestClose,
+  onSubmit,
+  currentFolder,
+  setCurrentFolder,
 }) => {
-    const [folderName, setFolderName] = useState('');
-    const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [compressedImageLoading, setCompressedImageLoading] = useState(false);
+  const [folderName, setFolderName] = useState('');
+  const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [compressedImageLoading, setCompressedImageLoading] = useState(false);
 
-    useEffect(() => {
-        if (currentFolder) {
-            setFolderName(currentFolder.name);
-            setNewFolderImages(currentFolder.images.map((image) => image.image));
-        } else {
-            setFolderName('');
-            setNewFolderImages([]);
-        }
-
-        return () => {
-            setCurrentFolder(null);
-            // Revoke all object URLs when the modal is closed
-            imageUrls.forEach(url => URL.revokeObjectURL(url));
-            setImageUrls([]);
-        };
-    }, [isOpen]);
-
-    const blobToFile = (blob: Blob, fileName: string): File => {
-        return new File([blob], fileName, { type: blob.type });
-    };
-
-    const compressImage = async (file: File): Promise<Blob> => {
-        const options = {
-            maxSizeMB: 2,
-            maxWidthOrHeight: 1920,
-            useWebWorker: true,
-        };
-
-        try {
-            const compressedBlob = await imageCompression(file, options);
-            return compressedBlob;
-        } catch (error) {
-            console.error('Error compressing image:', error);
-            throw error;
-        }
-    };
-
-    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCompressedImageLoading(true);
-        const files = event.target.files;
-        if (!files) return;
-
-        const acceptedFiles = Array.from(files);
-        const batchSize = 5;
-        let compressedFiles: File[] = [];
-
-        for (let i = 0; i < acceptedFiles.length; i += batchSize) {
-            const batch = acceptedFiles.slice(i, i + batchSize);
-            const compressedBatch = await Promise.all(
-                batch.map(async (file) => {
-                    try {
-                        if (file.size / 1024 / 1024 > 3) {
-                            const compressedBlob = await compressImage(file);
-                            const compressedFile = blobToFile(compressedBlob, file.name);
-                            return compressedFile;
-                        } else {
-                            return file;
-                        }
-                    } catch (error) {
-                        console.error('Error compressing file:', error);
-                        showErrorToast('Error compressing file');
-                        return undefined;
-                    }
-                })
-            );
-            compressedFiles = [
-                ...compressedFiles,
-                ...compressedBatch.filter((file): file is File => file !== undefined)
-            ];
-        }
-
-        setCompressedImageLoading(false);
-        if (compressedFiles.length + newFolderImages.length > 20) {
-            showErrorToast(
-                'You can only upload up to 20 images at Folder creation time later you can upload more images.',
-            );
-            return;
-        }
-
-        setNewFolderImages((prev) => [...prev, ...compressedFiles]);
-        const newUrls = compressedFiles.map(file => URL.createObjectURL(file));
-        setImageUrls((prev) => [...prev, ...newUrls]);
-    };
-
-    const handleRemoveImage = (index: number) => {
-        URL.revokeObjectURL(imageUrls[index]);
-        setNewFolderImages((prev) => prev.filter((_, i) => i !== index));
-        setImageUrls((prev) => prev.filter((_, i) => i !== index));
-    };
-
-    const handleCreateFolder = () => {
-        if (!folderName.trim()) {
-            showErrorToast('Folder name cannot be empty.');
-            return;
-        }
-        if (newFolderImages.length === 0) {
-            showErrorToast('You must add at least one image.');
-            return;
-        }
-        const folder: NewFolder = {
-            name: folderName,
-            images: newFolderImages.map((file) => ({
-                image: file,
-                image_blob: '',
-                media_type: 1,
-            })),
-        };
-        onSubmit(folder);
-        onRequestClose();
-        setFolderName('');
-        setNewFolderImages([]);
-    };
-
-    if (!isOpen) {
-        return null;
+  useEffect(() => {
+    if (currentFolder) {
+      setFolderName(currentFolder.name);
+      setNewFolderImages(currentFolder.images.map((image) => image.image));
+      setImageUrls(currentFolder.images.map((image) => URL.createObjectURL(image.image)));
+    } else {
+      setFolderName('');
+      setNewFolderImages([]);
     }
 
-    return (
-        <ModalOverlay>
-            <ModalContent>
-                <ModalHeader>
-                    <HeaderIconContainer>
-                        <HeaderIcon src={HeaderIconPNG} />
-                    </HeaderIconContainer>
-                    <HeaderText>Create Folder</HeaderText>
-                </ModalHeader>
-                <ModalBody>
-                    <InputContainer>
-                        <InputLabel>Folder's Name</InputLabel>
-                        <InputName
-                            type="text"
-                            onChange={(e) => setFolderName(e.target.value)}
-                            placeholder="Engagement Photos"
-                            value={folderName}
+    return () => {
+      setCurrentFolder(null);
+      // Revoke all object URLs when the modal is closed
+      imageUrls.forEach(url => URL.revokeObjectURL(url));
+      setImageUrls([]);
+    };
+  }, [isOpen]);
+
+  const blobToFile = (blob: Blob, fileName: string): File => {
+    return new File([blob], fileName, { type: blob.type });
+  };
+
+  const compressImage = async (file: File): Promise<Blob> => {
+    const options = {
+      maxSizeMB: 2,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    try {
+      const compressedBlob = await imageCompression(file, options);
+      return compressedBlob;
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      throw error;
+    }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    const acceptedFiles = Array.from(files);
+    const batchSize = 5;
+    let compressedFiles: File[] = [];
+    if (newFolderImages.length + acceptedFiles.length > 20) showErrorToast("You can upload max 20 images at once.")
+    else {
+      setCompressedImageLoading(true);
+
+      for (let i = 0; i < acceptedFiles.length; i += batchSize) {
+        const batch = acceptedFiles.slice(i, i + batchSize);
+        const compressedBatch = await Promise.all(
+          batch.map(async (file) => {
+            try {
+              if (file.size / 1024 / 1024 > 3) {
+                const compressedBlob = await compressImage(file);
+                const compressedFile = blobToFile(compressedBlob, file.name);
+                return compressedFile;
+              } else {
+                return file;
+              }
+            } catch (error) {
+              console.error('Error compressing file:', error);
+              showErrorToast('Error compressing file');
+              return undefined;
+            }
+          })
+        );
+        compressedFiles = [
+          ...compressedFiles,
+          ...compressedBatch.filter((file): file is File => file !== undefined)
+        ];
+      }
+
+      setCompressedImageLoading(false);
+
+
+      setNewFolderImages((prev) => [...prev, ...compressedFiles]);
+      const newUrls = compressedFiles.map(file => URL.createObjectURL(file));
+      setImageUrls((prev) => [...prev, ...newUrls]);
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    URL.revokeObjectURL(imageUrls[index]);
+    setNewFolderImages((prev) => prev.filter((_, i) => i !== index));
+    setImageUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleCreateFolder = () => {
+    if (!folderName.trim()) {
+      showErrorToast('Folder name cannot be empty.');
+      return;
+    }
+    if (newFolderImages.length === 0) {
+      showErrorToast('You must add at least one image.');
+      return;
+    }
+    const folder: NewFolder = {
+      name: folderName,
+      images: newFolderImages.map((file) => ({
+        image: file,
+        image_blob: URL.createObjectURL(file),
+        media_type: 1,
+      })),
+    };
+    onSubmit(folder);
+    onRequestClose();
+    setFolderName('');
+    setNewFolderImages([]);
+  };
+
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <ModalOverlay>
+      <ModalContent>
+        <ModalHeader>
+          <HeaderIconContainer>
+            <HeaderIcon src={HeaderIconPNG} />
+          </HeaderIconContainer>
+          <HeaderText>Create Folder</HeaderText>
+        </ModalHeader>
+        <ModalBody>
+          <InputContainer>
+            <InputLabel>Folder's Name</InputLabel>
+            <InputName
+              type="text"
+              onChange={(e) => setFolderName(e.target.value)}
+              placeholder="Engagement Photos"
+              value={folderName}
+            />
+            <UnderLine width={830} />
+          </InputContainer>
+          <PhotoContainer>
+            <PhotoLabel>Photos</PhotoLabel>
+            <ImageContainer>
+              <ImageUploadContainer
+                onClick={() => {
+                  if (fileInputRef.current) fileInputRef.current.value = '';
+                  fileInputRef?.current?.click();
+                }}
+              >
+                <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
+                <AddImageLabel>Add Images</AddImageLabel>
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                  style={{ display: 'none' }}
+                />
+              </ImageUploadContainer>
+              {compressedImageLoading ? (
+                <LoadingDots />
+              ) : (
+                <>
+                  {newFolderImages.map((file, index) => (
+                    <LazyLoad height={100} offset={100} key={index}>
+                      <ImagePreview>
+                        <PreviewImage
+                          src={imageUrls[index]}
+                          alt="preview1"
                         />
-                        <UnderLine width={830} />
-                    </InputContainer>
-                    <PhotoContainer>
-                        <PhotoLabel>Photos</PhotoLabel>
-                        <ImageContainer>
-                            <ImageUploadContainer
-                                onClick={() => {
-                                    if (fileInputRef.current) fileInputRef.current.value = '';
-                                    fileInputRef?.current?.click();
-                                }}
-                            >
-                                <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
-                                <AddImageLabel>Add Images</AddImageLabel>
-                                <input
-                                    id="image-upload"
-                                    type="file"
-                                    accept="image/*"
-                                    multiple
-                                    ref={fileInputRef}
-                                    onChange={handleImageUpload}
-                                    style={{ display: 'none' }}
-                                />
-                            </ImageUploadContainer>
-                            {compressedImageLoading ? (
-                                <LoadingDots />
-                            ) : (
-                                <>
-                                    {newFolderImages.map((file, index) => (
-                                        <LazyLoad height={100} offset={100} key={index}>
-                                            <ImagePreview>
-                                                <PreviewImage
-                                                    src={imageUrls[index]}
-                                                    alt="preview"
-                                                />
-                                                <RemoveButtonContainer
-                                                    onClick={() => handleRemoveImage(index)}
-                                                >
-                                                    <CancelIcon src={CancleIconPNG} />
-                                                </RemoveButtonContainer>
-                                            </ImagePreview>
-                                        </LazyLoad>
-                                    ))}
-                                </>
-                            )}
-                        </ImageContainer>
-                    </PhotoContainer>
-                </ModalBody>
-                <ButtonContainer>
-                    <SubmitButton
-                        text={'Create'}
-                        width={200}
-                        height={56}
-                        needArrow={false}
-                        onClick={() => handleCreateFolder()}
-                        active={!(newFolderImages.length > 0)}
-                    />
-                    <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
-                </ButtonContainer>
-            </ModalContent>
-        </ModalOverlay>
-    );
+                        <RemoveButtonContainer
+                          onClick={() => handleRemoveImage(index)}
+                        >
+                          <CancelIcon src={CancleIconPNG} />
+                        </RemoveButtonContainer>
+                      </ImagePreview>
+                    </LazyLoad>
+                  ))}
+                </>
+              )}
+            </ImageContainer>
+          </PhotoContainer>
+        </ModalBody>
+        <ButtonContainer>
+          <SubmitButton
+            text={'Create'}
+            width={200}
+            height={56}
+            needArrow={false}
+            onClick={() => handleCreateFolder()}
+            active={!(newFolderImages.length > 0)}
+          />
+          <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
+        </ButtonContainer>
+      </ModalContent>
+    </ModalOverlay>
+  );
 };
 
 export default AddFolderModal;

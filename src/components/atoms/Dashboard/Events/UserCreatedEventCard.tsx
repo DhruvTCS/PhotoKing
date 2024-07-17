@@ -1,38 +1,73 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { UserCreatedEvents } from '../../../../Data/event.dto'
+import ViewUserCreatedEventModal from './ViewUserCreatedEventModal'
 
 interface UserCreatedEventCardProps {
-    userEvent?: UserCreatedEvents
+    userEvent: UserCreatedEvents
 }
 
 const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({ userEvent }) => {
+    const [fullEventModal, setFullEventModal] = useState(false);
+
+    function getEventDates(event: UserCreatedEvents) {
+        if (!event.sub_events || event.sub_events.length === 0) {
+            return { starting_date: null, ending_date: null };
+        }
+
+        let minStartingDate = event.sub_events[0].starting_date;
+        let maxEndingDate = event.sub_events[0].ending_date;
+
+        event.sub_events.forEach(subEvent => {
+            if (subEvent.starting_date < minStartingDate) {
+                minStartingDate = subEvent.starting_date;
+            }
+            if (subEvent.ending_date > maxEndingDate) {
+                maxEndingDate = subEvent.ending_date;
+            }
+        });
+
+        return {
+            starting_date: minStartingDate,
+            ending_date: maxEndingDate
+        };
+    }
     return (
         <Container>
+            {fullEventModal && <ViewUserCreatedEventModal userEvent={userEvent} onCancel={() => setFullEventModal(false)} />}
             <HeaderContainer >
-                <CustomerNameText>Dhruv Pravinbhai Gopani</CustomerNameText>
-                <CustomerPhoneText>+918849927290</CustomerPhoneText>
+                <CustomerNameText>{userEvent.customer_name}</CustomerNameText>
+                <CustomerPhoneText>{userEvent.phone_number}</CustomerPhoneText>
             </HeaderContainer>
             <Hr colorData="#00000073" />
             <EventData>
                 <EvenDateHeader>
-                    <EventDataHeaderTitle>Wedding Event</EventDataHeaderTitle>
+                    <EventDataHeaderTitle>{userEvent.event_name}</EventDataHeaderTitle>
                 </EvenDateHeader>
                 <EventDataBody>
-                    <EventLocationContainer>
+                    {/* <EventLocationContainer>
                         <EventLocationLabel>Location :</EventLocationLabel>
-                        <EventLocationText>A/18, Shantiniketan row houses, near sneh sankul wadi,anand mahal road, adajan, surat- 395009.</EventLocationText>
-                    </EventLocationContainer>
-                    <Hr colorData="#00000014" />
+                        <EventLocationText>{userEvent}</EventLocationText>
+                    </EventLocationContainer> */}
                     <EventDateContainer>
                         <EventDateLabel>Dates :</EventDateLabel>
                         <DateContainer>
                             <FromDateContainer>
-
+                                <FromDateLabel>From :</FromDateLabel>
+                                <Date>{getEventDates(userEvent).starting_date}</Date>
+                            </FromDateContainer>
+                            <FromDateContainer>
+                                <FromDateLabel>To :</FromDateLabel>
+                                <Date>{getEventDates(userEvent).ending_date}</Date>
                             </FromDateContainer>
                         </DateContainer>
                     </EventDateContainer>
                 </EventDataBody>
+                <ViewFullEventDiv onClick={() => setFullEventModal(true)}>
+                    <ViewEventText>
+                        See Full Event
+                    </ViewEventText>
+                </ViewFullEventDiv>
             </EventData>
 
         </Container>
@@ -43,8 +78,8 @@ export default UserCreatedEventCard
 
 
 const Container = styled.div`
-height:400px;
-width:400px;
+height:300px;
+width:254px;
 padding:10px;
 background-color:white;
 border-radius:10px;
@@ -78,6 +113,7 @@ width:100%;
 `
 const EventData = styled.div`
 width:100%;
+margin-top:20px;
 `;
 
 const EvenDateHeader = styled.div`
@@ -95,7 +131,7 @@ line-height: 21.6px;
 margin:0;
 `;
 const EventDataBody = styled.div`
-margin-top:30px;
+margin-top:10px;
 `;
 const EventLocationContainer = styled.div`
 display: flex;
@@ -124,7 +160,7 @@ margin:0;
 `;
 
 const EventDateContainer = styled.div`
-margin-top:30px;
+// margin-top:30px;
 width:100%;
 `;
 
@@ -139,11 +175,17 @@ color:gray;
 
 const DateContainer = styled.div`
 border:1px solid #00000014;
+display:flex;
+align-items: center;
+justify-content: space-between;
 border-radius:10px;
-height:70px;`;
+padding:10px;
+height:40px;`;
 
 const FromDateContainer = styled.div`
 display:flex;
+flex-direction:column;
+align-items:baseline;
 
 `;
 const FromDateLabel = styled.p`
@@ -169,3 +211,22 @@ margin:0;
 `;
 
 const ToDateContainer = styled.div``;
+const ViewFullEventDiv = styled.div`
+width:91%;
+margin-top:30px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius:15px;
+border: 1px solid #a720b9;
+padding:10px;
+cursor:pointer;
+`;
+const ViewEventText = styled.p`
+font-family: Urbanist;
+font-size: 16px;
+font-weight: 600;
+line-height: 21.6px;
+margin:0;
+color:#a720b9;
+`;

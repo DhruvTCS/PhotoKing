@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { UserState } from '../../Slice/Auth/AuthSlice';
 import { registerUser } from '../../ApiCalls/Auth/signup';
 import { User } from '../../../Data/user.dto';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -42,7 +43,7 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
             state.isAuthticated = true;
             state.apiStatus = true;
             state.isError = false;
-            console.log(state.user);
+            showSuccessToast("User registered successfully.")
             // state.user=action.payload;
 
 

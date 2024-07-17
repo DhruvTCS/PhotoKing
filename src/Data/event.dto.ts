@@ -29,11 +29,8 @@ export interface UserCreatedEvents {
     id: number;
     customer_name: string;
     phone_number: string;
-    start_date: string;
-    start_time: string;
-    end_date: string;
-    end_time: string;
-    event_location: string;
+    event_name: string;
+    sub_events: EnteredSubEventType[];
     token: string;
 }
 export interface EnteredSubEventType {

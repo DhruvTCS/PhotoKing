@@ -7,6 +7,8 @@ import { setCurrentPackage } from '../../../../Redux/Slice/Dashboard/PackageSlic
 import { useNavigate } from 'react-router-dom'
 import DeletePopup from '../Folder/DeletePopup'
 import { deletePackageAPI } from '../../../../Redux/ApiCalls/Dashboard/PackageAPI'
+import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
+import EditIconPNG from '../../../../assets/Icons/editPackage.png'
 interface PackageItemProps {
     packageData: Package
 }
@@ -25,8 +27,15 @@ const PackageItem: React.FC<PackageItemProps> = ({ packageData }) => {
         setIsDeletePopup(false);
         console.log("delete package", packageData)
     }
+    const formatToINR = (amount: number): string => {
+        return new Intl.NumberFormat('en-IN', {
+            style: 'currency',
+            currency: 'INR',
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
     return (
-        <Container onClick={() => handleClick()}>
+        <Container >
             {isDeletePopup && (
                 <DeletePopup
                     text="Are you sure you want to delete package."
@@ -37,15 +46,11 @@ const PackageItem: React.FC<PackageItemProps> = ({ packageData }) => {
             )}
             <LeftContainer>
                 <PackageName>{packageData.title}</PackageName>
-                <PackagePrice>{packageData.price} ₹</PackagePrice>
+                <PackagePrice>{formatToINR(packageData.price)}</PackagePrice>
             </LeftContainer>
             <RightContainer>
-                <SubmitButton
-                    text="Delete"
-                    width={100}
-                    onClick={(e) => { e.stopPropagation(); setIsDeletePopup(true) }}
-                    needArrow={false}
-                />
+                <EditIcon src={EditIconPNG} onClick={() => handleClick()} />
+                <DeleteIcon src={DeleteIconPNG} onClick={() => setIsDeletePopup(true)} />
             </RightContainer>
         </Container>
     )
@@ -67,6 +72,11 @@ const LeftContainer = styled.div`
 `
 const RightContainer = styled.div`
   // padding-right:30px;
+  width:7%;
+  justify-content:space-between;
+  display: flex;
+  align-items: center;
+
 `
 const PackageName = styled.p`
   margin: 0;
@@ -75,7 +85,6 @@ const PackageName = styled.p`
   font-weight: 600;
   line-height: 22.8px;
   text-align: left;
-  text-decoration: underline;
 `
 const PackagePrice = styled.p`
   font-family: Urbanist, sans-serif;
@@ -84,4 +93,16 @@ const PackagePrice = styled.p`
   line-height: 22.8px;
   text-align: left;
   margin: 0;
-`
+  margin-top:10px;
+  `
+const DeleteIcon = styled.img`
+width:45px;
+height:45px;
+cursor:pointer;
+`;
+
+const EditIcon = styled.img`
+width:35px;
+cursor:pointer;
+height:35px;
+`;

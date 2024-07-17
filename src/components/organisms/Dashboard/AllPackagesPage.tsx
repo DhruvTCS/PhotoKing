@@ -29,6 +29,7 @@ const AllPackagesPage: React.FC = () => {
         }
     }, [isPackageUpdate, packages]);
 
+
     return (
         <Container>
             <BackButtonContainer onClick={() => navigate(-1)} >
@@ -73,7 +74,7 @@ export default AllPackagesPage
 
 
 const Container = styled.div`
-cursor: pointer;
+
 height:100%;
 margin-left:30px;
 `

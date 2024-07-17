@@ -3,7 +3,7 @@ import styled from "styled-components";
 import SubmitButton from "../../../atoms/Login/SubmitButton";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearError } from "../../../../Redux/Slice/Auth/AuthSlice";
+import { clearError, setReduxOtp } from "../../../../Redux/Slice/Auth/AuthSlice";
 import { resendOTP, verifyOTP } from "../../../../Redux/ApiCalls/Auth/login";
 import LoadingDots from "../../../atoms/Utlis/LoadinDots";
 import { registerUser } from "../../../../Redux/ApiCalls/Auth/signup";
@@ -110,7 +110,7 @@ const OtplVerificationForm: React.FC = () => {
   const inputsRef = useRef<HTMLInputElement[]>([]);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isError, phone_number, country_code, error, user, isAuthticated, loading, orderId, isRegister, temp_user } = useAppSelector(state => state.auth);
+  const { isError, phone_number, country_code, error, user, isAuthticated, loading, orderId, isRegister } = useAppSelector(state => state.auth);
 
   useEffect(() => {
     if (timer > 0) {
@@ -125,7 +125,7 @@ const OtplVerificationForm: React.FC = () => {
 
   useEffect(() => {
     if (!orderId) {
-      navigate('/auth/otp');
+      navigate('/auth/login');
     }
     return () => {
       dispatch(clearError());
@@ -159,13 +159,9 @@ const OtplVerificationForm: React.FC = () => {
     } else {
       console.log("Submitted OTP:", otpValue);
       if (isRegister) {
-        if (temp_user) {
-          dispatch(registerUser({
-            name: temp_user.name, email: temp_user.email, orderId: orderId, phone_number: temp_user.phone_number, country_code: temp_user.country_code,
-            role: 3,
-            otp: otpValue
-          }));
-        }
+        dispatch(setReduxOtp(otpValue));
+        showErrorToast("Please Register First.")
+        navigate('/auth/signup');
       } else {
         dispatch(verifyOTP({
           phone_number,
@@ -244,7 +240,7 @@ const OtplVerificationForm: React.FC = () => {
               </ResesndOtpText>
             ) : (
               <>
-                <ResesndOtpText isActivated={false}>Resend OTP</ResesndOtpText>
+                <ResesndOtpText isActivated={false}>Resend OTP &nbsp;</ResesndOtpText>
                 <Timer>00:{timer >= 10 ? timer : `0${timer}`}</Timer>
               </>
             )}

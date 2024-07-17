@@ -8,6 +8,8 @@ import { useAppDispatch, useAppSelector } from '../../../Redux/Hooks'
 import { getUserCreatedEventsAPI } from '../../../Redux/ApiCalls/Dashboard/EventAPI'
 import { UserCreatedEvents as UserCreatedEventsType } from '../../../Data/event.dto'
 import UserCreatedEventCard from '../../atoms/Dashboard/Events/UserCreatedEventCard'
+import userEvent from '@testing-library/user-event'
+import ShareEventFormLinkPopup from '../../atoms/Dashboard/Navbar/ShareFormLinkPopup'
 
 
 
@@ -15,7 +17,8 @@ const UserCreatedEvents: React.FC = () => {
     const navigate = useNavigate();
     const { isError, error, userCreatedEvents, loading } = useAppSelector(state => state.event);
     const dispatch = useAppDispatch();
-    const [currentEvents, setCurrentEvents] = useState<UserCreatedEventsType[]>([])
+    const [currentEvents, setCurrentEvents] = useState<UserCreatedEventsType[]>([]);
+    const [isShareFormPopUp, setIsShareFormPopUp] = useState<boolean>(false);
     useEffect(() => {
         if (!userCreatedEvents) {
             console.log("User created events");
@@ -27,20 +30,25 @@ const UserCreatedEvents: React.FC = () => {
     }, [userCreatedEvents])
     return (
         <Container>
+            {isShareFormPopUp && <ShareEventFormLinkPopup onClose={() => setIsShareFormPopUp(false)} />}
+
             <BackButtonContainer >
                 <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
                 <BackButtonText>Back</BackButtonText>
             </BackButtonContainer>
             <HeaderContainer>
                 <HeaderTitle>User Events</HeaderTitle>
+                <AddUserEventFomButton onClick={() => setIsShareFormPopUp(true)}>Share Form</AddUserEventFomButton>
             </HeaderContainer>
             <BodyContainer>
-                <UserCreatedEventCard />
-                <UserCreatedEventCard />
-                <UserCreatedEventCard />
-                <UserCreatedEventCard />
-                <UserCreatedEventCard />
-                <UserCreatedEventCard />
+                {userCreatedEvents && userCreatedEvents.length > 0 ?
+                    userCreatedEvents.map(event =>
+
+                        <UserCreatedEventCard userEvent={event} />
+                    )
+
+                    : 'No events created yet.'}
+
             </BodyContainer>
         </Container>
     )
@@ -58,7 +66,7 @@ display:flex;
 flex-direction:row;
 width:98%;
 align-items:center;
-margin-bottom:30px;
+margin-bottom:16px;
 `
 const BackButtonIcon = styled.img`
 width: 16px;
@@ -83,10 +91,11 @@ margin-left:11px;
 `;
 
 const HeaderContainer = styled.div`
-width: 100%;
+width: 96%;
 display:flex;
 align-items: center;
-justify-content: center;
+justify-content: space-between;
+margin-bottom:30px;
 `;
 
 const HeaderTitle = styled.p`
@@ -104,7 +113,26 @@ margin:0px;
 const BodyContainer = styled.div`
 
 display:flex;
+height:100%;
+max-height:857px;
+overflow-y: auto;
+overflow-x: hidden;
 align-items: baseline;
 flex-wrap: wrap;
 `;
 
+const AddUserEventFomButton = styled.button`
+    width: 150px;
+    height: 45px;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-family: Urbanist;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    background: linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);
+    box-shadow: 0px 4px 18px 0px #A720B966;
+`
