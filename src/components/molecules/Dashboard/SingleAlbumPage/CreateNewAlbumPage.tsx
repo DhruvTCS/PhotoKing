@@ -235,7 +235,8 @@ const CreateNewAlbumPage: React.FC = () => {
             navigate('/dashboard/')
         }
 
-        return () => { }
+        return () => {
+        }
     }, [isUpdate])
 
     useEffect(() => {
@@ -251,6 +252,7 @@ const CreateNewAlbumPage: React.FC = () => {
         return () => {
             dispatch(clearError())
             dispatch(clearFlagAlbums())
+
         }
     }, [isError])
 
@@ -263,28 +265,19 @@ const CreateNewAlbumPage: React.FC = () => {
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0]
             setSelectedFileName(file.name);
-            if (file.size / 1024 / 1024 > 2) {
-                setIsCompressing(true);
-                const compressedBlob = await compressImage(file); // Your image compression function
-                file = blobToFile(compressedBlob, file.name);
-                console.log(file);
-                const reader = new FileReader()
-                reader.readAsDataURL(file)
-                reader.onloadend = () => {
-                    // setAlbum({ ...album, image: file });
-                    setSelectedImage(file)
-                    setIsCompressing(false);
-                    setImagePreview(reader.result as string)
-                }
-            } else {
-                const reader = new FileReader()
-                reader.readAsDataURL(file)
-                reader.onloadend = () => {
-                    // setAlbum({ ...album, image: file });
-                    setSelectedImage(file)
-                    setImagePreview(reader.result as string)
-                }
+            setIsCompressing(true);
+            const compressedBlob = await compressImage(file); // Your image compression function
+            file = blobToFile(compressedBlob, file.name);
+            console.log(file);
+            const reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onloadend = () => {
+                // setAlbum({ ...album, image: file });
+                setSelectedImage(file)
+                setIsCompressing(false);
+                setImagePreview(reader.result as string)
             }
+
 
             isValidAlbum(album)
         }
@@ -413,6 +406,7 @@ const CreateNewAlbumPage: React.FC = () => {
         showSuccessToast('Folder added successfully.')
     }
     const removeImageandPreview = () => {
+        URL.revokeObjectURL(imagePreview)
         setImagePreview('');
         setSelectedImage(null)
     }

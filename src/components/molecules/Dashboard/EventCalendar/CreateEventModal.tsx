@@ -10,6 +10,8 @@ import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
 import LocationPickerModal from '../../../atoms/Dashboard/Events/SetLocationModal';
 import Errortext from '../../../atoms/Utlis/Errortext';
 import { CalendarSubEvents } from '../../../../Data/event.dto';
+import SubEventModal from '../../../atoms/Dashboard/Events/SubEventModal';
+import SubCalendarEventModal from '../../../atoms/Dashboard/Events/SubCalendarEventModal';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -43,7 +45,14 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const [addMemberMenu, setAddMemberMenu] = useState(false);
     const [deleteMember, setDeleteMember] = useState<number[]>([]);
     const [subEvents, setSubEvents] = useState<CalendarSubEvents[]>([])
+    const [locationList, setLocationList] = useState<string[]>([])
     const selectMenuRef = useRef<HTMLDivElement>(null)
+    const [
+        currentSubEvent,
+        setCurrentSubEvent,
+    ] = useState<CalendarSubEvents | null>(null)
+
+    const [isSubEventModal, setIsSubEventModal] = useState(false)
     const [isUpdate, setIsUpdate] = useState(false);
     // const navigate = useNavigate();
     const [locationModal, setLocationModal] = useState<boolean>(false);
@@ -70,6 +79,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             // console.log(start);
             setIsUpdate(true);
             setStartDateTime(formatedStart);
+            setSubEvents(currentEvent.sub_events)
             setEndDateTime(formatedEnd);
             setEventName(currentEvent.title);
             setDeletePopUp(false)
@@ -148,7 +158,10 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         else return false
     }
 
-
+    const validSubEvents = (subEvents: CalendarSubEvents[]) => {
+        if (subEvents.length > 0) return true
+        else return false
+    }
 
     const handleSubmit = () => {
         if (!validDateTime(new Date(startDateTime), new Date(endDateTime)) || !validateLocation(eventLocation) || !validEventName(eventName)) {
@@ -188,6 +201,11 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         setAddMemberMenu(false);
         buttonAction();
     };
+    const handleAddSubEvents = (subEvent: CalendarSubEvents) => {
+        let filteredSubEvents = subEvents.filter((e) => e.id !== subEvent.id)
+        setSubEvents([...filteredSubEvents, subEvent])
+        setIsSubEventModal(false)
+    }
     if (!isOpen) return null;
 
     return (
@@ -219,7 +237,17 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                         <UnderLine width={100} isPercent={true} />
                         <Errortext show={showError && !validEventName(eventName)} message='Please provide valid event name.' />
                     </InputNameConatiner>
-                    {/* <FormField>
+                    <FormField>
+                        {isSubEventModal && (
+                            <SubCalendarEventModal
+                                locationList={locationList}
+                                setLocationList={setLocationList}
+                                currentLength={subEvents.length}
+                                addSubEvent={handleAddSubEvents}
+                                currentSubEvent={currentSubEvent}
+                                onClose={() => setIsSubEventModal(false)}
+                            />
+                        )}
                         <InputContainer>
                             <AddSubEventHeaderContainer>
                                 <Label htmlFor="name">Sub Events</Label>
@@ -237,7 +265,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                     <SubEventNameContainer
                                         onClick={() => {
                                             setCurrentSubEvent(event)
-                                            // setIsSubEventModal(true)
+                                            setIsSubEventModal(true)
                                         }}
                                     >
                                         <SubEventName
@@ -245,14 +273,14 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                             value={event.sub_event_name}
                                             readOnly
                                         />
-                                        <CloseButton
+                                        <CloseButtonSubEvent
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 // handleRemoveSubEvents(event)
                                             }}
                                         >
                                             &times;
-                                        </CloseButton>
+                                        </CloseButtonSubEvent>
                                     </SubEventNameContainer>
                                 ))}
                             </SubEventsList>
@@ -262,7 +290,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                             message="Please Add sub events"
                             show={showError && !validSubEvents(subEvents)}
                         />
-                    </FormField> */}
+                    </FormField>
                     <ModalDateConatiner>
                         <MemberSelecetionConatiner>
                             <SelectMemberHeadingConatiner>
@@ -432,43 +460,6 @@ const ModalDateConatiner = styled.div`
 display:flex;
 flex-direction: column;
 align-items: baseline;
-`;
-const DateLable = styled.div`
-font-family: Urbanist;
-font-size: 18px;
-font-weight: 600;
-line-height: 18px;
-text-align: left;
-color: #424242;
-`;
-const DateRangeConatiner = styled.div`
-margin-top:10px;
-display:flex;
-justify-content: space-between;
-width: 100%;
-// margin-bottom: 1rem;
-`;
-const FromDateConatiner = styled.div`
-display:flex;
-flex-direction: column;
-width:40%;
-cursor: pointer;
-`;
-const Fromdate = styled.input`
-border:none;
-cursor: pointer;
-&:focus{
-outline:none;
-}
-`;
-const FromDateLable = styled.label`
-text-align: left;
-font-family: Urbanist;
-font-size: 16px;
-font-weight: 500;
-line-height: 18px;
-text-align: left;
-color: grey;
 `;
 const SelectMemberLabel = styled.select`
 
@@ -642,4 +633,61 @@ const FormField = styled.div`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
+`
+
+const SubEventsList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`
+const AddSubEventHeaderContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+const AddSubEventButton = styled.button`
+  font-size: 20px;
+  border: 1px solid gray;
+  font-weight: 400;
+  background-color: transparent;
+  border-radius: 50%;
+  color: gray;
+  cursor: pointer;
+`
+
+const SubEventNameContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0px 0px 10px;
+  
+  border: 1px solid gray;
+  border-radius: 10px;
+`
+
+const SubEventName = styled.input`
+  border: none;
+  background-color: transparent;
+  max-width: 83px;
+  &:focus {
+    outline: none;
+  }
+`
+
+const CloseButtonSubEvent = styled.span`
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: end;
+`
+
+const Label = styled.label`
+  font-family: Urbanist;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: left;
+  color: #424242;
+
 `

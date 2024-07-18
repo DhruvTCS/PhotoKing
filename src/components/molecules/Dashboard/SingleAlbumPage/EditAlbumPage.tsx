@@ -338,7 +338,9 @@ const EditAlbumPage: React.FC = () => {
 
     }
     const validData = () => {
-        if (album.name.length > 0 && album.date.length > 0 && isValidDate(album.date) && (album.image.length > 0 || slectedImage)) return true;
+        console.log(album, slectedImage);
+        console.log("valid data");
+        if (album.name.length > 0 && album.date.length > 0 && (album.image.length > 0 || slectedImage)) return true;
         else return false;
 
     }
@@ -400,6 +402,7 @@ const EditAlbumPage: React.FC = () => {
     };
     const handleSubmit = async () => {
         if (!validData()) {
+            console.log("edit album called")
             setShowError(true);
         } else {
 
