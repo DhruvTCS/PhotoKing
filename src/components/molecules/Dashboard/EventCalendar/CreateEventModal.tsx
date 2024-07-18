@@ -9,6 +9,7 @@ import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
 import LocationPickerModal from '../../../atoms/Dashboard/Events/SetLocationModal';
 import Errortext from '../../../atoms/Utlis/Errortext';
+import { CalendarSubEvents } from '../../../../Data/event.dto';
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -40,8 +41,8 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const { currentEvent } = useAppSelector(state => state.event)
     const selectionRef = useRef<HTMLSelectElement>(null);
     const [addMemberMenu, setAddMemberMenu] = useState(false);
-    const [activeButton, setActiveButton] = useState(false);
     const [deleteMember, setDeleteMember] = useState<number[]>([]);
+    const [subEvents, setSubEvents] = useState<CalendarSubEvents[]>([])
     const selectMenuRef = useRef<HTMLDivElement>(null)
     const [isUpdate, setIsUpdate] = useState(false);
     // const navigate = useNavigate();
@@ -71,7 +72,6 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             setStartDateTime(formatedStart);
             setEndDateTime(formatedEnd);
             setEventName(currentEvent.title);
-            setEventLocation(currentEvent.location);
             setDeletePopUp(false)
         }
         else if (selectedSlot) {
@@ -219,41 +219,51 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                         <UnderLine width={100} isPercent={true} />
                         <Errortext show={showError && !validEventName(eventName)} message='Please provide valid event name.' />
                     </InputNameConatiner>
-                    <InputNameConatiner style={{ "cursor": "pointer" }}>
-                        <ModalLabel>Location:</ModalLabel>
-                        <ModalInput style={{ "cursor": "pointer" }}
-                            type="text"
-                            value={eventLocation}
-                            onChange={(e) => setEventLocation(e.target.value)}
-                            placeholder="Enter event's location"
-                        // readOnly={true}
-                        />
+                    {/* <FormField>
+                        <InputContainer>
+                            <AddSubEventHeaderContainer>
+                                <Label htmlFor="name">Sub Events</Label>
+                                {subEvents.length <= 10 && <AddSubEventButton
+                                    onClick={() => {
+                                        setCurrentSubEvent(null)
+                                        setIsSubEventModal(true)
+                                    }}
+                                >
+                                    +
+                                </AddSubEventButton>}
+                            </AddSubEventHeaderContainer>
+                            <SubEventsList>
+                                {subEvents.map((event) => (
+                                    <SubEventNameContainer
+                                        onClick={() => {
+                                            setCurrentSubEvent(event)
+                                            // setIsSubEventModal(true)
+                                        }}
+                                    >
+                                        <SubEventName
+                                            type="text"
+                                            value={event.sub_event_name}
+                                            readOnly
+                                        />
+                                        <CloseButton
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                // handleRemoveSubEvents(event)
+                                            }}
+                                        >
+                                            &times;
+                                        </CloseButton>
+                                    </SubEventNameContainer>
+                                ))}
+                            </SubEventsList>
+                        </InputContainer>
                         <UnderLine width={100} isPercent={true} />
-                        <Errortext show={showError && eventLocation.length <= 0} message='Please provide event location.' />
-                    </InputNameConatiner>
-                    {false && <LocationPickerModal isOpen={locationModal} onClose={() => setLocationModal(false)} onSelect={(str) => console.log(str)} />}
+                        <Errortext
+                            message="Please Add sub events"
+                            show={showError && !validSubEvents(subEvents)}
+                        />
+                    </FormField> */}
                     <ModalDateConatiner>
-                        <DateLable>Select Date & Time</DateLable>
-                        <DateRangeConatiner>
-                            <FromDateConatiner onClick={() => startDateRef.current?.showPicker()}>
-                                <FromDateLable>
-                                    From
-                                </FromDateLable>
-                                <Fromdate type='datetime-local' ref={startDateRef} onChange={(e) => setStartDateTime(e.target.value)} placeholder='Select date and time' value={startDateTime} />
-                                <UnderLine width={100} isPercent={true} />
-
-                            </FromDateConatiner>
-                            <FromDateConatiner onClick={() => endDateRef.current?.showPicker()}>
-                                <FromDateLable>
-                                    To
-                                </FromDateLable>
-                                <Fromdate type='datetime-local' ref={endDateRef} onChange={(e) => setEndDateTime(e.target.value)} placeholder='Select date and time' value={endDateTime} />
-                                <UnderLine width={100} isPercent={true} />
-
-                            </FromDateConatiner>
-                        </DateRangeConatiner>
-                        <Errortext message='Please provide valid dates.' show={showError && !validDateTime(new Date(startDateTime), new Date(endDateTime))} />
-                        {/* <UnderLine width={100} isPercent={true} /> */}
                         <MemberSelecetionConatiner>
                             <SelectMemberHeadingConatiner>
                                 <SelectMemberHeading>Selected Members {`(${selectedMembers.length})`}</SelectMemberHeading>
@@ -261,7 +271,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                             <SelectedMemberConatiner>
                                 <SelectedMembersList>
                                     {
-                                        currentEvent && eventMembers.length > 0 && (members.map(member => eventMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
+                                        currentEvent && members && eventMembers.length > 0 && (members.map(member => eventMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
                                             <SelectedMemberData>
                                                 <MemberData  >
                                                     <MeberProfileImage src={member.profile_image} />
@@ -276,7 +286,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                             </SelectedMemberData>
                                         </SelectedMemberDataConatiner>))
                                     }
-                                    {members.map(member => selectedMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
+                                    {members && members.map(member => selectedMembers.includes(parseInt(member.id)) && <SelectedMemberDataConatiner>
                                         <SelectedMemberData>
                                             <MemberData  >
                                                 <MeberProfileImage src={member.profile_image} />
@@ -294,7 +304,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                 </SelectedMembersList>
                             </SelectedMemberConatiner>
                             <SelectionMenuListConatiner >
-                                <div onClick={() => setAddMemberMenu(pre => !pre)}>
+                                <div onClick={() => { !members ? showErrorToast("No Members Available.") : setAddMemberMenu(pre => !pre) }}>
 
                                     <AddMemberConatiner >
 
@@ -310,7 +320,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
                                     {addMemberMenu && <AddMemberListConatiner ref={selectMenuRef}>
                                         <MemberList>
-                                            {members.map(member => !eventMembers.includes(parseInt(member.id)) &&
+                                            {members && members.map(member => !eventMembers.includes(parseInt(member.id)) &&
                                                 <MemberListItem htmlFor={`member${member.id}`} >
 
                                                     <MemberData  >
@@ -620,3 +630,16 @@ cursor:pointer;
 color:#B827BB;
 }
 `;
+
+
+const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+`
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`

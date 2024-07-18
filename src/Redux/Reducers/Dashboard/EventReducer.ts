@@ -1,17 +1,38 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { subscriptionsPlansAPI } from '../../ApiCalls/Dashboard/SubscriptionAPI';
 import { EventState } from '../../Slice/Dashboard/EventSlice';
-import { createEventAPI, deleteEventAPI, getAllEventsAPI, getUserCreatedEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
-import { BackendEvent, EnteredSubEventType, EventType, UserCreatedEvents } from '../../../Data/event.dto';
+import { createEventAPI, deleteEventAPI, deleteUserCreatedEventAPI, getAllEventsAPI, getUserCreatedEventsAPI, updateEventAPI } from '../../ApiCalls/Dashboard/EventAPI';
+import { BackendEvent, CalendarSubEvents, EnteredSubEventType, EventType, UserCreatedEvents } from '../../../Data/event.dto';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
+const findEventTimeRange = (subEvents: CalendarSubEvents[]): { startTime: string, endTime: string } => {
+    if (subEvents.length === 0) {
+        return { startTime: '', endTime: '' };
+    }
 
-const convertToDateTime = (date: string, time: string): string => {
-    const [hours, minutes, seconds] = time.split(':').map(Number)
-    const dateTime = new Date(date)
-    // console.log(dateTime, new Date(2024, 6, 2, 15, 0, 0))
-    dateTime.setHours(hours, minutes, seconds, 0)
-    return dateTime.toString();
-}
+    // Initialize with the first sub-event
+    let startTime = new Date(subEvents[0].start_date + 'T' + subEvents[0].start_time);
+    let endTime = new Date(subEvents[0].end_date + 'T' + subEvents[0].end_time);
+
+    subEvents.forEach(subEvent => {
+        const startDateTime = new Date(subEvent.start_date + 'T' + subEvent.start_time);
+        const endDateTime = new Date(subEvent.end_date + 'T' + subEvent.end_time);
+
+        if (startDateTime < startTime) {
+            startTime = startDateTime;
+        }
+
+        if (endDateTime > endTime) {
+            endTime = endDateTime;
+        }
+    });
+
+    // Format the resulting Date objects to ISO 8601 string format
+    const formattedStartTime = startTime.toString().slice(0, -1);
+    const formattedEndTime = endTime.toString().slice(0, -1);
+    console.log({ startTime: formattedStartTime, endTime: formattedEndTime })
+    return { startTime: formattedStartTime, endTime: formattedEndTime };
+};
+
 export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
     builder.addCase(getAllEventsAPI.pending, (state) => {
         state.loading = true;
@@ -25,15 +46,15 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.success = true;
             state.isEventUpdate = false;
             state.Events = [];
-            action.payload.forEach((event) => {
+            action.payload.forEach(mainEvent => {
+                let dateRange = findEventTimeRange(mainEvent.sub_events)
                 state.Events.push({
-                    id: event.id,
-                    title: event.title,
-                    location: event.location,
-                    members: event.members,
-                    start: convertToDateTime(event.start_date, event.start_time),
-                    end: convertToDateTime(event.end_date, event.end_time),
-
+                    id: mainEvent.id,
+                    title: mainEvent.title,
+                    members: mainEvent.members,
+                    sub_events: mainEvent.sub_events,
+                    start: dateRange.startTime,
+                    end: dateRange.endTime
                 })
             })
             // state.Events = action.payload;
@@ -141,6 +162,25 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             // state.Events = action.payload;
         })
         .addCase(getUserCreatedEventsAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+
+            console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(deleteUserCreatedEventAPI.pending, (state) => {
+            state.loading = true;
+            state.isError = false;
+            state.success = false;
+            // state.error = {};
+        })
+        .addCase(deleteUserCreatedEventAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            delete state.userCreatedEvents;
+            showSuccessToast("Event deleted successfully.")
+            // state.Events = action.payload;
+        })
+        .addCase(deleteUserCreatedEventAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
 

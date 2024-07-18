@@ -109,3 +109,18 @@ export const getUserCreatedEventsAPI = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     })
+export const deleteUserCreatedEventAPI = createAsyncThunk(
+    'event/deleteUserCreatedEventAPI',
+    async (data: { event_id: number }, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/customer-event/?customer_event_id=${data.event_id}`,
+
+
+            })
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    })

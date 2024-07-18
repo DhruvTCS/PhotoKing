@@ -59,8 +59,8 @@ const EventCalendar: React.FC = () => {
     useEffect(() => {
         // console.log(convertToDateTime("2024/07/15", "14:00:00"))
         // console.log("+++++++++++++++++++++++++++++++++++++++")
-        if (members.length == 0 && !isMemberFetched) {
-            // dispatch(getAllMembers())
+        if (!members && !isMemberFetched) {
+            dispatch(getAllMembers())
         }
 
         return () => { }
@@ -89,7 +89,7 @@ const EventCalendar: React.FC = () => {
             let endDate = `${endYear}-${endMonth}-${endDay}`;
 
             console.log(currentEvents);
-            // dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
+            dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
         }
         return () => {
             dispatch(clearError())
@@ -101,7 +101,6 @@ const EventCalendar: React.FC = () => {
                 let newEvent = {
                     title: event.title,
                     members: event.members,
-                    location: event.location,
                     start: new Date(event.start),
                     end: new Date(event.end),
                     id: event.id
@@ -154,9 +153,9 @@ const EventCalendar: React.FC = () => {
 
         const eventObje: EventType = {
             id: data.id,
-            location: data.location,
             start: data.start.toString(),
             end: data.end.toString(),
+            sub_events: [],
             members: data.members,
             title: data.title
         }
