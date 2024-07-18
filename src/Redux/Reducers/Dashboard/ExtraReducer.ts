@@ -12,7 +12,7 @@ export const ExtraReducer = (builder: ActionReducerMapBuilder<ExtraState>) => {
     })
         .addCase(getEventFormTokenAPI.fulfilled, (state, action: PayloadAction<string>) => {
             state.loading = false;
-            // console.log("changing token", action.payload)
+            // // console.log("changing token", action.payload)
             state.eventFromToken = action.payload;
 
             // state.Events = action.payload;
@@ -21,7 +21,7 @@ export const ExtraReducer = (builder: ActionReducerMapBuilder<ExtraState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(submitEventFormAPI.pending, (state) => {
             state.loading = true;
@@ -41,7 +41,7 @@ export const ExtraReducer = (builder: ActionReducerMapBuilder<ExtraState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

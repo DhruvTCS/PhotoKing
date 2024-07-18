@@ -9,7 +9,7 @@ export const getAllAlbums = createAsyncThunk(
                 method: 'GET',
                 url: `/project/user/projects/?page=${page}`
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -24,7 +24,7 @@ export const getSearchData = createAsyncThunk(
                 method: 'GET',
                 url: `/project/search-albums/?search=${searchInput}`
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -41,7 +41,7 @@ export const lockAlbum = createAsyncThunk(
                 url: `/project/user/lock-project/`,
                 data: data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -55,7 +55,7 @@ export const unlockAlbum = createAsyncThunk(
                 method: 'POST',
                 url: `/project/user/unlock-project/?project_id=${albumId}`
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -74,7 +74,7 @@ export const createAlbumAPI = createAsyncThunk(
                 url: `/project/user/create-project/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -93,7 +93,7 @@ export const updateAlbumAPI = createAsyncThunk(
                 },
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -109,7 +109,7 @@ export const getAllRedeemUserAPI = createAsyncThunk(
                 method: 'GET',
                 url: `/project/redeem-user-list/?album_id=${data.album_id}`,
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -126,7 +126,7 @@ export const removeRedeemUserAPI = createAsyncThunk(
                 method: 'DELETE',
                 url: `/project/redeem-user-list/?album_id=${data.album_id}&user_id=${data.user_id}`,
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

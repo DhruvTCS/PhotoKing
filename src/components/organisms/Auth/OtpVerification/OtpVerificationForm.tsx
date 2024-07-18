@@ -155,9 +155,9 @@ const OtplVerificationForm: React.FC = () => {
     e.preventDefault();
     const otpValue = otp.join("");
     if (otpValue.length !== 4 || otp.some((digit) => !/^\d$/.test(digit))) {
-      console.log("Inappropriate OTP value: " + otpValue);
+      // console.log("Inappropriate OTP value: " + otpValue);
     } else {
-      console.log("Submitted OTP:", otpValue);
+      // console.log("Submitted OTP:", otpValue);
       if (isRegister) {
         dispatch(setReduxOtp(otpValue));
         showErrorToast("Please Register First.")
@@ -175,7 +175,7 @@ const OtplVerificationForm: React.FC = () => {
 
   const handleResendOtp = (e: React.MouseEvent<HTMLParagraphElement>) => {
     e.preventDefault();
-    console.log("Resend OTP");
+    // console.log("Resend OTP");
     dispatch(resendOTP({ orderId }));
     setTimer(60);
     setShowResendLink(false);

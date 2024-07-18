@@ -219,7 +219,7 @@ const CreateNewAlbumPage: React.FC = () => {
     const [selectedImage, setSelectedImage] = useState<File | null>(null)
     const [isCompressing, setIsCompressing] = useState<boolean>(false);
     const [activeButton, setActiveButton] = useState(true)
-    const [selectedFileName, setSelectedFileName] = useState('')
+    const [totalImages, setTotalImages] = useState(0);
     const [folders, setFolders] = useState<NewFolder[] | []>([])
     const [createFolderModal, setCreateFolderModal] = useState(false)
     const dispatch = useAppDispatch()
@@ -240,7 +240,7 @@ const CreateNewAlbumPage: React.FC = () => {
     }, [isUpdate])
 
     useEffect(() => {
-        // console.log(isError)
+        // // console.log(isError)
         if (isError) {
             if (error && error.message) {
                 showErrorToast(error.message)
@@ -261,14 +261,13 @@ const CreateNewAlbumPage: React.FC = () => {
         isValidAlbum(album)
     }, [selectedImage, album])
     const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.files)
+        // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0]
-            setSelectedFileName(file.name);
             setIsCompressing(true);
             const compressedBlob = await compressImage(file); // Your image compression function
             file = blobToFile(compressedBlob, file.name);
-            console.log(file);
+            // console.log(file);
             const reader = new FileReader()
             reader.readAsDataURL(file)
             reader.onloadend = () => {
@@ -316,10 +315,10 @@ const CreateNewAlbumPage: React.FC = () => {
     }
 
     const isValidAlbum = (album: NewAlbum) => {
-        // console.log(
+        // // console.log(
         //     isValidDate(album.date)
         // )
-        // console.log(album.date)
+        // // console.log(album.date)
         if (isValidDate(album.date) && album.name.length > 3 && selectedImage) {
             setActiveButton(false)
         } else {
@@ -330,7 +329,7 @@ const CreateNewAlbumPage: React.FC = () => {
         // Check the format with a regular expression
         const regex = /^(\d{4})\-(\d{2})\-(\d{2})$/
         const match = dateString.match(regex)
-        // console.log(dateString)
+        // // console.log(dateString)
         if (!match) {
             return false
         }
@@ -351,7 +350,7 @@ const CreateNewAlbumPage: React.FC = () => {
                 album.folders = folders
                 return album
             })
-            // console.log(folders)
+            // // console.log(folders)
             const formData = new FormData()
             formData.append('project[name]', album.name)
             formData.append('project[date]', album.date)
@@ -370,16 +369,16 @@ const CreateNewAlbumPage: React.FC = () => {
                         `folders[${folderIndex}][images][${imageIndex}][media_type]`,
                         image.media_type.toString(),
                     )
-                    // console.log(
+                    // // console.log(
                     //     formData.get(
                     //         `folders[${folderIndex}][images][${imageIndex}][image]`,
                     //     ),
                     // )
-                    // console.log(image.image)
+                    // // console.log(image.image)
                 })
             })
-            // console.log(folders)
-            // console.log(formData.get('project_image'))
+            // // console.log(folders)
+            // // console.log(formData.get('project_image'))
             dispatch(createAlbumAPI(formData))
         }
     }
@@ -389,7 +388,11 @@ const CreateNewAlbumPage: React.FC = () => {
                 (f) => f.name.toLowerCase() === folder.name.toLowerCase(),
             )
             if (folderIndex !== -1) {
+
                 // Update existing folder
+                let oldImageLength = prevFolders[folderIndex].images.length;
+                let newLength = folder.images.length;
+                setTotalImages(pre => pre - oldImageLength + newLength);
                 const updatedFolders = [...prevFolders]
                 updatedFolders[folderIndex] = folder
                 return updatedFolders
@@ -399,8 +402,11 @@ const CreateNewAlbumPage: React.FC = () => {
                     showErrorToast("You can create 5 folders at once.")
                     return prevFolders;
                 }
-                else
+                else {
+
+                    setTotalImages(pre => pre + folder.images.length);
                     return [...prevFolders, folder]
+                }
             }
         })
         showSuccessToast('Folder added successfully.')
@@ -453,7 +459,7 @@ const CreateNewAlbumPage: React.FC = () => {
                     <InputContainer
                         onClick={() => {
                             dateRef.current?.showPicker()
-                            // console.log('calling')
+                            // // console.log('calling')
                         }}
                     >
                         <InputLabel>Creation Date</InputLabel>
@@ -477,6 +483,7 @@ const CreateNewAlbumPage: React.FC = () => {
                         setCreateFolderModal(false)
                         setCurrentFolder(null)
                     }}
+                    imageLimit={20 - totalImages}
                     onSubmit={handleAddFolder}
                     currentFolder={currentFolder ? currentFolder : null}
                     setCurrentFolder={setCurrentFolder}

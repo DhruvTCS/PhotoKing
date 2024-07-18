@@ -164,7 +164,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
     useEffect(() => {
 
         if (isError) {
-            console.log("Error in lockAlbum Modal", error);
+            // console.log("Error in lockAlbum Modal", error);
             if (error && error.message) {
                 showErrorToast(error.message);
             } else {
@@ -237,7 +237,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
             showSuccessToast("Your Album has been locked");
 
         } else {
-            // console.log(selectedFolders);
+            // // console.log(selectedFolders);
             if (selectedReason === 4) {
                 dispatch(lockMultipleFoldersAPI({ folders: selectedFolders, project_id: album.id, custom_reason: reason }))
             } else {

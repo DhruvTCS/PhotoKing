@@ -1,135 +1,147 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import styled from 'styled-components';
-import imageCompression from 'browser-image-compression';
-import LazyLoad from 'react-lazyload';
-import { showSuccessToast, showErrorToast } from './../../Utlis/Toast';
-import HeaderIconPNG from '../../../../assets/Icons/SingleAlbum/addFolderIcon.png';
-import AddImageIconPNG from '../../../../assets/Icons/SingleAlbum/addImage.png';
-import SubmitButton from '../../Login/SubmitButton';
-import UnderLine from '../../Login/UnderLine';
-import { NewFolder } from '../../../../Data/album.dto';
-import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png';
-import LoadingDots from '../../Utlis/LoadinDots';
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import styled from 'styled-components'
+import imageCompression from 'browser-image-compression'
+import LazyLoad from 'react-lazyload'
+import { showSuccessToast, showErrorToast } from './../../Utlis/Toast'
+import HeaderIconPNG from '../../../../assets/Icons/SingleAlbum/addFolderIcon.png'
+import AddImageIconPNG from '../../../../assets/Icons/SingleAlbum/addImage.png'
+import SubmitButton from '../../Login/SubmitButton'
+import UnderLine from '../../Login/UnderLine'
+import { NewFolder } from '../../../../Data/album.dto'
+import CancleIconPNG from '../../../../assets/Icons/SingleAlbum/cancleIcon.png'
+import LoadingDots from '../../Utlis/LoadinDots'
 
 interface AddFolderModalProps {
-  isOpen: boolean;
-  onRequestClose: () => void;
-  onSubmit: (folder: NewFolder) => void;
-  currentFolder: NewFolder | null;
-  setCurrentFolder: (data: NewFolder | null) => void;
+  isOpen: boolean
+  onRequestClose: () => void
+  onSubmit: (folder: NewFolder) => void
+  currentFolder: NewFolder | null
+  imageLimit: number
+  setCurrentFolder: (data: NewFolder | null) => void
 }
 
 const AddFolderModal: React.FC<AddFolderModalProps> = ({
   isOpen,
   onRequestClose,
   onSubmit,
+  imageLimit,
   currentFolder,
   setCurrentFolder,
 }) => {
-  const [folderName, setFolderName] = useState('');
-  const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [compressedImageLoading, setCompressedImageLoading] = useState(false);
+  const [folderName, setFolderName] = useState('')
+  const [newFolderImages, setNewFolderImages] = useState<File[]>([])
+  const [limit, setLimit] = useState(20);
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [compressedImageLoading, setCompressedImageLoading] = useState(false)
+  const [isUpdate, setIsUpDate] = useState(false);
 
   useEffect(() => {
+    // console.log(imageLimit)
+    setLimit(imageLimit);
     if (currentFolder) {
-      setFolderName(currentFolder.name);
-      setNewFolderImages(currentFolder.images.map((image) => image.image));
-      setImageUrls(currentFolder.images.map((image) => URL.createObjectURL(image.image)));
+      setIsUpDate(true);
+      setFolderName(currentFolder.name)
+      setNewFolderImages(currentFolder.images.map((image) => image.image))
+      setImageUrls(
+        currentFolder.images.map((image) => URL.createObjectURL(image.image)),
+      )
     } else {
-      setFolderName('');
-      setNewFolderImages([]);
+      setFolderName('')
+      setIsUpDate(false)
+      setNewFolderImages([])
     }
 
     return () => {
-      setCurrentFolder(null);
+      setCurrentFolder(null)
       // Revoke all object URLs when the modal is closed
-      imageUrls.forEach(url => URL.revokeObjectURL(url));
-      setImageUrls([]);
-    };
-  }, [isOpen]);
+      imageUrls.forEach((url) => URL.revokeObjectURL(url))
+      setImageUrls([])
+    }
+  }, [isOpen])
 
   const blobToFile = (blob: Blob, fileName: string): File => {
-    return new File([blob], fileName, { type: blob.type });
-  };
+    return new File([blob], fileName, { type: blob.type })
+  }
 
   const compressImage = async (file: File): Promise<Blob> => {
     const options = {
       maxSizeMB: 2,
       maxWidthOrHeight: 1920,
       useWebWorker: true,
-    };
+    }
 
     try {
-      const compressedBlob = await imageCompression(file, options);
-      return compressedBlob;
+      const compressedBlob = await imageCompression(file, options)
+      return compressedBlob
     } catch (error) {
-      console.error('Error compressing image:', error);
-      throw error;
+      console.error('Error compressing image:', error)
+      throw error
     }
-  };
+  }
 
-  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const files = event.target.files
+    if (!files) return
 
-    const acceptedFiles = Array.from(files);
-    const batchSize = 5;
-    let compressedFiles: File[] = [];
-    if (newFolderImages.length + acceptedFiles.length > 20) showErrorToast("You can upload max 20 images at once.")
+    const acceptedFiles = Array.from(files)
+    const batchSize = 5
+    let compressedFiles: File[] = []
+    if (newFolderImages.length + acceptedFiles.length > 20)
+      showErrorToast('You can upload max 20 images at once.')
+    else if (acceptedFiles.length > limit)
+      showErrorToast('You can upload max 20 while creating album.')
     else {
-      setCompressedImageLoading(true);
+      setCompressedImageLoading(true)
 
       for (let i = 0; i < acceptedFiles.length; i += batchSize) {
-        const batch = acceptedFiles.slice(i, i + batchSize);
+        const batch = acceptedFiles.slice(i, i + batchSize)
         const compressedBatch = await Promise.all(
           batch.map(async (file) => {
             try {
               if (file.size / 1024 / 1024 > 3) {
-                const compressedBlob = await compressImage(file);
-                const compressedFile = blobToFile(compressedBlob, file.name);
-                return compressedFile;
+                const compressedBlob = await compressImage(file)
+                const compressedFile = blobToFile(compressedBlob, file.name)
+                return compressedFile
               } else {
-                return file;
+                return file
               }
             } catch (error) {
-              console.error('Error compressing file:', error);
-              showErrorToast('Error compressing file');
-              return undefined;
+              console.error('Error compressing file:', error)
+              showErrorToast('Error compressing file')
+              return undefined
             }
-          })
-        );
+          }),
+        )
         compressedFiles = [
           ...compressedFiles,
-          ...compressedBatch.filter((file): file is File => file !== undefined)
-        ];
+          ...compressedBatch.filter((file): file is File => file !== undefined),
+        ]
       }
 
-      setCompressedImageLoading(false);
+      setCompressedImageLoading(false)
 
-
-      setNewFolderImages((prev) => [...prev, ...compressedFiles]);
-      const newUrls = compressedFiles.map(file => URL.createObjectURL(file));
-      setImageUrls((prev) => [...prev, ...newUrls]);
+      setNewFolderImages((prev) => [...prev, ...compressedFiles])
+      setLimit(pre => pre - compressedFiles.length);
+      const newUrls = compressedFiles.map((file) => URL.createObjectURL(file))
+      setImageUrls((prev) => [...prev, ...newUrls])
     }
-  };
+  }
 
   const handleRemoveImage = (index: number) => {
-    URL.revokeObjectURL(imageUrls[index]);
-    setNewFolderImages((prev) => prev.filter((_, i) => i !== index));
-    setImageUrls((prev) => prev.filter((_, i) => i !== index));
-  };
+    URL.revokeObjectURL(imageUrls[index])
+    setNewFolderImages((prev) => prev.filter((_, i) => i !== index))
+    setImageUrls((prev) => prev.filter((_, i) => i !== index))
+  }
 
   const handleCreateFolder = () => {
     if (!folderName.trim()) {
-      showErrorToast('Folder name cannot be empty.');
-      return;
+      showErrorToast('Folder name cannot be empty.')
+      return
     }
-    if (newFolderImages.length === 0) {
-      showErrorToast('You must add at least one image.');
-      return;
-    }
+
     const folder: NewFolder = {
       name: folderName,
       images: newFolderImages.map((file) => ({
@@ -137,15 +149,15 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
         image_blob: URL.createObjectURL(file),
         media_type: 1,
       })),
-    };
-    onSubmit(folder);
-    onRequestClose();
-    setFolderName('');
-    setNewFolderImages([]);
-  };
+    }
+    onSubmit(folder)
+    onRequestClose()
+    setFolderName('')
+    setNewFolderImages([])
+  }
 
   if (!isOpen) {
-    return null;
+    return null
   }
 
   return (
@@ -169,26 +181,35 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
             <UnderLine width={830} />
           </InputContainer>
           <PhotoContainer>
-            <PhotoLabel>Photos</PhotoLabel>
+            <LabelContainer>
+
+              <PhotoLabel>Photos</PhotoLabel>
+              {imageLimit === 0 && (
+                <Span>You can upload max 20 images while creating album.</Span>
+              )}
+            </LabelContainer>
+
             <ImageContainer>
-              <ImageUploadContainer
-                onClick={() => {
-                  if (fileInputRef.current) fileInputRef.current.value = '';
-                  fileInputRef?.current?.click();
-                }}
-              >
-                <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
-                <AddImageLabel>Add Images</AddImageLabel>
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={fileInputRef}
-                  onChange={handleImageUpload}
-                  style={{ display: 'none' }}
-                />
-              </ImageUploadContainer>
+              {imageLimit !== 0 && (
+                <ImageUploadContainer
+                  onClick={() => {
+                    if (fileInputRef.current) fileInputRef.current.value = ''
+                    fileInputRef?.current?.click()
+                  }}
+                >
+                  <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
+                  <AddImageLabel>Add Images</AddImageLabel>
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    style={{ display: 'none' }}
+                  />
+                </ImageUploadContainer>
+              )}
               {compressedImageLoading ? (
                 <LoadingDots />
               ) : (
@@ -196,10 +217,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
                   {newFolderImages.map((file, index) => (
                     <LazyLoad height={100} offset={100} key={index}>
                       <ImagePreview>
-                        <PreviewImage
-                          src={imageUrls[index]}
-                          alt="preview1"
-                        />
+                        <PreviewImage src={imageUrls[index]} alt="preview1" />
                         <RemoveButtonContainer
                           onClick={() => handleRemoveImage(index)}
                         >
@@ -215,21 +233,21 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
         </ModalBody>
         <ButtonContainer>
           <SubmitButton
-            text={'Create'}
+            text={isUpdate ? 'Update' : 'Create'}
             width={200}
             height={56}
             needArrow={false}
             onClick={() => handleCreateFolder()}
-            active={!(newFolderImages.length > 0)}
+            active={!(folderName.length > 0)}
           />
           <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
         </ButtonContainer>
       </ModalContent>
     </ModalOverlay>
-  );
-};
+  )
+}
 
-export default AddFolderModal;
+export default AddFolderModal
 
 // Styled Components
 const ModalOverlay = styled.div`
@@ -244,7 +262,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   z-index: 1000;
   padding: 10px;
-`;
+`
 
 const ModalContent = styled.div`
   position: relative;
@@ -269,7 +287,7 @@ const ModalContent = styled.div`
     max-width: 100%;
     max-height: 100%;
   }
-`;
+`
 
 const ModalHeader = styled.div`
   width: 100%;
@@ -277,7 +295,7 @@ const ModalHeader = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
+`
 
 const HeaderIconContainer = styled.div`
   width: 82px;
@@ -287,45 +305,45 @@ const HeaderIconContainer = styled.div`
   justify-content: center;
   background: #a720b926;
   border-radius: 50%;
-`;
+`
 
 const HeaderText = styled.p`
   font-family: Urbanist;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 25px;
+  font-weight: 700;
   line-height: 30px;
   text-align: center;
-`;
+`
 
 const HeaderIcon = styled.img`
   width: 61px;
   height: 61.04px;
   cursor: pointer;
-`;
+`
 
 const PhotoContainer = styled.div`
   margin-top: 30px;
   min-height: 400px;
-`;
+`
 
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
+`
 
 const InputLabel = styled.label`
   font-family: Urbanist;
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 500;
   line-height: 18px;
   text-align: left;
   margin-bottom: 10px;
-`;
+`
 
 const InputName = styled.input`
   border: none;
@@ -333,17 +351,17 @@ const InputName = styled.input`
   &:focus {
     outline: none;
   }
-`;
+`
 
 const PhotoLabel = styled.label`
   text-align: left;
   font-family: Urbanist;
-  font-size: 15px;
+  font-size: 19px;
   font-weight: 500;
   line-height: 18px;
   text-align: left;
   color: #424242;
-`;
+`
 
 const ImageContainer = styled.div`
   display: flex;
@@ -351,7 +369,7 @@ const ImageContainer = styled.div`
   gap: 0.5rem;
   margin-bottom: 1rem;
   margin-top: 1rem;
-`;
+`
 
 const ImageUploadContainer = styled.div`
   display: flex;
@@ -366,7 +384,7 @@ const ImageUploadContainer = styled.div`
   width: 99px;
   height: 99px;
   border-radius: 19px;
-`;
+`
 
 const AddImageLabel = styled.p`
   color: #929292;
@@ -375,52 +393,52 @@ const AddImageLabel = styled.p`
   font-weight: 600;
   line-height: 12px;
   text-align: left;
-`;
+`
 
 const DefaultImage = styled.img`
   width: 43px;
   height: 41px;
-`;
+`
 
 const ImagePreviewContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1rem;
-`;
+`
 
 const ImagePreview = styled.div`
   position: relative;
-`;
+`
 
 const PreviewImage = styled.img`
   height: 100px;
   width: 100px;
   border-radius: 4px;
-`;
+`
 
 const RemoveButtonContainer = styled.div`
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  background: #ff3333;
-  box-shadow: 0px 4px 14px 0px #00000080;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 19px;
-  width: 21px;
-`;
+      position: absolute;
+    top: 4px;
+    right: 4px;
+    color: white;
+    border: none;
+    border-radius: 132px;
+    cursor: pointer;
+    background: #ff3333;
+    box-shadow: 0px 4px 14px 0px #00000080;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 19px;
+    width: 19px;
+`
 
 const CancelIcon = styled.img`
   height: 16px;
-  width: 16px;
+  width: 14px;
   margin-top: 4px;
-`;
+`
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -430,7 +448,7 @@ const ButtonContainer = styled.div`
   button {
     font-size: 22px;
   }
-`;
+`
 
 const CancelButton = styled.button`
   width: 200px;
@@ -447,4 +465,17 @@ const CancelButton = styled.button`
   color: black;
   margin-left: 30px;
   cursor: pointer;
-`;
+`
+const Span = styled.span`
+font-family: Urbanist, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 15.2px;
+  text-align: Left;
+
+`
+const LabelContainer = styled.div`
+display:flex;
+flex-direction: column;
+align-items: baseline;
+`

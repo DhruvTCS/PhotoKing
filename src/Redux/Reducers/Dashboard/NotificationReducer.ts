@@ -29,7 +29,7 @@ export const NotificationReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(seenNotification.pending, (state) => {
             state.loading = true;
@@ -46,7 +46,7 @@ export const NotificationReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

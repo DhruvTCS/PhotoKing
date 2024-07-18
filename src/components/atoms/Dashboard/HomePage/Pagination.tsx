@@ -48,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   const firstPageToShow = Math.max(1, currentPage - pagesToShow);
   const lastPageToShow = Math.min(totalPages, firstPageToShow + pagesToShow - 1);
   const pageNumbers = [];
-  // console.log(firstPageToShow, lastPageToShow)
+  // // console.log(firstPageToShow, lastPageToShow)
   for (let i = firstPageToShow; i <= lastPageToShow; i++) {
     pageNumbers.push(i);
   }

@@ -8,7 +8,7 @@ export const getAllMembers = createAsyncThunk(
                 method: 'GET',
                 url: '/account/user/team-member/'
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -26,7 +26,7 @@ export const createNewMemberAPI = createAsyncThunk(
                 },
                 data
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -44,7 +44,7 @@ export const updateMemberAPI = createAsyncThunk(
                 },
                 data
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

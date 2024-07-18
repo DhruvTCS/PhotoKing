@@ -12,7 +12,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
     })
         .addCase(getAllAlbums.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.isSearchData = false;
             state.total_projects = action.payload.count;
             state.albums = action.payload.results;
@@ -23,7 +23,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(createAlbumAPI.pending, (state) => {
             state.loading = true;
@@ -39,7 +39,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updateAlbumAPI.pending, (state) => {
             state.loading = true;
@@ -55,7 +55,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(getFoldersForAlbum.pending, (state) => {
 
@@ -66,7 +66,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             // state.albums = [];
         })
         .addCase(getFoldersForAlbum.fulfilled, (state, action: PayloadAction<Folder[]>) => {
-            // console.log(action.payload.length);
+            // // console.log(action.payload.length);
             if (action.payload) {
 
                 if (action.payload.length > 0) {
@@ -96,7 +96,7 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
                 state.isError = true;
 
             }
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 

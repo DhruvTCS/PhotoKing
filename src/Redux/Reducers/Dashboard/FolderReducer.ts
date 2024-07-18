@@ -18,7 +18,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(unlockFolderAPI.pending, (state) => {
             state.folderLoading = true;
@@ -34,7 +34,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(createFolderAPI.pending, (state) => {
             state.folderLoading = true;
@@ -50,7 +50,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updateFolderAPI.pending, (state) => {
             state.folderLoading = true;
@@ -59,6 +59,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(updateFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            showSuccessToast("Folders updated successfully.")
             if (state.currentAlbum)
                 state.currentAlbum.folders = []
 
@@ -68,7 +69,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(getSingleFolderAPI.pending, (state) => {
             state.folderLoading = true;
@@ -77,7 +78,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(getSingleFolderAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
             state.isFolderChange = false;
             state.folderLoading = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.currentFolder = action.payload;
 
 
@@ -89,10 +90,10 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         })
         .addCase(getSingleFolderAPI.rejected, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
-            console.log(state);
+            // console.log(state);
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(deleteFolderImagesAPI.pending, (state) => {
@@ -103,6 +104,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(deleteFolderImagesAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            showSuccessToast("Image deleted successfully.")
             if (state.currentAlbum)
                 state.currentAlbum.folders = []
 
@@ -117,7 +119,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(deleteFolderAPI.pending, (state) => {
@@ -143,7 +145,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(hideFolderAPI.pending, (state) => {
@@ -169,7 +171,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

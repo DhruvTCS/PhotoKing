@@ -10,7 +10,7 @@ export const changePhoneNumberOtpAPI = createAsyncThunk(
                 url: '/account/sendotp/',
                 data: credentials
             });
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -27,7 +27,7 @@ export const changePhoneNumberAPI = createAsyncThunk(
                 url: '/account/update-phone/',
                 data: credentials
             });
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

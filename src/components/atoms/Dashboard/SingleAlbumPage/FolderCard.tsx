@@ -42,6 +42,7 @@ text-decoration: underline;
 
 `;
 const ImageContainer = styled.div`
+text-align:center;
 `;
 const Images = styled.div`
 display: flex;
@@ -325,7 +326,8 @@ const FolderCard: React.FC<FolderCardProps> = ({ folder, newFolder, onClick, isN
                         {newFolder.name}
                     </FolderName>
                     <ImageContainer>
-                        {newFolder.images ?
+                        {newFolder.images && newFolder.images.length !== 0
+                            ?
                             <Images>
                                 <Image1 src={newFolder.images[0].image_blob} />
                                 {newFolder.images.length >= 2 ? <Image2 src={newFolder.images[1].image_blob} /> : null}

@@ -21,14 +21,14 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.isMemberFetched = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.members = action.payload;
         })
         .addCase(getAllMembers.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(createNewMemberAPI.pending, (state) => {
             state.loading = true;
@@ -46,7 +46,7 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.isError = true;
             state.success = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updateMemberAPI.pending, (state) => {
             state.loading = true;
@@ -64,7 +64,7 @@ export const MemberReducer = (builder: ActionReducerMapBuilder<MemberState>) => 
             state.loading = false;
             state.isError = true;
             state.success = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 

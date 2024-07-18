@@ -43,7 +43,7 @@ function App() {
   //       vapidKey:
   //         "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
   //     });
-  //     // console.log("Token Gen", token);
+  //     // // console.log("Token Gen", token);
   //     store.dispatch(setFCM(token));
   //     // Send this token  to server ( db)
   //   } else if (permission === "denied") {
@@ -51,7 +51,7 @@ function App() {
   //   }
   // }
   // onMessage(messaging, (payload) => {
-  //   console.log(payload);
+  //   // console.log(payload);
   //   store.dispatch(updateNotification({ update: true, count: 1 }));
   //   // toast(<Message notification={payload.notification} />);
   // });
@@ -66,7 +66,7 @@ function App() {
   //         vapidKey:
   //           "BLlRcimfpiB0wFXdmp2OGVHx5hGyMOjgke1yNtpokahKnMRmpbR-u5brlcoEUyGlHbrci-AdBqSku1GosO6X6yg",
   //       });
-  //       // console.log("Token Gen", token);
+  //       // // console.log("Token Gen", token);
   //       store.dispatch(setFCM(token));
   //       // Send this token  to server ( db)
   //     } else if (permission === "denied") {
@@ -81,7 +81,7 @@ function App() {
       if (navigator.serviceWorker) {
         navigator.serviceWorker.register('/firebase-messaging-sw.js')
           .then((registration) => {
-            console.log('Service Worker registered with scope:', registration.scope);
+            // console.log('Service Worker registered with scope:', registration.scope);
           })
           .catch((err) => {
             console.error('Service Worker registration failed:', err);
@@ -89,11 +89,11 @@ function App() {
 
         // Listen for messages from the service worker
         navigator.serviceWorker.addEventListener('message', (event) => {
-          console.log('Message received from service worker:', event);
+          // console.log('Message received from service worker:', event);
           if (event.data && event.data.msg === 'backgroundMessage') {
             const payload = event.data.data;
             store.dispatch(updateNotification({ update: true, count: 1 }));
-            console.log('Background message received in React app:', payload);
+            // console.log('Background message received in React app:', payload);
 
             // Handle the payload as needed in your React app
           }
@@ -108,7 +108,7 @@ function App() {
   useEffect(() => {
     // alert("called")
     const path = location.pathname;
-    console.log(path)
+    // console.log(path)
     if (path.startsWith("/share/form")) {
 
     }

@@ -38,7 +38,7 @@ const RedeemUser: React.FC = () => {
     }, [redeemUsers])
 
     const handleRemoveRedeemUser = (user_id: number, album_id: number) => {
-        console.log(user_id, album_id);
+        // console.log(user_id, album_id);
         dispatch(removeRedeemUserAPI({ album_id: album_id, user_id: user_id }))
         setRemoveUserPopup(false);
     }

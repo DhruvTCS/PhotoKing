@@ -163,7 +163,7 @@ const LocationPickerModal: React.FC<LocationPickerModalProps> = ({ isOpen, onClo
     //     onSelect(locationString);
     // }
     onSelect(inputValue);
-    console.log(inputValue)
+    // console.log(inputValue)
   };
 
   return (

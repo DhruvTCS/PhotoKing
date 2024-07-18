@@ -25,7 +25,7 @@ const PackageItem: React.FC<PackageItemProps> = ({ packageData }) => {
     const handleDeletePackage = (id: number) => {
         dispatch(deletePackageAPI({ package_id: id }))
         setIsDeletePopup(false);
-        console.log("delete package", packageData)
+        // console.log("delete package", packageData)
     }
     const formatToINR = (amount: number): string => {
         return new Intl.NumberFormat('en-IN', {

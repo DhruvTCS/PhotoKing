@@ -158,9 +158,9 @@ const ShareEventFormLinkPopup: React.FC<ShareFormLinkProps> = ({ onClose }) => {
     }, [dispatch])
 
     useEffect(() => {
-        // console.log(eventFromToken)
+        // // console.log(eventFromToken)
         if (eventFromToken) {
-            console.log("set url")
+            // console.log("set url")
             setUrl(`http://${window.location.host}/share/form/${eventFromToken}`)
         }
     }, [eventFromToken])

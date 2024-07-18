@@ -27,7 +27,7 @@ export const ChnageNumberReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(changePhoneNumberAPI.pending, (state) => {
             state.loading = true;
@@ -47,7 +47,7 @@ export const ChnageNumberReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

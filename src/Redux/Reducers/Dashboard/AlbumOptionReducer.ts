@@ -16,7 +16,7 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
             state.loading = false;
             state.isError = true;
             state.isUpdate = false
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(unlockAlbum.pending, (state) => {
             state.loading = true;
@@ -32,7 +32,7 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
             state.loading = false;
             state.isError = true;
             state.isUpdate = false
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(getAllRedeemUserAPI.pending, (state) => {
             state.loading = true;
@@ -47,7 +47,7 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
         .addCase(getAllRedeemUserAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(removeRedeemUserAPI.pending, (state) => {
             state.loading = true;
@@ -62,7 +62,7 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
         .addCase(removeRedeemUserAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 

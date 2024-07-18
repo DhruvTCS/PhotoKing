@@ -168,11 +168,11 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const toggleMenu = () => {
-    // console.log('calling')
+    // // console.log('calling')
     setMenuOpen(menuOpen => !menuOpen)
   }
   const openMenu = (e: React.MouseEvent) => {
-    console.log("called");
+    // console.log("called");
     e.stopPropagation();
     toggleMenu();
   }
@@ -199,7 +199,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
   }, [menuOpen, showModal])
 
   const handleHideAlbum = (id: number) => {
-    console.log("hide", id);
+    // console.log("hide", id);
   }
   return (
     // album.image ? album.image :

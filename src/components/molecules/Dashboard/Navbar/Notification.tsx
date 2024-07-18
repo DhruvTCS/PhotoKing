@@ -64,7 +64,7 @@ const Notification: React.FC = () => {
     const dispatch = useAppDispatch();
     useEffect(() => {
         if (isNotificationUpdated) {
-            console.log("called in this", isNotificationUpdated);
+            // console.log("called in this", isNotificationUpdated);
             dispatch(getAllNotificationAPI());
         }
 

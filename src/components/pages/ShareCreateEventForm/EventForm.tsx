@@ -289,7 +289,7 @@ const EventForm = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   useEffect(() => {
-    console.log(params)
+    // console.log(params)
     if (params['data']) {
       setFormToken(params['data'])
       // showSuccessToast(params["data"]);
@@ -345,7 +345,7 @@ const EventForm = () => {
     } else setShowError(true)
   }
   const onChangeData = (name: string, value: string) => {
-    console.log(value)
+    // console.log(value)
     if (name === 'customer_name' && value.length <= 20) setCustomerName(value)
     else if (name === 'customer_contact' && value.length <= 10)
       setCustomerPhoneNumber(value)

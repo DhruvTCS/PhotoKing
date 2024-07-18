@@ -20,7 +20,7 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
             profile_image: string,
             role: string,
         }>) => {
-            console.log(action.payload)
+            // console.log(action.payload)
             state.loading = false;
             let userData: User = {
                 name: action.payload.name,
@@ -52,7 +52,7 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 

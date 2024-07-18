@@ -37,7 +37,7 @@ export const LoginReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 

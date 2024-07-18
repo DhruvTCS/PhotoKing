@@ -47,7 +47,7 @@ const EventCalendar: React.FC = () => {
     useEffect(() => {
         // const timeout = setTimeout(() => {
 
-        console.log(currentQuarter);
+        // console.log(currentQuarter);
         fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
         // }, 500)
 
@@ -57,8 +57,8 @@ const EventCalendar: React.FC = () => {
     }, [currentQuarter]);
 
     useEffect(() => {
-        // console.log(convertToDateTime("2024/07/15", "14:00:00"))
-        // console.log("+++++++++++++++++++++++++++++++++++++++")
+        // // console.log(convertToDateTime("2024/07/15", "14:00:00"))
+        // // console.log("+++++++++++++++++++++++++++++++++++++++")
         if (!members && !isMemberFetched) {
             dispatch(getAllMembers())
         }
@@ -88,7 +88,7 @@ const EventCalendar: React.FC = () => {
             // Format the date into 'yyyy-mm-dd'
             let endDate = `${endYear}-${endMonth}-${endDay}`;
 
-            console.log(currentEvents);
+            // console.log(currentEvents);
             dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
         }
         return () => {
@@ -129,9 +129,9 @@ const EventCalendar: React.FC = () => {
         // Format the date into 'yyyy-mm-dd'
         let endDate = `${endYear}-${endMonth}-${endDay}`;
 
-        console.log(currentEvents);
+        // console.log(currentEvents);
         dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
-        // console.log(start.getDate(), end.getDate("yyyy-MM-dd"));
+        // // console.log(start.getDate(), end.getDate("yyyy-MM-dd"));
     };
 
     const handleNavigate = (date: Date, view: string, action: string) => {
@@ -159,7 +159,7 @@ const EventCalendar: React.FC = () => {
             members: data.members,
             title: data.title
         }
-        console.log(eventObje)
+        // console.log(eventObje)
         dispatch(setCurrentEvent(eventObje));
         setModalOpen(true);
     }
@@ -171,7 +171,7 @@ const EventCalendar: React.FC = () => {
 
     const handleSubmitEvent = (eventData: EventData) => {
         // Here you would handle submitting the event data to your backend or state management
-        console.log('Submitted event data:', eventData)
+        // console.log('Submitted event data:', eventData)
         // For demo, just close the modal
         handleCloseModal()
     }

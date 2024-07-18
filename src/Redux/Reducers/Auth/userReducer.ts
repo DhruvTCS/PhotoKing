@@ -12,8 +12,8 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     })
         .addCase(getUserByToken.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
-            console.log("payload")
-            console.log(action.payload)
+            // console.log("payload")
+            // console.log(action.payload)
             if (action.payload.role === null) {
                 state.isError = true;
                 state.error = {
@@ -38,7 +38,7 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
     // .addCase(refreshAccessToken.pending, (state) => {
@@ -64,7 +64,7 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     //     state.loading = false;
     //     state.isError = true;
 
-    //     console.log(action.payload);
+    //     // console.log(action.payload);
     //     state.error = action.payload;
     // })
 

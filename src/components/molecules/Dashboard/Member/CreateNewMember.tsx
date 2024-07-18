@@ -254,7 +254,7 @@ const CreateNewMemberPage: React.FC = () => {
     }, [success, isError, dispatch])
 
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.files)
+        // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0]
 
@@ -262,7 +262,7 @@ const CreateNewMemberPage: React.FC = () => {
 
                 const compressedBlob = await compressImage(file); // Your image compression function
                 file = blobToFile(compressedBlob, file.name);
-                console.log(file);
+                // console.log(file);
                 const reader = new FileReader()
                 reader.readAsDataURL(file)
                 reader.onloadend = () => {

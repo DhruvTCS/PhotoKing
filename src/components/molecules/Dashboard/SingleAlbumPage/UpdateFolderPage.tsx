@@ -97,7 +97,7 @@ display: flex;
   margin-bottom: 1rem;
   margin-top: 1rem;
   overflow-y: scroll;
-   max-height: 500px;
+   max-height: 400px;
   //  min-height: 500px;
 `;
 const ImageUploadContainer = styled.div`
@@ -134,6 +134,11 @@ const ImagePreview = styled.div`
   position: relative;
   cursor: pointer;
 `;
+const LoadingPreviewConatiner = styled.div`
+height: 50px;
+width: 50px;
+border:1px solid gray;
+`
 const PreviewImage = styled.img`
 height:100px;
 width:100px;
@@ -150,14 +155,16 @@ const RemoveButtonConatiner = styled.div`
   cursor: pointer;
   background: #FF3333;
   box-shadow: 0px 4px 14px 0px #00000080;
-
+  text-align: center;
 
 height:19px;
 width:21px;
 `;
 const CancleIcon = styled.img`
-height:10px;
-width:12px;
+height:16px;
+margin-top:3px;
+margin-right:1px;
+width:14px;
 `
 
 const SelectedIconContainer = styled.div`
@@ -225,12 +232,9 @@ cursor:pointer;
 `;
 const LoadingContainer = styled.div`
 
-min-height: 700px;
  width:98%;
 
  margin-top:10px;
- background-color: hsla(0, 0%, 100%, 0.8);
- border-radius:10px;
  display: flex;
  align-items: center;
  justify-content: center;
@@ -259,7 +263,7 @@ color:${props => props.isCheck ? 'black' : 'grey'}
 
 `;
 const SlectImageRadio = styled.input``;
-
+let urls: string[] = [];
 const UpdateFolderPage = () => {
   const dispatch = useAppDispatch();
   const { currentFolder, isError, isFolderChange, folderLoading, error } = useAppSelector(state => state.album)
@@ -273,6 +277,7 @@ const UpdateFolderPage = () => {
   const [activeUploadButton, setActiveUploadButton] = useState(true);
   const [deletModal, setDeleteModal] = useState(false);
   const [isImageSelected, setIsImageSelected] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [popUpFunction, setPopUpFunction] = useState<{ fun: () => void }>();
   const [discardPopup, setDiscardPopup] = useState(false);
@@ -287,12 +292,16 @@ const UpdateFolderPage = () => {
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
       setSelectedFolderImages([])
+      setPreviewImageUrl([]);
     }
 
   }, [currentFolder]);
   useEffect(() => {
     if (isError && error && error.message) {
       showErrorToast(error.message)
+    }
+    return () => {
+      setPreviewImageUrl([])
     }
 
   }, [isError, error]);
@@ -302,7 +311,7 @@ const UpdateFolderPage = () => {
     isUploadActiveButton();
   }, [newFolderImages, folderName])
   useEffect(() => {
-    // console.log("calling ++++")
+    // // console.log("calling ++++")
     if (isFolderChange && currentFolder) {
 
       setSelectedFolderImages([])
@@ -312,6 +321,11 @@ const UpdateFolderPage = () => {
       dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
     }
   }, [isFolderChange])
+  useEffect(() => {
+    return () => {
+      urls.forEach(link => URL.revokeObjectURL(link))
+    }
+  }, [])
 
   const blobToFile = (blob: Blob, fileName: string): File => {
     return new File([blob], fileName, { type: blob.type });
@@ -319,9 +333,9 @@ const UpdateFolderPage = () => {
 
   const compressImage = async (file: File): Promise<Blob> => {
     const options = {
-      maxSizeMB: 3,          // Maximum size in MB
+      maxSizeMB: 2,          // Maximum size in MB
       maxWidthOrHeight: 1920, // Max width or height
-      useWebWorker: true      // Use web worker for faster compression
+      useWebWorker: false      // Use web worker for faster compression
     };
 
     try {
@@ -333,22 +347,25 @@ const UpdateFolderPage = () => {
     }
   };
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // console.log("calling")
-    setCompresedImageLoading(true);
+    // // console.log("calling")
     const files = event.target.files;
     if (!files) return;
-
+    if (files.length + newFolderImages.length > 20) {
+      showErrorToast('You can only upload up to 20 images at a time.');
+      return;
+    }
+    setCompresedImageLoading(true);
     const acceptedFiles = Array.from(files);
-    // console.log(acceptedFiles);
+    // // console.log(acceptedFiles);
     const compressedFiles = await Promise.all(
       acceptedFiles.map(async (file) => {
 
         try {
-          if (file.size / 1024 / 1024 > 5) {
+          if (file.size / 1024 / 1024 > 3) {
 
             const compressedBlob = await compressImage(file); // Your image compression function
             const compressedFile = blobToFile(compressedBlob, file.name);
-            // console.log("compressed")
+            // // console.log("compressed")
             return compressedFile;
           } else {
             return file;
@@ -364,10 +381,11 @@ const UpdateFolderPage = () => {
     // Filter out any undefined values
     const validCompressedFiles = compressedFiles.filter((file): file is File => file !== undefined);
     setCompresedImageLoading(false);
-    if (validCompressedFiles.length + newFolderImages.length > 20) {
-      showErrorToast('You can only upload up to 20 images at a time.');
-      return;
-    }
+    let previewURL = validCompressedFiles.map(file => URL.createObjectURL(file))
+    setPreviewImageUrl(pre => {
+      urls = [...pre, ...previewURL]
+      return [...pre, ...previewURL]
+    })
 
     setNewFolderImages((prev) => [...prev, ...validCompressedFiles]);
   };
@@ -400,6 +418,7 @@ const UpdateFolderPage = () => {
       formData.append(`media[${index}][media_type]`, "1");
     })
     dispatch(updateFolderAPI(formData));
+
   }
   const deleteFolderImages = () => {
     dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages }));
@@ -408,7 +427,7 @@ const UpdateFolderPage = () => {
     setDeleteModal(false);
   }
   const SelectCheckbox = () => {
-    // console.log(isImageSelected)
+    // // console.log(isImageSelected)
     if (!isImageSelected) {
       if (newFolderImages.length > 0 || currentFolder?.name !== folderName) {
 
@@ -421,7 +440,7 @@ const UpdateFolderPage = () => {
     } else {
       setIsImageSelected(false);
       setSelectedFolderImages([]);
-      // console.log(selectedFolderImages)
+      // // console.log(selectedFolderImages)
     }
   }
   const ImageUploadCheck = () => {
@@ -430,11 +449,15 @@ const UpdateFolderPage = () => {
         setDiscardPopup(true);
       } else {
         setIsImageSelected(false);
+        if (fileInputRef.current)
+          fileInputRef.current.value = '';
         fileInputRef?.current?.click()
         setIsUpdate(true);
 
       }
     } else {
+      if (fileInputRef.current)
+        fileInputRef.current.value = '';
       fileInputRef?.current?.click()
       setIsUpdate(true);
     }
@@ -481,71 +504,73 @@ const UpdateFolderPage = () => {
         <BackIcon src={BackIconPNG} onClick={() => navigate(-1)} />
         <BackText onClick={() => navigate(-1)}>Back</BackText>
       </PageHeader>
-      {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
-        <PageBoady>
-          <Conatiner1>
-            {deletModal && <DeletePopup buttonText='Delete' cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} text={'Are you sure you want to remove from favorites?'} />}
-            <InputNameConatiner >
-              <InputFolderLabel>Folder</InputFolderLabel>
 
-              <InputName type='text' value={folderName} onChange={(e) => folderNameChange(e.target.value)} />
-            </InputNameConatiner>
-            <UnderLine width={400} />
-          </Conatiner1>
-          <UnderLine width={900} />
-          <InputContainer>
-            <SelectImageRadioConatiner>
-              <SlectImageRadio type='checkbox' id="selecheck" onChange={() => SelectCheckbox()} checked={isImageSelected} />
-              <SelectImageLabel htmlFor='selecheck' isCheck={isImageSelected}>Select Images</SelectImageLabel>
-            </SelectImageRadioConatiner>
-          </InputContainer>
-          <Conatiner2>
-            <ImageUploadContainer onClick={() => { ImageUploadCheck() }}>
+      <PageBoady>
+        <Conatiner1>
+          {deletModal && <DeletePopup buttonText='Delete' cancel={() => setDeleteModal(false)} Delete={() => deleteFolderImages()} text={'Are you sure you want to remove from favorites?'} />}
+          <InputNameConatiner >
+            <InputFolderLabel>Folder</InputFolderLabel>
 
-              <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
-              <AddImageLabel>Add Images</AddImageLabel>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                multiple
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                style={{ display: 'none' }}
-              />
-            </ImageUploadContainer>
-            {compresedImageLoading ? <LoadingDots /> :
-              <>{
-                newFolderImages.map((file, index) => (
-                  <ImagePreview key={index}>
-                    <PreviewImage src={URL.createObjectURL(file)} alt="preview" />
-                    <RemoveButtonConatiner onClick={() => handleRemoveImage(index)}>
-                      <CancleIcon src={CancleIconPNG} />
-                    </RemoveButtonConatiner>
-                  </ImagePreview>
-                ))
-              }
-                {
-                  folderImages && folderImages.length !== 0 ?
-                    folderImages.map((image, index) => (
-                      <ImagePreview key={index} onClick={() => { if (isImageSelected) handleSelectedImage(image.id, image.image) }}>
-                        <PreviewImage src={image.image} alt="preview" />
-                        {
-                          isImageSelected && <SelectedIconContainer  >
-                            {
-                              selectedFolderImages.includes(image.id) && <SelectedIcon src={SelectedIconPNG} />
-                            }
+            <InputName type='text' value={folderName} onChange={(e) => folderNameChange(e.target.value)} />
+          </InputNameConatiner>
+          <UnderLine width={400} />
+        </Conatiner1>
+        <UnderLine width={900} />
+        <InputContainer>
+          <SelectImageRadioConatiner>
+            <SlectImageRadio type='checkbox' id="selecheck" onChange={() => SelectCheckbox()} checked={isImageSelected} />
+            <SelectImageLabel htmlFor='selecheck' isCheck={isImageSelected}>Select Images</SelectImageLabel>
+          </SelectImageRadioConatiner>
+        </InputContainer>
+        <Conatiner2>
+          <ImageUploadContainer onClick={() => { ImageUploadCheck() }}>
 
-                          </SelectedIconContainer>
-                        }
+            <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
+            <AddImageLabel>{compresedImageLoading ? 'Please Wait...' : "Add Images"}</AddImageLabel>
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+          </ImageUploadContainer>
+          {compresedImageLoading ? null :
+            <>{
+              newFolderImages.map((file, index) => (
+                <ImagePreview key={index}>
+                  <PreviewImage src={previewImageUrl[index]} alt="preview" />
+                  <RemoveButtonConatiner onClick={() => handleRemoveImage(index)}>
+                    <CancleIcon src={CancleIconPNG} />
+                  </RemoveButtonConatiner>
+                </ImagePreview>
+              ))
+            }</>
 
-                      </ImagePreview>
-                    )) : null
-                }
-              </>
-            }
 
-          </Conatiner2>
+          }
+          {
+            folderImages && folderImages.length !== 0 ?
+              folderImages.map((image, index) => (
+                <ImagePreview key={index} onClick={() => { if (isImageSelected) handleSelectedImage(image.id, image.image) }}>
+                  <PreviewImage src={image.image} alt="preview" />
+                  {
+                    isImageSelected && <SelectedIconContainer  >
+                      {
+                        selectedFolderImages.includes(image.id) && <SelectedIcon src={SelectedIconPNG} />
+                      }
+
+                    </SelectedIconContainer>
+                  }
+
+                </ImagePreview>
+              )) : null
+          }
+
+        </Conatiner2>
+        {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
           <ButtonContainer>
             {isUpdate && !isImageSelected &&
               <UpdateButton disabled={activeUploadButton} onClick={handleUpdateFolder}>
@@ -561,8 +586,8 @@ const UpdateFolderPage = () => {
 
 
           </ButtonContainer>
-        </PageBoady>
-      }
+        }
+      </PageBoady>
     </PageConatiner>
 
   )

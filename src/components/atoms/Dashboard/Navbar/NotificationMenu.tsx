@@ -95,12 +95,12 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
     }, [seenIds]);
     const handleMarskallNotificationAsRead = () => {
         // const remainNot=[];
-        console.log("calledd")
-        console.log(notifications)
+        // console.log("calledd")
+        // console.log(notifications)
         notifications.forEach(not => {
-            console.log(not)
+            // console.log(not)
             if (!seenIds.includes(not.id)) {
-                console.log(not.id)
+                // console.log(not.id)
                 seenIds.push(not.id);
                 dispatch(seenNotification({ notification_ids: seenIds }));
             }
@@ -109,7 +109,7 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
 
     }
     useEffect(() => {
-        // console.log('useEffect triggered');
+        // // console.log('useEffect triggered');
         if (!listRef.current) {
             console.error('Container ref is not set');
             return;
@@ -121,11 +121,11 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
         });
 
         const elements = listRef.current.querySelectorAll('.notification');
-        // console.log('Observing elements:', elements);
+        // // console.log('Observing elements:', elements);
         elements.forEach(element => observer.observe(element));
 
         return () => {
-            // console.log('Cleanup: Unobserving elements');
+            // // console.log('Cleanup: Unobserving elements');
             elements.forEach(element => observer.unobserve(element));
         };
     }, [handleIntersection, notifications.length]);
@@ -135,7 +135,7 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
                 handleIsOpen();
 
                 dispatch(seenNotification({ notification_ids: seenIds }));
-                console.log('done')
+                // console.log('done')
                 if (seenIds.length > 0) {
                     sendSeenNotifications(seenIds);
                     setSeenIds([]);
@@ -156,7 +156,7 @@ const NotificationMenu: React.FC<{ isOpen: boolean, handleIsOpen: () => void }> 
 
     const sendSeenNotifications = (id: number[]) => {
 
-        console.log(id);
+        // console.log(id);
     }
     return (
         (notifications && isOpen) ? (

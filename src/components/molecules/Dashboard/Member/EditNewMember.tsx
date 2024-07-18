@@ -8,7 +8,6 @@ import UnderLine from '../../../atoms/Login/UnderLine';
 import SubmitButton from '../../../atoms/Login/SubmitButton';
 import InputComponent from '../../../atoms/Login/InputComponent';
 import phoneIcon from '../../../../assets/Icons/phone.svg'
-import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary';
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createNewMemberAPI, updateMemberAPI } from '../../../../Redux/ApiCalls/Dashboard/MembersAPI';
 import { clearFlagsMembers } from '../../../../Redux/Slice/Dashboard/MemberSlice';
@@ -277,7 +276,7 @@ const EditMemberPage: React.FC = () => {
 
     }, [currentMember])
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.files)
+        // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
             let file = event.target.files[0]
 
@@ -285,7 +284,7 @@ const EditMemberPage: React.FC = () => {
 
                 const compressedBlob = await compressImage(file); // Your image compression function
                 file = blobToFile(compressedBlob, file.name);
-                console.log(file);
+                // console.log(file);
                 const reader = new FileReader()
                 reader.readAsDataURL(file)
                 reader.onloadend = () => {
@@ -308,7 +307,7 @@ const EditMemberPage: React.FC = () => {
 
     }
     const isValidData = () => {
-        // console.log("validate calling");
+        // // console.log("validate calling");
         if (name.length > 0 && jobType.length > 0 && (selectedImage || currentMember?.profile_image) && validatePhoneNumber(contact) && countryCode.length > 0 && countryCode.length <= 4) {
             if (currentMember?.name !== name || currentMember.job_type !== jobType || currentMember.country_code !== countryCode || currentMember.phone_number !== contact || selectedImage)
                 setActiveButton(true);
@@ -321,17 +320,7 @@ const EditMemberPage: React.FC = () => {
         const phoneRegex = /^[0-9]{10}$/;
         return phoneRegex.test(phoneNumber);
     };
-    const sendImageToCloudinary = async () => {
-        if (selectedImage) {
-            // console.log(selectedImage);
-            const result = uploadToCloudinary1(selectedImage).then((data) => {
-                return data;
-            }).catch(err => console.log(err));
 
-            return result;
-        }
-        return 'false';
-    }
     const handleSubmit = () => {
         const formData = new FormData();
         formData.append('country_code', countryCode);

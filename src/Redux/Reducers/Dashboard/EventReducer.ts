@@ -29,7 +29,7 @@ const findEventTimeRange = (subEvents: CalendarSubEvents[]): { startTime: string
     // Format the resulting Date objects to ISO 8601 string format
     const formattedStartTime = startTime.toString().slice(0, -1);
     const formattedEndTime = endTime.toString().slice(0, -1);
-    console.log({ startTime: formattedStartTime, endTime: formattedEndTime })
+    // console.log({ startTime: formattedStartTime, endTime: formattedEndTime })
     return { startTime: formattedStartTime, endTime: formattedEndTime };
 };
 
@@ -63,7 +63,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(createEventAPI.pending, (state) => {
             state.loading = true;
@@ -82,7 +82,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updateEventAPI.pending, (state) => {
             state.loading = true;
@@ -101,7 +101,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(deleteEventAPI.pending, (state) => {
@@ -121,7 +121,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(getUserCreatedEventsAPI.pending, (state) => {
@@ -141,8 +141,8 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             sub_events: EnteredSubEventType[]
         }[]>) => {
             state.loading = false;
-            console.log(action.payload)
-            console.log(action.payload)
+            // console.log(action.payload)
+            // console.log(action.payload)
             if (action.payload === null) state.userCreatedEvents = [];
             else {
                 state.userCreatedEvents = [];
@@ -156,7 +156,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
                         sub_events: payload.sub_events,
                     })
                 })
-                console.log(state.userCreatedEvents)
+                // console.log(state.userCreatedEvents)
             }
 
             // state.Events = action.payload;
@@ -165,7 +165,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
         .addCase(deleteUserCreatedEventAPI.pending, (state) => {
@@ -184,7 +184,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

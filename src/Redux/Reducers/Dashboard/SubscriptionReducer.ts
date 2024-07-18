@@ -27,7 +27,7 @@ export const SubscriptionReducer = (builder: ActionReducerMapBuilder<ExtraState>
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

@@ -11,8 +11,8 @@ import Checkbox from '../../../atoms/Login/Checkbox'
 import LoadingDots from '../../../atoms/Utlis/LoadinDots'
 import SubmitButton from '../../../atoms/Login/SubmitButton'
 import {
-    clearError,
-    setRemeberMe,
+  clearError,
+  setRemeberMe,
 } from '../../../../Redux/Slice/Auth/AuthSlice'
 import { loginUser } from '../../../../Redux/ApiCalls/Auth/login'
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast'
@@ -230,154 +230,154 @@ const FormHeaderContainer = styled.div`
   margin-bottom: 50px;
 `
 const RegisterForm: React.FC = () => {
-    const [isChecked, setIsChecked] = useState(true)
-    const [contact, setContact] = useState('')
-    const [countryCode, setCountryCode] = useState('+91')
-    const [activeButton, setActiveButton] = useState(false)
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
+  const [isChecked, setIsChecked] = useState(true)
+  const [contact, setContact] = useState('')
+  const [countryCode, setCountryCode] = useState('+91')
+  const [activeButton, setActiveButton] = useState(false)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
 
-    const {
-        apiStatus,
-        loading,
-        error,
-        isError,
-        isRegister,
-        orderId,
-        otp,
-        phone_number,
-        country_code,
-    } = useAppSelector((state) => state.auth)
-    useEffect(() => {
-        if (apiStatus === true) {
-            navigate('/dashboard')
-        }
-        return () => {
-            dispatch(clearError())
-        }
-    }, [navigate, apiStatus])
-    useEffect(() => {
-        if (!orderId || !otp || !isRegister || !phone_number || !country_code) {
-            navigate('/auth/login')
-        }
-    }, [isRegister, orderId, otp])
-    useEffect(() => {
-        if (isError) {
-            if (error && error.message) {
-                if (error.message) {
-                    showSuccessToast(error.message)
-                } else {
-                    showErrorToast('something went wrong! Please try again.')
-                }
-            }
-            console.log(error)
-        }
-
-        return () => {
-            dispatch(clearError())
-        }
-    }, [isError])
-
-
-    const setActiveButtonSatus = (
-
-        name: string,
-        email: string,
-    ) => {
-
-        if (
-
-            name.length > 2 &&
-            email.length > 6
-
-        ) {
-            setActiveButton(true)
+  const {
+    apiStatus,
+    loading,
+    error,
+    isError,
+    isRegister,
+    orderId,
+    otp,
+    phone_number,
+    country_code,
+  } = useAppSelector((state) => state.auth)
+  useEffect(() => {
+    if (apiStatus === true) {
+      navigate('/dashboard')
+    }
+    return () => {
+      dispatch(clearError())
+    }
+  }, [navigate, apiStatus])
+  useEffect(() => {
+    if (!orderId || !otp || !isRegister || !phone_number || !country_code) {
+      navigate('/auth/login')
+    }
+  }, [isRegister, orderId, otp])
+  useEffect(() => {
+    if (isError) {
+      if (error && error.message) {
+        if (error.message) {
+          showSuccessToast(error.message)
         } else {
-            setActiveButton(false)
+          showErrorToast('something went wrong! Please try again.')
         }
+      }
+      // console.log(error)
     }
 
-    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault()
-        if (otp && orderId && phone_number && country_code)
-            dispatch(
-                registerUser({
-                    name,
+    return () => {
+      dispatch(clearError())
+    }
+  }, [isError])
+
+
+  const setActiveButtonSatus = (
+
+    name: string,
+    email: string,
+  ) => {
+
+    if (
+
+      name.length > 2 &&
+      email.length > 6
+
+    ) {
+      setActiveButton(true)
+    } else {
+      setActiveButton(false)
+    }
+  }
+
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    if (otp && orderId && phone_number && country_code)
+      dispatch(
+        registerUser({
+          name,
+          email,
+          phone_number,
+          country_code: country_code,
+          orderId,
+          role: 3,
+          otp,
+        }),
+      )
+  }
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsChecked(event.target.checked)
+  }
+  const validatePhoneNumber = (phoneNumber: string): boolean => {
+    const phoneRegex = /^[0-9]{10}$/
+    return phoneRegex.test(phoneNumber)
+  }
+  return (
+    <RegisterFormContainer>
+      <UpperBox />
+      <FormHeaderContainer>
+        <FormHeading>Sign Up</FormHeading>
+        <SubHeadingText>Enter your details</SubHeadingText>
+      </FormHeaderContainer>
+      <Form>
+        <InputFields>
+          <NameContainer>
+            <EmailLabel>Name</EmailLabel>
+            <EmailInputContainer>
+              <Icon src={UserNameIcon}></Icon>
+              <EmailInput
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Photo King"
+                required={true}
+                onChange={(e) => {
+                  setName(e.target.value)
+                  setActiveButtonSatus(
+
+                    e.target.value,
                     email,
-                    phone_number,
-                    country_code: country_code,
-                    orderId,
-                    role: 3,
-                    otp,
-                }),
-            )
-    }
 
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsChecked(event.target.checked)
-    }
-    const validatePhoneNumber = (phoneNumber: string): boolean => {
-        const phoneRegex = /^[0-9]{10}$/
-        return phoneRegex.test(phoneNumber)
-    }
-    return (
-        <RegisterFormContainer>
-            <UpperBox />
-            <FormHeaderContainer>
-                <FormHeading>Sign Up</FormHeading>
-                <SubHeadingText>Enter your details</SubHeadingText>
-            </FormHeaderContainer>
-            <Form>
-                <InputFields>
-                    <NameContainer>
-                        <EmailLabel>Name</EmailLabel>
-                        <EmailInputContainer>
-                            <Icon src={UserNameIcon}></Icon>
-                            <EmailInput
-                                type="text"
-                                id="name"
-                                name="name"
-                                placeholder="Photo King"
-                                required={true}
-                                onChange={(e) => {
-                                    setName(e.target.value)
-                                    setActiveButtonSatus(
+                  )
+                }}
+              />
+            </EmailInputContainer>
+            <UnderLine width={400} />
+          </NameContainer>
+          <EmailContainer>
+            <EmailLabel>Email ID</EmailLabel>
+            <EmailInputContainer>
+              <Icon src={EmailIcon}></Icon>
+              <EmailInput
+                type="email"
+                id="email"
+                name="email"
+                placeholder="dummyemail@example.com"
+                required={true}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setActiveButtonSatus(
 
-                                        e.target.value,
-                                        email,
+                    name,
+                    e.target.value,
 
-                                    )
-                                }}
-                            />
-                        </EmailInputContainer>
-                        <UnderLine width={400} />
-                    </NameContainer>
-                    <EmailContainer>
-                        <EmailLabel>Email ID</EmailLabel>
-                        <EmailInputContainer>
-                            <Icon src={EmailIcon}></Icon>
-                            <EmailInput
-                                type="email"
-                                id="email"
-                                name="email"
-                                placeholder="dummyemail@example.com"
-                                required={true}
-                                onChange={(e) => {
-                                    setEmail(e.target.value)
-                                    setActiveButtonSatus(
-
-                                        name,
-                                        e.target.value,
-
-                                    )
-                                }}
-                            />
-                        </EmailInputContainer>
-                        <UnderLine width={400} />
-                    </EmailContainer>
-                    {/* <PhoneContainer>
+                  )
+                }}
+              />
+            </EmailInputContainer>
+            <UnderLine width={400} />
+          </EmailContainer>
+          {/* <PhoneContainer>
                         <Label htmlFor="contactNo">Phone Number</Label>
                         <InputContainer>
                             <CountryCodeContainer>
@@ -402,23 +402,23 @@ const RegisterForm: React.FC = () => {
                         <CheckBoxLabel htmlFor='checkbox'>Remember me</CheckBoxLabel>
 
                     </CheckBoxContainer> */}
-                    <SubmitButtonContainer>
-                        {loading ? (
-                            <LoadingDots />
-                        ) : (
-                            <SubmitButton
-                                onClick={handleSubmit}
-                                width={291}
-                                text="Register"
-                                needArrow={true}
-                                active={loading ? true : !activeButton}
-                            />
-                        )}
-                    </SubmitButtonContainer>
-                </InputFields>
-            </Form>
-        </RegisterFormContainer>
-    )
+          <SubmitButtonContainer>
+            {loading ? (
+              <LoadingDots />
+            ) : (
+              <SubmitButton
+                onClick={handleSubmit}
+                width={291}
+                text="Register"
+                needArrow={true}
+                active={loading ? true : !activeButton}
+              />
+            )}
+          </SubmitButtonContainer>
+        </InputFields>
+      </Form>
+    </RegisterFormContainer>
+  )
 }
 
 export default RegisterForm

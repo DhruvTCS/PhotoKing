@@ -8,7 +8,7 @@ export const getFoldersForAlbum = createAsyncThunk(
                 method: 'GET',
                 url: `/project/user/get-folder/?project_id=${albumId}&fetch=all`
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -26,7 +26,7 @@ export const createFolderAPI = createAsyncThunk(
                 },
                 data: data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -44,7 +44,7 @@ export const updateFolderAPI = createAsyncThunk(
                 },
                 data: data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -62,7 +62,7 @@ export const getSingleFolderAPI = createAsyncThunk(
             let folder = response.data["folder_data"]
             folder.total_images = response.data.results.length;
             folder.images = response.data.results;
-            console.log(folder)
+            // console.log(folder)
             return folder;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -77,7 +77,7 @@ export const lockFolderAPI = createAsyncThunk(
                 url: `/project/user/lock-folder/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -92,7 +92,7 @@ export const unlockFolderAPI = createAsyncThunk(
                 url: `/project/user/lock-folder/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -135,7 +135,7 @@ export const deleteFolderImagesAPI = createAsyncThunk(
                 url: `/project/user/delete-media/`,
                 data: data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -151,7 +151,7 @@ export const deleteFolderAPI = createAsyncThunk(
                 url: `/project/user/upload-image/?folder_id=${data.folder_id}`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -166,7 +166,7 @@ export const hideFolderAPI = createAsyncThunk(
                 url: `/project/user/lock-folder/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

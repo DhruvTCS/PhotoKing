@@ -58,7 +58,7 @@ const AddNewPackagePage: React.FC = () => {
     if (!activeButton) {
       setShowError(true);
     } else {
-      // console.log("send package data");
+      // // console.log("send package data");
 
       dispatch(createPackageAPI({ title: packageName, price: parseInt(price), description }))
     }
@@ -68,7 +68,7 @@ const AddNewPackagePage: React.FC = () => {
     if (!activeButton) {
       setShowError(true);
     } else {
-      // console.log("send package data");
+      // // console.log("send package data");
       if (currentPackage)
         dispatch(updatePackageAPI({ title: packageName, price: parseInt(price), description, package_id: currentPackage.id }))
     }
@@ -87,7 +87,7 @@ const AddNewPackagePage: React.FC = () => {
   }
   const validateDescription = (description: string) => {
     if (description.length > 0 && description !== '<p><br></p>') {
-      console.log(description)
+      // console.log(description)
       return true;
 
     }
@@ -176,7 +176,7 @@ const AddNewPackagePage: React.FC = () => {
                   // <div >{pureDescription}</div>
                 }
                 {/* <DraftEditorComponent onEditorStateChange={handleEditorStateChange} editorState={editorState} /> */}
-                {/* <TipTapTextEditor onChange={(e) => console.log(e)} /> */}
+                {/* <TipTapTextEditor onChange={(e) => // console.log(e)} /> */}
               </DescriptionTab>
 
               <Errortext show={showError && !validateDescription(description)} message='Please provide valid description' />

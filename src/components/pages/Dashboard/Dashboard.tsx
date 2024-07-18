@@ -83,16 +83,16 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         if (isError) {
-            console.log("error in loadind dashboard")
-            console.log(error)
+            // console.log("error in loadind dashboard")
+            // console.log(error)
             navigate('/auth/login')
         }
 
         //   check user is Auth ?
         // 1. yes then fetch data from user redux object 
         // 2. no then check there is accesstoken pr not in localstorage 
-        // console.log(!isAuthticated && !user && !access_token)
-        // console.log("+++++++++++++++++++++++++++++")
+        // // console.log(!isAuthticated && !user && !access_token)
+        // // console.log("+++++++++++++++++++++++++++++")
         // 3. If there is no acces token or isAuthenticated is true the redirect to loginpage
         if (!isAuthticated && !user && !access_token) {
             if (localStorage.getItem('access_token')) {

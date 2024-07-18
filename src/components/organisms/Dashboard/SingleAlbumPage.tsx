@@ -49,7 +49,7 @@ const SingleAlbum: React.FC = () => {
     const navigate = useNavigate();
     const params = useParams()
     useEffect(() => {
-        console.log(params)
+        // console.log(params)
         if (params.new !== 'true') {
 
             if (!currentAlbum) {

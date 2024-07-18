@@ -12,7 +12,7 @@ export const getAllEventsAPI = createAsyncThunk(
 
             })
 
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -28,7 +28,7 @@ export const createEventAPI = createAsyncThunk(
                 url: '/project/user-event/',
                 data: data
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -43,7 +43,7 @@ export const updateEventAPI = createAsyncThunk(
                 url: '/project/user-event/',
                 data: data
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

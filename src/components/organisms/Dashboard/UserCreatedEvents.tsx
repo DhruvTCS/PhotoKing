@@ -23,8 +23,8 @@ const UserCreatedEvents: React.FC = () => {
     const [isShareFormPopUp, setIsShareFormPopUp] = useState<boolean>(false)
     useEffect(() => {
         if (!userCreatedEvents) {
-            console.log('User created events')
-            console.log(userCreatedEvents)
+            // console.log('User created events')
+            // console.log(userCreatedEvents)
             dispatch(getUserCreatedEventsAPI())
         } else {
             setCurrentEvents(userCreatedEvents)

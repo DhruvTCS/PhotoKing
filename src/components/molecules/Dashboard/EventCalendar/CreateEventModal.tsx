@@ -65,18 +65,18 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         if (currentEvent) {
             // const start = new Date(currentEvent.start);
             // const end = new Date(currentEvent.end);
-            // console.log();
+            // // console.log();
             const start = new Date(currentEvent.start);
             const end = new Date(currentEvent.end);
             const padZero = (num: number) => num.toString().padStart(2, '0');
             currentEvent.members.forEach((member) => {
                 // eventMembers.push(member.member);
                 setEventMembers(pre => [...pre, member.member])
-                console.log("pushing member")
+                // console.log("pushing member")
             })
             const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
             const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
-            // console.log(start);
+            // // console.log(start);
             setIsUpdate(true);
             setStartDateTime(formatedStart);
             setSubEvents(currentEvent.sub_events)
@@ -91,7 +91,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
 
             const formatedStart = `${start.getFullYear()}-${padZero(start.getMonth() + 1)}-${padZero(start.getDate())}T${padZero(start.getHours())}:${padZero(start.getMinutes())}`;
             const formatedEnd = `${end.getFullYear()}-${padZero(end.getMonth() + 1)}-${padZero(end.getDate())}T${padZero(end.getHours())}:${padZero(end.getMinutes())}`;
-            // console.log(start);
+            // // console.log(start);
             setStartDateTime(formatedStart);
             setEndDateTime(formatedEnd);
             setSelectedMembers([])
@@ -172,8 +172,8 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             const endDate = endDateTime.toString().slice(0, 10);
             const startTime = startDateTime.toString().slice(11, 16);
             const endTime = endDateTime.toString().slice(11, 16);
-            console.log(startDate, endDate, startTime, endTime)
-            // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
+            // console.log(startDate, endDate, startTime, endTime)
+            // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             if (isUpdate && currentEvent)
                 dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
             else

@@ -17,7 +17,7 @@ const getTokens = () => {
 // Generic function to handle API calls with token refresh
 const apiCall = async (options: AxiosRequestConfig<any>) => {
     const { accessToken, refreshToken } = getTokens();
-    // console.log(accessToken, refreshToken)
+    // // console.log(accessToken, refreshToken)
 
     // Attach the access token to the request
     const headers = {
@@ -27,23 +27,23 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
     };
 
     try {
-        // console.log(headers);
-        // console.log(options);
+        // // console.log(headers);
+        // // console.log(options);
         const response = await api({
             ...options,
             headers: headers
         });
         return response.data;
     } catch (error: any) {
-        console.log(error)
-        console.log("error above sending refresh token api");
-        console.log(error.response);
+        // console.log(error)
+        // console.log("error above sending refresh token api");
+        // console.log(error.response);
         if ((error.response.status === 401) && refreshToken) {
             // Token might be expired, attempt to refresh it
             try {
                 const newAccessToken = await store.dispatch(refreshAccessToken(refreshToken)).unwrap();
-                console.log(newAccessToken);
-                console.log(newAccessToken.data)
+                // console.log(newAccessToken);
+                // console.log(newAccessToken.data)
                 // Update the access token in the Redux store
                 store.dispatch(setToken({ access_token: newAccessToken.data, refresh_token: refreshToken }));
                 if (localStorage.getItem('access_token')) {
@@ -61,8 +61,8 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
                 });
                 return retryResponse.data;
             } catch (refreshError) {
-                console.log("error in refresh token request from authAPI")
-                console.log(refreshError)
+                // console.log("error in refresh token request from authAPI")
+                // console.log(refreshError)
                 // If refresh fails, clear tokens and handle error appropriately;
                 // store.dispatch(clearToken());
                 throw refreshError;

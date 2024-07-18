@@ -215,7 +215,7 @@ const LoginForm: React.FC = () => {
     const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (validatePhoneNumber(contact)) {
-            // console.log(contact);
+            // // console.log(contact);
             // setContact((contact) => );
             if (isChecked) {
                 dispatch(setRemeberMe(true));
@@ -224,7 +224,7 @@ const LoginForm: React.FC = () => {
             dispatch(loginUser({ phone_number: countryCode + contact }));
 
         } else {
-            // console.log("invalid phone number");
+            // // console.log("invalid phone number");
         }
     }
     const validatePhoneNumber = (phoneNumber: string): boolean => {

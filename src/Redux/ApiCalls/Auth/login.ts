@@ -8,7 +8,7 @@ export const loginUser = createAsyncThunk(
     async (credentials: { phone_number: string }, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${getHostUrl()}/account/sendotp/`, credentials);
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -20,7 +20,7 @@ export const verifyOTP = createAsyncThunk(
     async (credentials: { country_code: string, phone_number: string, otp: string, orderId: string }, { rejectWithValue }) => {
         try {
             const response = await axios.post(`${getHostUrl()}/account/login/`, credentials);
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -36,7 +36,7 @@ export const getUserByToken = createAsyncThunk(
                 method: 'GET',
                 url: '/account/user-details/'
             });
-            // console.log(response);
+            // // console.log(response);
             return response.data.user;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

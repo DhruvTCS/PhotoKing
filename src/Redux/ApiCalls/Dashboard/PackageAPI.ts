@@ -9,7 +9,7 @@ export const createPackageAPI = createAsyncThunk(
                 url: `/plans/business-package/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -23,7 +23,7 @@ export const getAllPackageAPI = createAsyncThunk(
                 method: 'GET',
                 url: `/plans/business-package/?user_id=${data.user_id}`,
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -38,7 +38,7 @@ export const updatePackageAPI = createAsyncThunk(
                 url: `/plans/business-package/`,
                 data
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -52,7 +52,7 @@ export const deletePackageAPI = createAsyncThunk(
                 method: 'DELETE',
                 url: `/plans/business-package/?package_id=${data.package_id}`,
             })
-            console.log(response);
+            // console.log(response);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

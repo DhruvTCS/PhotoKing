@@ -8,7 +8,7 @@ export const getAllNotificationAPI = createAsyncThunk(
                 method: 'GET',
                 url: '/account/notification/?notification_type=unseen'
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);
@@ -23,7 +23,7 @@ export const seenNotification = createAsyncThunk(
                 url: '/account/notification/',
                 data
             })
-            console.log(response.data);
+            // console.log(response.data);
             return response.data;
         } catch (error: any) {
             return rejectWithValue(error.response.data);

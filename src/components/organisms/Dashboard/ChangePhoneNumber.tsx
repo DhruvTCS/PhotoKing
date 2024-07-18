@@ -218,7 +218,7 @@ const ChangePhoneNumber: React.FC = () => {
         return phoneRegex.test(newNumber);
     };
     const handleSendOTP = () => {
-        console.log("click")
+        // console.log("click")
         if (!sendOTPButton) {
             setShowError(true);
         } else {

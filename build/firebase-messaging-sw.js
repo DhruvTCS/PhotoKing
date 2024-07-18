@@ -15,7 +15,7 @@ firebase.initializeApp({
 //
 const messaging = firebase.messaging();
 messaging.onBackgroundMessage(async (payload) => {
-    console.log('[firebase-messaging-sw.js] Received background message', payload);
+    // console.log('[firebase-messaging-sw.js] Received background message', payload);
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
@@ -23,7 +23,7 @@ messaging.onBackgroundMessage(async (payload) => {
     };
     const clients = await self.clients.matchAll({ includeUncontrolled: true });
     self.registration.showNotification(notificationTitle, notificationOptions);
-    console.log('[firebase-messaging-sw.js] Clients:', clients);
+    // console.log('[firebase-messaging-sw.js] Clients:', clients);
 
     if (clients && clients.length > 0) {
 
@@ -35,7 +35,7 @@ messaging.onBackgroundMessage(async (payload) => {
         });
 
     } else {
-        console.log('[firebase-messaging-sw.js] No clients available, showing notification');
+        // console.log('[firebase-messaging-sw.js] No clients available, showing notification');
         const notificationTitle = payload.notification.title;
         const notificationOptions = {
             body: payload.notification.body,

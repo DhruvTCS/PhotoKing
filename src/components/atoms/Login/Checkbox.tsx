@@ -12,12 +12,16 @@ const StyledCheckbox = styled.input`
   width: 20px;
   height: 20px;
   cursor: pointer;
-  border-color:#A720B9;
+//   border-color:red;
   border-radius:5px;
-  &:focus{
-//   color:#A720B9
-   border-color:#A720B9;
-}
+//   &:focus{
+// //   color:#A720B9
+//    border-color:#A720B9;
+// }
+   &:checked{
+   background-color:red !important;
+   }
+  
 `;
 
 const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange, id }) => {

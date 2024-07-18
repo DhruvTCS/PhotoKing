@@ -10,146 +10,146 @@ import DeleteIconPNG from '../../../../assets/Icons/delete2.png'
 import DeletePopup from '../Folder/DeletePopup'
 import { deleteUserCreatedEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI'
 interface UserCreatedEventCardProps {
-    userEvent: UserCreatedEvents
+  userEvent: UserCreatedEvents
 }
 
 const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({
-    userEvent,
+  userEvent,
 }) => {
-    const menuRef = useRef<HTMLDivElement>(null)
-    const buttonRef = useRef<HTMLButtonElement>(null)
-    const [fullEventModal, setFullEventModal] = useState(false)
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
-    const [isDeletePopUp, setIsDeletePopup] = useState(false)
-    const [dropDownMenu, setDropDownMenu] = useState(false)
-    const openMenu = (e: React.MouseEvent) => {
-        console.log('called')
-        e.stopPropagation()
-        setDropDownMenu((pre) => !pre)
+  const menuRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [fullEventModal, setFullEventModal] = useState(false)
+  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+  const [isDeletePopUp, setIsDeletePopup] = useState(false)
+  const [dropDownMenu, setDropDownMenu] = useState(false)
+  const openMenu = (e: React.MouseEvent) => {
+    // console.log('called')
+    e.stopPropagation()
+    setDropDownMenu((pre) => !pre)
+  }
+  function getEventDates(event: UserCreatedEvents) {
+    if (!event.sub_events || event.sub_events.length === 0) {
+      return { starting_date: null, ending_date: null }
     }
-    function getEventDates(event: UserCreatedEvents) {
-        if (!event.sub_events || event.sub_events.length === 0) {
-            return { starting_date: null, ending_date: null }
-        }
 
-        let minStartingDate = event.sub_events[0].starting_date
-        let maxEndingDate = event.sub_events[0].ending_date
+    let minStartingDate = event.sub_events[0].starting_date
+    let maxEndingDate = event.sub_events[0].ending_date
 
-        event.sub_events.forEach((subEvent) => {
-            if (subEvent.starting_date < minStartingDate) {
-                minStartingDate = subEvent.starting_date
-            }
-            if (subEvent.ending_date > maxEndingDate) {
-                maxEndingDate = subEvent.ending_date
-            }
-        })
+    event.sub_events.forEach((subEvent) => {
+      if (subEvent.starting_date < minStartingDate) {
+        minStartingDate = subEvent.starting_date
+      }
+      if (subEvent.ending_date > maxEndingDate) {
+        maxEndingDate = subEvent.ending_date
+      }
+    })
 
-        return {
-            starting_date: minStartingDate,
-            ending_date: maxEndingDate,
-        }
+    return {
+      starting_date: minStartingDate,
+      ending_date: maxEndingDate,
     }
-    const handleViewFullEvent = () => {
-        dispatch(setUserCreatedEvent(userEvent))
-        navigate('/dashboard/events/userCreated/single')
+  }
+  const handleViewFullEvent = () => {
+    dispatch(setUserCreatedEvent(userEvent))
+    navigate('/dashboard/events/userCreated/single')
+  }
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setDropDownMenu(false)
     }
-    const handleClickOutside = (event: MouseEvent) => {
-        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-            setDropDownMenu(false)
-        }
+  }
+  useEffect(() => {
+    if (dropDownMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside)
     }
-    useEffect(() => {
-        if (dropDownMenu) {
-            document.addEventListener('mousedown', handleClickOutside)
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
-        }
-    }, [dropDownMenu])
-
-    const handleDeleteEvent = () => {
-
-        console.log("delete event")
-        console.log(userEvent)
-        dispatch(deleteUserCreatedEventAPI({ event_id: userEvent.id }))
-        setIsDeletePopup(false)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
     }
-    return (
-        <Container>
-            {fullEventModal && (
-                <ViewUserCreatedEventModal
-                    userEvent={userEvent}
-                    onCancel={() => setFullEventModal(false)}
-                />
-            )}
-            {isDeletePopUp && (
-                <DeletePopup
-                    text="Are you sure you want to delete this event?"
-                    cancel={() => setIsDeletePopup(false)}
-                    Delete={() => handleDeleteEvent()}
-                    buttonText={'Delete'}
-                />
-            )}
-            <MenuButton
-                ref={buttonRef}
-                onClick={(e) => {
-                    openMenu(e)
-                }}
-            >
-                <Dot>.</Dot>
-                <Dot>.</Dot>
-                <Dot>.</Dot>
-            </MenuButton>
-            <DropdownMenu menuOpen={dropDownMenu} ref={menuRef}>
-                <MenuItem>
-                    <ItemIcon src={CalendarIconPNG} />
-                    <ItemName>Add To Calendar</ItemName>
-                </MenuItem>
-                <HrMenu />
+  }, [dropDownMenu])
 
-                <MenuItem onClick={() => setIsDeletePopup(true)}>
-                    <ItemIcon src={DeleteIconPNG} />
-                    <ItemName>Delete Event</ItemName>
-                </MenuItem>
-                <HrMenu />
-            </DropdownMenu>
-            <HeaderContainer>
-                <CustomerNameText>{userEvent.customer_name}</CustomerNameText>
-                <CustomerPhoneText>{userEvent.phone_number}</CustomerPhoneText>
-            </HeaderContainer>
-            <Hr colorData="#00000073" />
-            <EventData>
-                <EvenDateHeader>
-                    <EventDataHeaderTitle>{userEvent.event_name}</EventDataHeaderTitle>
-                </EvenDateHeader>
-                <EventDataBody>
-                    {/* <EventLocationContainer>
+  const handleDeleteEvent = () => {
+
+    // console.log("delete event")
+    // console.log(userEvent)
+    dispatch(deleteUserCreatedEventAPI({ event_id: userEvent.id }))
+    setIsDeletePopup(false)
+  }
+  return (
+    <Container>
+      {fullEventModal && (
+        <ViewUserCreatedEventModal
+          userEvent={userEvent}
+          onCancel={() => setFullEventModal(false)}
+        />
+      )}
+      {isDeletePopUp && (
+        <DeletePopup
+          text="Are you sure you want to delete this event?"
+          cancel={() => setIsDeletePopup(false)}
+          Delete={() => handleDeleteEvent()}
+          buttonText={'Delete'}
+        />
+      )}
+      <MenuButton
+        ref={buttonRef}
+        onClick={(e) => {
+          openMenu(e)
+        }}
+      >
+        <Dot>.</Dot>
+        <Dot>.</Dot>
+        <Dot>.</Dot>
+      </MenuButton>
+      <DropdownMenu menuOpen={dropDownMenu} ref={menuRef}>
+        <MenuItem>
+          <ItemIcon src={CalendarIconPNG} />
+          <ItemName>Add To Calendar</ItemName>
+        </MenuItem>
+        <HrMenu />
+
+        <MenuItem onClick={() => setIsDeletePopup(true)}>
+          <ItemIcon src={DeleteIconPNG} />
+          <ItemName>Delete Event</ItemName>
+        </MenuItem>
+        <HrMenu />
+      </DropdownMenu>
+      <HeaderContainer>
+        <CustomerNameText>{userEvent.customer_name}</CustomerNameText>
+        <CustomerPhoneText>{userEvent.phone_number}</CustomerPhoneText>
+      </HeaderContainer>
+      <Hr colorData="#00000073" />
+      <EventData>
+        <EvenDateHeader>
+          <EventDataHeaderTitle>{userEvent.event_name}</EventDataHeaderTitle>
+        </EvenDateHeader>
+        <EventDataBody>
+          {/* <EventLocationContainer>
                         <EventLocationLabel>Location :</EventLocationLabel>
                         <EventLocationText>{userEvent}</EventLocationText>
                     </EventLocationContainer> */}
-                    <EventDateContainer>
-                        <EventDateLabel>Dates :</EventDateLabel>
-                        <DateContainer>
-                            <FromDateContainer>
-                                <FromDateLabel>From :</FromDateLabel>
-                                <Date>{getEventDates(userEvent).starting_date}</Date>
-                            </FromDateContainer>
-                            <FromDateContainer>
-                                <FromDateLabel>To :</FromDateLabel>
-                                <Date>{getEventDates(userEvent).ending_date}</Date>
-                            </FromDateContainer>
-                        </DateContainer>
-                    </EventDateContainer>
-                </EventDataBody>
-                <ViewFullEventDiv onClick={() => handleViewFullEvent()}>
-                    <ViewEventText>See Full Event</ViewEventText>
-                </ViewFullEventDiv>
-            </EventData>
-        </Container>
-    )
+          <EventDateContainer>
+            <EventDateLabel>Dates :</EventDateLabel>
+            <DateContainer>
+              <FromDateContainer>
+                <FromDateLabel>From :</FromDateLabel>
+                <Date>{getEventDates(userEvent).starting_date}</Date>
+              </FromDateContainer>
+              <FromDateContainer>
+                <FromDateLabel>To :</FromDateLabel>
+                <Date>{getEventDates(userEvent).ending_date}</Date>
+              </FromDateContainer>
+            </DateContainer>
+          </EventDateContainer>
+        </EventDataBody>
+        <ViewFullEventDiv onClick={() => handleViewFullEvent()}>
+          <ViewEventText>See Full Event</ViewEventText>
+        </ViewFullEventDiv>
+      </EventData>
+    </Container>
+  )
 }
 
 export default UserCreatedEventCard

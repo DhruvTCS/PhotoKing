@@ -25,7 +25,7 @@ export const PackageReducer = (builder: ActionReducerMapBuilder<PackageState>) =
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(getAllPackageAPI.pending, (state) => {
             state.loading = true;
@@ -47,13 +47,13 @@ export const PackageReducer = (builder: ActionReducerMapBuilder<PackageState>) =
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updatePackageAPI.pending, (state) => {
             state.loading = true;
             state.isError = false;
             state.success = false;
-            console.log("called from update")
+            // console.log("called from update")
             state.error = {};
         })
         .addCase(updatePackageAPI.fulfilled, (state, action: PayloadAction<any>) => {
@@ -67,7 +67,7 @@ export const PackageReducer = (builder: ActionReducerMapBuilder<PackageState>) =
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         }).addCase(deletePackageAPI.pending, (state) => {
             state.loading = true;
@@ -86,7 +86,7 @@ export const PackageReducer = (builder: ActionReducerMapBuilder<PackageState>) =
             state.loading = false;
             state.isError = true;
 
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
         })
 };

@@ -15,12 +15,12 @@ export const SearchData = async (keyword: string, isAlbum: boolean, isMember: bo
             method: "GET",
             url: `/project/search-albums/?search=${keyword}`,
         })
-        console.log(res);
+        // console.log(res);
         // store.dispatch(setAlbumLoading())
         let albums: Albums[] = [];
         let members: Member[] = [];
         res.data.forEach((data: any) => {
-            console.log(data)
+            // console.log(data)
             if (data.type === 'project') {
                 let albumData: Albums = {
                     name: data.name,
@@ -45,7 +45,7 @@ export const SearchData = async (keyword: string, isAlbum: boolean, isMember: bo
             }
         });
 
-        console.log(albums);
+        // console.log(albums);
         if (isMember)
             store.dispatch(setMember(members));
         if (isAlbum) {

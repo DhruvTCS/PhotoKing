@@ -28,9 +28,9 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
             }
         }>) => {
             state.loading = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.user = action.payload.data.user;
-            console.log(action.payload.success);
+            // console.log(action.payload.success);
             state.apiStatus = action.payload.success;
             state.access_token = action.payload.data.access_token;
             state.refresh_token = action.payload.data.refresh_token;
@@ -45,7 +45,7 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
         .addCase(verifyOTP.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error.message = action.payload.message;
             state.error.status = action.payload.status;
             state.apiStatus = false;
@@ -62,7 +62,7 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
         }).addCase(resendOTP.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.apiStatus = false;
-            console.log(action.payload);
+            // console.log(action.payload);
             state.error = action.payload;
 
         })
