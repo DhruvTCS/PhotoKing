@@ -234,7 +234,7 @@ const LoadingContainer = styled.div`
 
  width:98%;
 
- margin-top:10px;
+ margin-top:40px;
  display: flex;
  align-items: center;
  justify-content: center;
@@ -422,8 +422,7 @@ const UpdateFolderPage = () => {
   }
   const deleteFolderImages = () => {
     dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages }));
-    setSelectedFolderImages([]);
-    setNewFolderImages([]);
+
     setDeleteModal(false);
   }
   const SelectCheckbox = () => {
@@ -523,10 +522,15 @@ const UpdateFolderPage = () => {
           </SelectImageRadioConatiner>
         </InputContainer>
         <Conatiner2>
-          <ImageUploadContainer onClick={() => { ImageUploadCheck() }}>
-
-            <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
-            <AddImageLabel>{compresedImageLoading ? 'Please Wait...' : "Add Images"}</AddImageLabel>
+          <ImageUploadContainer onClick={() => { if (!compresedImageLoading) ImageUploadCheck() }}>
+            {
+              compresedImageLoading ?
+                <LoadingDots /> :
+                <>
+                  <DefaultImage src={AddImageIconPNG} alt="Click to upload" />
+                  <AddImageLabel>{compresedImageLoading ? 'Please Wait...' : "Add Images"}</AddImageLabel>
+                </>
+            }
             <input
               id="image-upload"
               type="file"

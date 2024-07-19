@@ -11,13 +11,13 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
     })
         .addCase(lockMultipleFoldersAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
+            showSuccessToast("Folder successfully locked.")
 
 
         })
         .addCase(lockMultipleFoldersAPI.rejected, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
             state.isError = true;
-
             // console.log(action.payload);
             state.error = action.payload;
         }).addCase(unlockFolderAPI.pending, (state) => {
@@ -27,6 +27,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(unlockFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            showSuccessToast("Folder successfully unlocked.")
 
 
         })
@@ -128,9 +129,10 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
         })
         .addCase(deleteFolderAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
-            state.isFolderChange = true;
+
             state.folderLoading = false;
             showSuccessToast("Folder Deleted.");
+            state.isFolderChange = true;
             if (state.currentAlbum)
                 state.currentAlbum.folders = []
 

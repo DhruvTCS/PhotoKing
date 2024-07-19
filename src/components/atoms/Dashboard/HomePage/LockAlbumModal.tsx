@@ -118,6 +118,9 @@ margin-left:15px;
 
 const SubmitButtonContainer = styled.div`
 margin-bottom:40px;
+display: flex;
+align-items: center;
+justify-content: center;
 `
 const LockIcon = styled.img`
   width: 20px;
@@ -229,12 +232,12 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
         const finalReason = selectedReason === 4 ? reason : selectedReason;
         if (lockAlbum) {
             if (selectedReason === 4) {
-                dispatch(lockAlbumAPI({ project_id: album.id, custom_reason: reason }))
+                dispatch(lockAlbumAPI({ project_id: album.id, custom_reason: reason, lock_type: 'lock' }))
             } else {
 
-                dispatch(lockAlbumAPI({ project_id: album.id, reason: selectedReason }))
+                dispatch(lockAlbumAPI({ project_id: album.id, reason: selectedReason, lock_type: 'lock' }))
             }
-            showSuccessToast("Your Album has been locked");
+
 
         } else {
             // // console.log(selectedFolders);
@@ -245,7 +248,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
 
                 // dispatch(lockFolderAPI({ project_id: album.id, reason: selectedReason }))
             }
-            showSuccessToast("Folder has been locked.")
+
         }
         // dispatch(lockAlbum({ albumName, selectedFolders, reason: finalReason }));
 
@@ -254,7 +257,7 @@ const LockAlbumModal: React.FC<LockAlbumModalProps> = ({ album, setShowModal }) 
     };
 
     const unlockAlbumFunc = (albumId: number) => {
-        dispatch(unlockAlbum(albumId));
+        dispatch(lockAlbumAPI({ project_id: albumId, lock_type: 'unlock' }));
     }
     const unlockFolder = (folderId: number) => {
         dispatch(unlockFolderAPI({ folder_id: folderId, project_id: album.id, lock_type: "unlock" }));

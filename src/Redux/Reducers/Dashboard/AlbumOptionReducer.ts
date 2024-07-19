@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
 import { getAllRedeemUserAPI, lockAlbum, removeRedeemUserAPI, unlockAlbum } from '../../ApiCalls/Dashboard/AlbumAPI';
 import { User } from '../../../Data/user.dto';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockAlbum.pending, (state) => {
@@ -10,7 +11,7 @@ export const AlbumOptionReducer = (builder: ActionReducerMapBuilder<AlbumState>)
         .addCase(lockAlbum.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isUpdate = true;
-
+            showSuccessToast("Album status updated.")
         })
         .addCase(lockAlbum.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;

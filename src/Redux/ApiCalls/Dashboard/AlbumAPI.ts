@@ -34,7 +34,7 @@ export const getSearchData = createAsyncThunk(
 
 export const lockAlbum = createAsyncThunk(
     'album/lockAlbum',
-    async (data: { project_id: number, custom_reason?: string, reason?: number }, { rejectWithValue }) => {
+    async (data: { project_id: number, custom_reason?: string, reason?: number, lock_type: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'POST',

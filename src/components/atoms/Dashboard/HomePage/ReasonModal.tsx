@@ -62,6 +62,9 @@ const Textarea = styled.input`
 
 const SubmitButtonContainer = styled.div`
 margin-top:25px;
+display:flex;
+align-items: center;
+justify-content: center;
 `
 const ReasonHeading = styled.div`
 width: 100%;

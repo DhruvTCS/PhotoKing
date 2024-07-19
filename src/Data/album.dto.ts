@@ -1,6 +1,7 @@
 export interface Albums {
     id: number;
-    is_locked?: boolean
+    is_locked?: boolean;
+    is_hide?: boolean;
     user: number;
     description: string;
     project_code: string;

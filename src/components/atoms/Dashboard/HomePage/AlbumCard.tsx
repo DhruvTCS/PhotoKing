@@ -12,6 +12,7 @@ import { useAppDispatch } from '../../../../Redux/Hooks'
 import { setCurrentAlbum } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
 import { useNavigate } from 'react-router-dom'
 import HideAlbumPopup from './HideAlbumPopup'
+import { lockAlbum } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI'
 interface CardProps {
   album: Albums
 }
@@ -135,11 +136,19 @@ margin:0;
 color: #5B463E;
 
 `
-const AlbumLockButton = styled.button`
+const AlbumLockButtonContainer = styled.button`
 position: absolute;
   top: 16px;
   left: 16px;
-  background: #ffffffb2;
+  display:flex;
+  width:100px;
+  background-color:transparent;
+  border:none;
+  justify-content: space-around;
+ 
+`;
+const AlbumLockButton = styled.div`
+ background: white;
   border-radius: 50%;
   display: flex;
   flex-direction: column;
@@ -200,6 +209,11 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
 
   const handleHideAlbum = (id: number) => {
     // console.log("hide", id);
+    if (album.is_hide)
+      dispatch(lockAlbum({ project_id: id, lock_type: 'unhide' }))
+    else
+      dispatch(lockAlbum({ project_id: id, lock_type: 'hide' }))
+
   }
   return (
     // album.image ? album.image :
@@ -212,10 +226,17 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
         <CardName >{album.name}</CardName>
         <CardDate>{album.date}</CardDate>
       </CardContent>
-      {album.is_locked ?
-        <AlbumLockButton>
-          <LockIconImg src={LockIcon}></LockIconImg>
-        </AlbumLockButton> : null}
+      <AlbumLockButtonContainer>
+
+        {album.is_locked ?
+          <AlbumLockButton>
+            <LockIconImg src={LockIcon}></LockIconImg>
+          </AlbumLockButton> : null}
+        {album.is_hide ?
+          <AlbumLockButton>
+            <LockIconImg src={HideIcon}></LockIconImg>
+          </AlbumLockButton> : null}
+      </AlbumLockButtonContainer>
       <MenuButton ref={buttonRef} onClick={(e) => { openMenu(e) }}>
         <Dot>.</Dot>
         <Dot>.</Dot>
@@ -252,7 +273,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
 
           <MenuItem onClick={() => setIsHideAlbumPopUp(pre => !pre)}>
             <ItemIcon src={HideIcon} />
-            <ItemName>Hide Album</ItemName>
+            <ItemName>{album.is_hide ? 'Unhide Album' : 'Hide Album'}</ItemName>
           </MenuItem>
           <Hr />
 
@@ -260,7 +281,8 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
             <ItemIcon src={WatermarkIcon} />
             <ItemName>Add Watermark</ItemName>
           </MenuItem>
-          {isHideAlbumPopUp && <HideAlbumPopup cancel={() => setIsHideAlbumPopUp(false)} Hide={() => handleHideAlbum(album.id)} />}
+          {isHideAlbumPopUp && <HideAlbumPopup text='Are you sure you want to
+                    hide this album?' buttonText={album.is_hide ? 'Unhide' : 'Hide'} cancel={() => setIsHideAlbumPopUp(false)} Hide={() => handleHideAlbum(album.id)} />}
           {showModal && (
             <LockAlbumModal
               album={album}

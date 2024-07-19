@@ -5,6 +5,8 @@ import HideAlbumPNG from '../../../../assets/Icons/DropDownMenu/hideAlbumBig.png
 interface PopupProps {
     Hide: () => void;
     cancel: () => void;
+    text: string;
+    buttonText: string;
 }
 
 const Container = styled.div`
@@ -93,7 +95,7 @@ margin-left:10px;
 
 cursor:pointer;
 `;
-const HideAlbumPopup: React.FC<PopupProps> = ({ Hide, cancel }) => {
+const HideAlbumPopup: React.FC<PopupProps> = ({ Hide, cancel, text, buttonText }) => {
     return (
         <Container>
             <Popup>
@@ -101,12 +103,13 @@ const HideAlbumPopup: React.FC<PopupProps> = ({ Hide, cancel }) => {
                     <Icon src={HideAlbumPNG} />
                 </IconContainer>
                 <PopUpText>
-                    Are you sure you want to
-                    hide this album?
+                    {text}
                 </PopUpText>
                 <ButtonConatiner>
                     <CancleButton onClick={() => cancel()}>Cancel</CancleButton>
-                    <DeleteButton onClick={() => Hide()}>Hide</DeleteButton>
+                    <DeleteButton onClick={() => Hide()}>
+                        {buttonText}
+                    </DeleteButton>
                 </ButtonConatiner>
             </Popup>
         </Container>

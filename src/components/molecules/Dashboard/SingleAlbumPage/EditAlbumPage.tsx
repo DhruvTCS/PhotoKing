@@ -250,6 +250,14 @@ const EditAlbumPage: React.FC = () => {
         return () => { }
     }, [isUpdate])
     useEffect(() => {
+        setFolders([]);
+        if (currentAlbum?.folders) {
+            setFolders(currentAlbum.folders)
+        }
+
+    }, [currentAlbum?.folders])
+    useEffect(() => {
+        console.log("calling this useEffect")
         if (!currentAlbum) {
             navigate('/dashboard/')
         } else {
@@ -260,7 +268,9 @@ const EditAlbumPage: React.FC = () => {
 
                 return album
             })
-            setImagePreview(album.image)
+            console.log("called ++++")
+            console.log(album.image)
+            setImagePreview(currentAlbum.image)
             if (currentAlbum.folders && currentAlbum.folders.length > 0)
                 setFolders(currentAlbum.folders)
             else dispatch(getFoldersForAlbum(currentAlbum.id))
@@ -270,6 +280,7 @@ const EditAlbumPage: React.FC = () => {
     }, [currentAlbum])
     useEffect(() => {
         if (currentAlbum && isFolderChange) {
+
             dispatch(getFoldersForAlbum(currentAlbum.id))
         }
     }, [isFolderChange])
