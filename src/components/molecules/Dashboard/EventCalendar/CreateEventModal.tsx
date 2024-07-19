@@ -169,16 +169,25 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             setShowError(true);
         }
         else {
-            const startDate = startDateTime.toString().slice(0, 10);
-            const endDate = endDateTime.toString().slice(0, 10);
-            const startTime = startDateTime.toString().slice(11, 16);
-            const endTime = endDateTime.toString().slice(11, 16);
-            // console.log(startDate, endDate, startTime, endTime)
-            // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
+            console.log(eventName, subEvents)
+            const subEventsData = subEvents.map(event => ({
+                sub_event_name: event.sub_event_name,
+                start_date: event.start_date,
+                start_time: event.start_time,
+                end_date: event.end_date,
+                end_time: event.end_time,
+                location: event.location,
+                sub_event_member_id: event.members.map(member => member.member)
+
+            }))
+            // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             if (isUpdate && currentEvent)
-                dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
+                console.log("Update event");
+            // dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
             else
-                dispatch(createEventAPI({ start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, members: `[${selectedMembers}]` }))
+                dispatch(createEventAPI({ title: eventName, event_member_id: selectedMembers, sub_events: subEvents }))
+            console.log(eventMembers)
+            setAddMemberMenu(false);
             onClose()
         }
 
@@ -206,6 +215,9 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
         let filteredSubEvents = subEvents.filter((e) => e.id !== subEvent.id)
         setSubEvents([...filteredSubEvents, subEvent])
         setIsSubEventModal(false)
+    }
+    const handleRemoveSubEvents = (subEvent: CalendarSubEvents) => {
+        setSubEvents(pre => pre.filter((e) => e.id !== subEvent.id))
     }
     if (!isOpen) return null;
 
@@ -277,7 +289,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                                         <CloseButtonSubEvent
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                // handleRemoveSubEvents(event)
+                                                handleRemoveSubEvents(event)
                                             }}
                                         >
                                             &times;
@@ -627,7 +639,8 @@ color:#B827BB;
 const FormField = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  
+  margin-top:30px;
 
 `
 
@@ -642,6 +655,7 @@ const SubEventsList = styled.div`
 `
 const AddSubEventHeaderContainer = styled.div`
   display: flex;
+  
   align-items: center;
   justify-content: space-between;
 `
@@ -658,6 +672,7 @@ const AddSubEventButton = styled.button`
 const SubEventNameContainer = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
   padding: 10px;
   margin: 10px 0px 0px 10px;
   
@@ -669,6 +684,7 @@ const SubEventName = styled.input`
   border: none;
   background-color: transparent;
   max-width: 83px;
+  cursor: pointer;
   &:focus {
     outline: none;
   }

@@ -189,8 +189,11 @@ width:19px;
 `
 const ButtonContainer = styled.div`
 position: absolute;
+width:100%;
+display:flex;
+align-items: center;
+justify-content: center;
 bottom: 30px;
-left:46%;
 `;
 const UpdateButton = styled.button`
 width:291px;
@@ -216,7 +219,6 @@ width:291px;
 height:50px;
 border-radius: 11px;
 border:none;
-margin-left:20px;
 background-color:red;
 font-family: Urbanist;
 font-size: 19px;
@@ -575,23 +577,25 @@ const UpdateFolderPage = () => {
           }
 
         </Conatiner2>
-        {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
-          <ButtonContainer>
-            {isUpdate && !isImageSelected &&
-              <UpdateButton disabled={activeUploadButton} onClick={handleUpdateFolder}>
-                Update
-              </UpdateButton>}
+        <ButtonContainer>
+          {folderLoading ? <LoadingContainer><LoadingDots /> </LoadingContainer> :
+            <>
+              {isUpdate && !isImageSelected &&
+                <UpdateButton disabled={activeUploadButton} onClick={handleUpdateFolder}>
+                  Update
+                </UpdateButton>}
 
-            {
-              isImageSelected && !isUpdate &&
-              <DeleteButton disabled={selectedFolderImages.length === 0} onClick={() => setDeleteModal(true)}>
-                Delete {selectedFolderImages.length !== 0 ? `(${selectedFolderImages.length})` : null}
-              </DeleteButton>
-            }
+              {
+                isImageSelected && !isUpdate &&
+                <DeleteButton disabled={selectedFolderImages.length === 0} onClick={() => setDeleteModal(true)}>
+                  Delete {selectedFolderImages.length !== 0 ? `(${selectedFolderImages.length})` : null}
+                </DeleteButton>
+              }
+            </>
 
 
-          </ButtonContainer>
-        }
+          }
+        </ButtonContainer>
       </PageBoady>
     </PageConatiner>
 

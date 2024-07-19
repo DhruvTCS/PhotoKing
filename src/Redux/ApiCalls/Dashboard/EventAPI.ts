@@ -21,7 +21,7 @@ export const getAllEventsAPI = createAsyncThunk(
 
 export const createEventAPI = createAsyncThunk(
     'event/createEventAPI',
-    async (data: { title: string, start_time: string, start_date: string, end_time: string, end_date: string, location: string, members: string }, { rejectWithValue }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'POST',

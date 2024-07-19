@@ -141,7 +141,6 @@ position: absolute;
   top: 16px;
   left: 16px;
   display:flex;
-  width:100px;
   background-color:transparent;
   border:none;
   justify-content: space-around;
@@ -150,6 +149,7 @@ position: absolute;
 const AlbumLockButton = styled.div`
  background: white;
   border-radius: 50%;
+  margin-left:10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -157,16 +157,17 @@ const AlbumLockButton = styled.div`
   width: 35px;
   height: 35px;
   border: 1px solid;
-  border-image-source: linear-gradient(
-    135deg,
-    #ffffff 0%,
-    rgba(0, 0, 0, 0) 100%
-  );
+  border:none;
   box-shadow: 0px 20px 20px 0px hsla(259, 49%, 33%, 0.15);
 `;
 const LockIconImg = styled.img`
 height:17px;
 width: 15px;
+`
+const HideIconImg = styled.img`
+height:17px;
+width: 24px;
+// margin-left:10px;
 `
 const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -234,7 +235,7 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
           </AlbumLockButton> : null}
         {album.is_hide ?
           <AlbumLockButton>
-            <LockIconImg src={HideIcon}></LockIconImg>
+            <HideIconImg src={HideIcon}></HideIconImg>
           </AlbumLockButton> : null}
       </AlbumLockButtonContainer>
       <MenuButton ref={buttonRef} onClick={(e) => { openMenu(e) }}>
