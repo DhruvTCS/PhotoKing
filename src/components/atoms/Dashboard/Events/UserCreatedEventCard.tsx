@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom'
 import CalendarIconPNG from '../../../../assets/Icons/Sidebar/calendar.png'
 import DeleteIconPNG from '../../../../assets/Icons/delete2.png'
 import DeletePopup from '../Folder/DeletePopup'
-import { deleteUserCreatedEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI'
+import { createEventAPI, deleteUserCreatedEventAPI } from '../../../../Redux/ApiCalls/Dashboard/EventAPI'
+import { createEvent } from '@testing-library/react'
 interface UserCreatedEventCardProps {
   userEvent: UserCreatedEvents
 }
@@ -77,6 +78,20 @@ const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({
     dispatch(deleteUserCreatedEventAPI({ event_id: userEvent.id }))
     setIsDeletePopup(false)
   }
+  const handleAddCalenderEvent = () => {
+    let subEventsData = userEvent.sub_events.map(event => ({
+      sub_event_name: event.sub_event_name,
+      start_time: event.starting_time,
+      end_time: event.ending_time,
+      start_date: event.starting_date,
+      end_date: event.ending_date,
+      location: event.sub_event_location,
+      sub_event_member_id: []
+    }))
+
+    dispatch(createEventAPI({ title: userEvent.event_name, sub_events: subEventsData }))
+    console.log(subEventsData)
+  }
   return (
     <Container>
       {fullEventModal && (
@@ -104,7 +119,7 @@ const UserCreatedEventCard: React.FC<UserCreatedEventCardProps> = ({
         <Dot>.</Dot>
       </MenuButton>
       <DropdownMenu menuOpen={dropDownMenu} ref={menuRef}>
-        <MenuItem>
+        <MenuItem onClick={() => handleAddCalenderEvent()}>
           <ItemIcon src={CalendarIconPNG} />
           <ItemName>Add To Calendar</ItemName>
         </MenuItem>
