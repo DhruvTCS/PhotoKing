@@ -45,6 +45,7 @@ export interface NewAlbum {
 }
 export interface NewFolder {
     name: string;
+    id: number;
     images:
     {
         image: File,

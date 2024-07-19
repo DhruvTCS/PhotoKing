@@ -529,6 +529,7 @@ const EditAlbumPage: React.FC = () => {
             <UnderLine width={98} isPercent={true} />
             <FoldersContainer>
                 <AddFolderModal
+                    totalFoldersLength={folders.length}
                     isOpen={createFolderModal}
                     onRequestClose={() => setCreateFolderModal(false)}
                     currentFolder={null}

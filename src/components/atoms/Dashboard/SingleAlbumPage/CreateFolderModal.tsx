@@ -18,6 +18,8 @@ interface AddFolderModalProps {
   currentFolder: NewFolder | null
   imageLimit: number
   setCurrentFolder: (data: NewFolder | null) => void
+
+  totalFoldersLength: number;
 }
 
 const AddFolderModal: React.FC<AddFolderModalProps> = ({
@@ -25,12 +27,14 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
   onRequestClose,
   onSubmit,
   imageLimit,
+  totalFoldersLength,
   currentFolder,
   setCurrentFolder,
 }) => {
   const [folderName, setFolderName] = useState('')
   const [newFolderImages, setNewFolderImages] = useState<File[]>([])
   const [limit, setLimit] = useState(20);
+  const [folderId, setFolderId] = useState<number>(0)
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [compressedImageLoading, setCompressedImageLoading] = useState(false)
@@ -42,12 +46,14 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
     if (currentFolder) {
       setIsUpDate(true);
       setFolderName(currentFolder.name)
+      setFolderId(currentFolder.id)
       setNewFolderImages(currentFolder.images.map((image) => image.image))
       setImageUrls(
         currentFolder.images.map((image) => URL.createObjectURL(image.image)),
       )
     } else {
       setFolderName('')
+      setFolderId(0)
       setIsUpDate(false)
       setNewFolderImages([])
     }
@@ -144,6 +150,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
 
     const folder: NewFolder = {
       name: folderName,
+      id: folderId,
       images: newFolderImages.map((file) => ({
         image: file,
         image_blob: URL.createObjectURL(file),

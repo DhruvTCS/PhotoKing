@@ -384,8 +384,9 @@ const CreateNewAlbumPage: React.FC = () => {
     }
     const handleAddFolder = (folder: NewFolder) => {
         setFolders((prevFolders) => {
+            console.log()
             const folderIndex = prevFolders.findIndex(
-                (f) => f.name.toLowerCase() === folder.name.toLowerCase(),
+                (f) => f.id === folder.id,
             )
             if (folderIndex !== -1) {
 
@@ -478,6 +479,7 @@ const CreateNewAlbumPage: React.FC = () => {
             <UnderLine width={98} isPercent={true} />
             <FoldersContainer>
                 <AddFolderModal
+                    totalFoldersLength={folders.length}
                     isOpen={createFolderModal}
                     onRequestClose={() => {
                         setCreateFolderModal(false)
