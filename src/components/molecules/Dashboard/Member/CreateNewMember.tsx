@@ -71,6 +71,7 @@ margin-left:30px;
 width: 130.42px;
 height: 130.42px;
 position: relative;
+cursor: pointer;
 `;
 const MemberImage = styled.img`
 width: 121.42px;
@@ -89,6 +90,7 @@ top:91px;
 display:flex;
 align-items: center;
 justify-content: center;
+cursor:pointer;
 `;
 const AddMemberIcon = styled.img`
 width: 21px;
