@@ -72,6 +72,7 @@ const ModalContent = styled.div`
 
   @media (min-width: ${breakpoints.desktop}) {
     max-width: 60%;
+    min-width:650px;
   }
 `
 
@@ -454,6 +455,8 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
         startDate,
         endDate,
       )
+      console.log(selectedMembers);
+      console.log(eventMembers);
       addSubEvent({
         sub_event_name: eventName,
         location: eventLocation,
@@ -463,7 +466,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
         end_time: end_time,
         // sub_event_coordinates: "test coordinates",
         id: id,
-        members: selectedMembers.map(member => { return { member: member, id: member } })
+        members: [...selectedMembers.map(member => { return { member: member, id: member } }), ...eventMembers.map(member => { return { member: member, id: member } })]
         ,
       })
     }

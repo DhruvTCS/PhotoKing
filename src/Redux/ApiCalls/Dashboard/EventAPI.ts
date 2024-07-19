@@ -36,7 +36,7 @@ export const createEventAPI = createAsyncThunk(
     });
 export const updateEventAPI = createAsyncThunk(
     'event/updateEventAPI',
-    async (data: { event_id: number, title: string, start_time: string, start_date: string, end_time: string, end_date: string, location: string, member_ids: number[] }, { rejectWithValue }) => {
+    async (data: any, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'PUT',
@@ -55,7 +55,7 @@ export const deleteEventAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'DELETE',
-                url: `/project/user-event/?event_id=${data.id}`,
+                url: `/project/user-event/?business_event_id=${data.id}`,
 
             })
             return response.data;

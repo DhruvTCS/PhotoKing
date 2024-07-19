@@ -115,6 +115,7 @@ export const EventReducer = (builder: ActionReducerMapBuilder<EventState>) => {
             state.isError = false;
             state.success = true;
             state.isEventUpdate = true;
+            showSuccessToast('Event Deleted.')
             // state.Events = action.payload;
         })
         .addCase(deleteEventAPI.rejected, (state, action: PayloadAction<any>) => {

@@ -149,7 +149,6 @@ position: absolute;
 const AlbumLockButton = styled.div`
  background: white;
   border-radius: 50%;
-  margin-left:10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -158,7 +157,21 @@ const AlbumLockButton = styled.div`
   height: 35px;
   border: 1px solid;
   border:none;
-  box-shadow: 0px 20px 20px 0px hsla(259, 49%, 33%, 0.15);
+ 
+`;
+
+const AlbumHideButton = styled.div`
+background: white;
+  border-radius: 50%;
+  margin-left:7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid;
+  border:none;
 `;
 const LockIconImg = styled.img`
 height:17px;
@@ -234,9 +247,9 @@ const AlbumCard: React.FC<CardProps> = ({ album }) => {
             <LockIconImg src={LockIcon}></LockIconImg>
           </AlbumLockButton> : null}
         {album.is_hide ?
-          <AlbumLockButton>
+          <AlbumHideButton>
             <HideIconImg src={HideIcon}></HideIconImg>
-          </AlbumLockButton> : null}
+          </AlbumHideButton> : null}
       </AlbumLockButtonContainer>
       <MenuButton ref={buttonRef} onClick={(e) => { openMenu(e) }}>
         <Dot>.</Dot>

@@ -7,10 +7,8 @@ import { createEventAPI, deleteEventAPI, updateEventAPI } from '../../../../Redu
 import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast';
 import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import DeleteEventPopup from '../../../atoms/Dashboard/Events/DeleteEventPopup';
-import LocationPickerModal from '../../../atoms/Dashboard/Events/SetLocationModal';
 import Errortext from '../../../atoms/Utlis/Errortext';
 import { CalendarSubEvents } from '../../../../Data/event.dto';
-import SubEventModal from '../../../atoms/Dashboard/Events/SubEventModal';
 import SubCalendarEventModal from '../../../atoms/Dashboard/Events/SubCalendarEventModal';
 interface ModalProps {
     isOpen: boolean;
@@ -145,19 +143,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             return true;
         } else return false;
     }
-    const validDateTime = (startDateTime: Date, endDateTime: Date) => {
-        if (
-            startDateTime.toString().length !== 0 &&
-            endDateTime.toString().length !== 0 &&
-            startDateTime < endDateTime
-        )
-            return true
-        else return false
-    }
-    const validateLocation = (location: string) => {
-        if (location.length > 0 && location.length < 300) return true
-        else return false
-    }
+
 
     const validSubEvents = (subEvents: CalendarSubEvents[]) => {
         if (subEvents.length > 0) return true
@@ -180,13 +166,16 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
                 sub_event_member_id: event.members.map(member => member.member)
 
             }))
-            // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
+            // console.log(isUpdate)
+            // console.log(subEventsData)
+            // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             if (isUpdate && currentEvent)
-                console.log("Update event");
+                dispatch(updateEventAPI({ event_id: currentEvent.id, title: eventName, event_member_id: [...selectedMembers, ...eventMembers], sub_events: subEventsData }))
             // dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
             else
-                dispatch(createEventAPI({ title: eventName, event_member_id: selectedMembers, sub_events: subEvents }))
-            console.log(eventMembers)
+                dispatch(createEventAPI({ title: eventName, event_member_id: selectedMembers, sub_events: subEventsData }))
+            // console.log(selectedMembers)
+
             setAddMemberMenu(false);
             onClose()
         }
@@ -203,7 +192,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     const handleDeleteEvent = (id: number) => {
         dispatch(deleteEventAPI({ id }));
         // dispatch(clearCurrentEvent());
-        showSuccessToast('Event Deleted.')
+
         onClose();
 
     }
@@ -412,11 +401,13 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 700px;
-  width: 100%;
+      background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 676px;
+    overflow-y: auto;
 `;
 
 const CloseButton = styled.span`
