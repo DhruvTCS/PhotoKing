@@ -384,33 +384,43 @@ const CreateNewAlbumPage: React.FC = () => {
     }
     const handleAddFolder = (folder: NewFolder) => {
         setFolders((prevFolders) => {
-            console.log()
-            const folderIndex = prevFolders.findIndex(
-                (f) => f.id === folder.id,
+            const folderNameIndex = prevFolders.findIndex(
+                (f) => f.name.trim().toLowerCase() === folder.name.trim().toLowerCase(),
             )
-            if (folderIndex !== -1) {
-
-                // Update existing folder
-                let oldImageLength = prevFolders[folderIndex].images.length;
-                let newLength = folder.images.length;
-                setTotalImages(pre => pre - oldImageLength + newLength);
-                const updatedFolders = [...prevFolders]
-                updatedFolders[folderIndex] = folder
-                return updatedFolders
+            if (folderNameIndex !== -1) {
+                showErrorToast("You can not add folder with same name.")
+                return prevFolders;
             } else {
-                // Add new folder
-                if (prevFolders.length == 5) {
-                    showErrorToast("You can create 5 folders at once.")
-                    return prevFolders;
-                }
-                else {
 
-                    setTotalImages(pre => pre + folder.images.length);
-                    return [...prevFolders, folder]
+
+                const folderIndex = prevFolders.findIndex(
+                    (f) => f.id === folder.id,
+                )
+                if (folderIndex !== -1) {
+
+                    // Update existing folder
+                    let oldImageLength = prevFolders[folderIndex].images.length;
+                    let newLength = folder.images.length;
+                    setTotalImages(pre => pre - oldImageLength + newLength);
+                    const updatedFolders = [...prevFolders]
+                    updatedFolders[folderIndex] = folder
+                    showSuccessToast('Folder added successfully.')
+                    return updatedFolders
+                } else {
+                    // Add new folder
+                    if (prevFolders.length == 5) {
+                        showErrorToast("You can create 5 folders at once.")
+                        return prevFolders;
+                    }
+                    else {
+
+                        setTotalImages(pre => pre + folder.images.length);
+                        showSuccessToast('Folder added successfully.')
+                        return [...prevFolders, folder]
+                    }
                 }
             }
         })
-        showSuccessToast('Folder added successfully.')
     }
     const removeImageandPreview = () => {
         URL.revokeObjectURL(imagePreview)

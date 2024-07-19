@@ -38,7 +38,7 @@ const initialState: AlbumState = {
     success: false,
     isSearchData: false,
     isRedeemUserUpdates: false,
-    redeemUsers: []
+    redeemUsers: [],
 }
 
 
@@ -71,6 +71,9 @@ const albumSlice = createSlice({
         setIsFolderChanged(state, action: PayloadAction<boolean>) {
             state.isFolderChange = action.payload;
         },
+        setCurrentPage(state, action: PayloadAction<number>) {
+            state.currentPage = action.payload;
+        },
         removeCurrentFolder(state) {
             delete state.currentFolder;
         },
@@ -99,7 +102,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setIsRedeemUserUpdates, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
+export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentPage, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setIsRedeemUserUpdates, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

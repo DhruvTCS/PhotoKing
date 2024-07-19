@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppSelector } from '../../../../Redux/Hooks';
 
 interface PaginationProps {
   currentPage: number;
@@ -52,6 +53,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
   for (let i = firstPageToShow; i <= lastPageToShow; i++) {
     pageNumbers.push(i);
   }
+
 
   return (
     <PaginationContainer>

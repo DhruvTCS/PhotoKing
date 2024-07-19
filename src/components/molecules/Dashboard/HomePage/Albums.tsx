@@ -10,7 +10,7 @@ import { clearError } from '../../../../Redux/Slice/Auth/AuthSlice'
 
 import AddCoverImageIconPng from '../../../../assets/Icons/SingleAlbum/addImage.png'
 import { useNavigate } from 'react-router-dom'
-import { clearFlagAlbums } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
+import { clearFlagAlbums, setCurrentPage } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
 const AblumContainer = styled.div`
   width: 98%;
   height: 100%;
@@ -118,7 +118,7 @@ const NoAlbumFoundContainer = styled.div`
   cursor: pointer;
 `
 const Albums: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPageState, setCurrentPageState] = useState(1)
     const albumsPerPage = 6
     const [totalAlbums, setTotalAlbums] = useState(0)
     const {
@@ -127,6 +127,7 @@ const Albums: React.FC = () => {
         total_projects,
         isUpdate,
         isSearchData,
+        currentPage
     } = useAppSelector((state) => state.album)
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
@@ -136,6 +137,7 @@ const Albums: React.FC = () => {
         if (!loading && albums.length > 0) {
             // // console.log('setting total pages' + total_projects)
             setTotalAlbums(total_projects)
+            setCurrentPageState(currentPage);
         }
     }, [dispatch, total_projects, albums])
 
@@ -151,7 +153,8 @@ const Albums: React.FC = () => {
     }, [isUpdate, dispatch])
 
     const handlePageChange = (page: number) => {
-        setCurrentPage(page)
+        setCurrentPageState(page)
+        dispatch(setCurrentPage(page))
         dispatch(getAllAlbums(page))
     }
 
@@ -196,7 +199,7 @@ const Albums: React.FC = () => {
                 total_projects <= 6 ||
                 isSearchData ? null : (
                 <Pagination
-                    currentPage={currentPage}
+                    currentPage={currentPageState}
                     totalPages={Math.ceil(total_projects / albumsPerPage)}
                     onPageChange={handlePageChange}
                 />
