@@ -143,6 +143,7 @@ const PreviewImage = styled.img`
 height:100px;
 width:100px;
 border-radius: 4px;
+border: 0.5px solid #d1d1d1;
 `
 
 const RemoveButtonConatiner = styled.div`

@@ -76,7 +76,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
     const options = {
       maxSizeMB: 2,
       maxWidthOrHeight: 1920,
-      useWebWorker: true,
+      useWebWorker: false,
     }
 
     try {
