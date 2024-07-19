@@ -100,6 +100,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             // dispatch(clearCurrentEvent());
             setEventLocation('');
             setEventName('');
+            setSubEvents([]);
             setStartDateTime('');
             setEndDateTime('');
             setSelectedMembers([])
@@ -164,7 +165,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
     }
 
     const handleSubmit = () => {
-        if (!validDateTime(new Date(startDateTime), new Date(endDateTime)) || !validateLocation(eventLocation) || !validEventName(eventName)) {
+        if (!validEventName(eventName) && subEvents.length < 0) {
             setShowError(true);
         }
         else {

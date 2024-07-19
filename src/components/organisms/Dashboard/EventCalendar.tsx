@@ -99,6 +99,7 @@ const EventCalendar: React.FC = () => {
         if (Events && Events.length > 0) {
             let newEvents = Events.map(event => {
                 let newEvent = {
+                    sub_events: event.sub_events,
                     title: event.title,
                     members: event.members,
                     start: new Date(event.start),
@@ -150,12 +151,12 @@ const EventCalendar: React.FC = () => {
         setModalOpen(true)
     }
     const handleSelectedEvent = (data: any) => {
-
+        console.log(data)
         const eventObje: EventType = {
             id: data.id,
             start: data.start.toString(),
             end: data.end.toString(),
-            sub_events: [],
+            sub_events: data.sub_events,
             members: data.members,
             title: data.title
         }

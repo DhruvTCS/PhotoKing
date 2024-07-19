@@ -92,7 +92,7 @@ const Form = styled.div`
   }
 
   @media (min-width: ${breakpoints.desktop}) {
-    max-width: 570px;
+    max-width: 600px;
   }
 `
 
@@ -356,18 +356,22 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
   const endDateRef = useRef<HTMLInputElement>(null)
   const [addMemberMenu, setAddMemberMenu] = useState(false)
   const [deleteMember, setDeleteMember] = useState<number[]>([])
-  const [subEventMembers, seSubEventMembers] = useState<
+  const [subEventMembers, setSubEventMembers] = useState<
     { id: number; member: number }[]
   >([])
   const { members } = useAppSelector((state) => state.member)
   useEffect(() => {
     if (currentSubEvent) {
+      console.log(currentSubEvent.start_date + 'T' + currentSubEvent.start_time.substring(0, 5))
       setEventName(currentSubEvent.sub_event_name)
       setEventLocation(currentSubEvent.location)
-      setStartDate((new Date(currentSubEvent.start_date + 'T' + currentSubEvent.start_time)).toString())
-      setEndDate((new Date(currentSubEvent.end_date + 'T' + currentSubEvent.end_time)).toString())
+      setStartDate(currentSubEvent.start_date + 'T' + currentSubEvent.start_time.substring(0, 5))
+      setEndDate(currentSubEvent.end_date + 'T' + currentSubEvent.end_time.substring(0, 5))
       // setEndDate(currentSubEvent.end_date)
+      // console.log((new Date(currentSubEvent.start_date + 'T' + currentSubEvent.start_time)).toString())
       SetId(currentSubEvent.id)
+      setEventMembers(currentSubEvent.members.map(member => member.member))
+      // if(currentSubEvent.members)
     }
     return () => {
       setEventName('')
@@ -378,6 +382,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
   }, [currentSubEvent])
 
   const onChangeData = (name: string, value: string) => {
+    console.log(startDate)
     if (name === 'event_name' && value.length <= 25) setEventName(value)
     else if (name === 'event_location' && value.length <= 200)
       setEventLocation(value)
@@ -458,7 +463,8 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
         end_time: end_time,
         // sub_event_coordinates: "test coordinates",
         id: id,
-        members: [],
+        members: selectedMembers.map(member => { return { member: member, id: member } })
+        ,
       })
     }
   }
@@ -538,9 +544,8 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
                   <Label htmlFor="from_date">From</Label>
                   <Input
                     type="datetime-local"
-                    id="from_date"
-                    ref={startDateRef}
                     name="from_date"
+                    ref={startDateRef}
                     onChange={(e) => onChangeData('start_date', e.target.value)}
                     value={startDate}
                   />

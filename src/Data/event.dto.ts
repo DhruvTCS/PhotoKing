@@ -20,6 +20,8 @@ export interface BackendEvent {
         member: number,
     }[] | []
 }
+
+
 export interface CalendarSubEvents {
     id: number;
     sub_event_name: string;
@@ -32,7 +34,8 @@ export interface CalendarSubEvents {
     members: {
         id: number,
         member: number,
-    }[] | []
+    }[] | [],
+    selectedMembers?: number[],
     // sub_event_coordinates: string;
 
 }
