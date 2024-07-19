@@ -34,7 +34,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
   const [folderName, setFolderName] = useState('')
   const [newFolderImages, setNewFolderImages] = useState<File[]>([])
   const [limit, setLimit] = useState(20);
-  const [folderId, setFolderId] = useState<number>(0)
+  const [folderId, setFolderId] = useState<number>(-1)
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [compressedImageLoading, setCompressedImageLoading] = useState(false)
@@ -46,6 +46,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
     if (currentFolder) {
       setIsUpDate(true);
       setFolderName(currentFolder.name)
+
       setFolderId(currentFolder.id)
       setNewFolderImages(currentFolder.images.map((image) => image.image))
       setImageUrls(
@@ -53,13 +54,14 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
       )
     } else {
       setFolderName('')
-      setFolderId(0)
+      setFolderId(totalFoldersLength + 1)
       setIsUpDate(false)
       setNewFolderImages([])
     }
 
     return () => {
       setCurrentFolder(null)
+
       // Revoke all object URLs when the modal is closed
       imageUrls.forEach((url) => URL.revokeObjectURL(url))
       setImageUrls([])
