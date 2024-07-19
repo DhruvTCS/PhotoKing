@@ -3,8 +3,8 @@ import styled, { keyframes } from 'styled-components'
 import UnderLine from '../../Login/UnderLine'
 import Errortext from '../../Utlis/Errortext'
 import {
-    CalendarSubEvents,
-    EnteredSubEventType,
+  CalendarSubEvents,
+  EnteredSubEventType,
 } from '../../../../Data/event.dto'
 import LocationPickerModal from './SetLocationModal'
 import DownIconPNG from '../../../../assets/Icons/downicon.png'
@@ -12,9 +12,9 @@ import { useAppSelector } from '../../../../Redux/Hooks'
 import { showErrorToast } from '../../Utlis/Toast'
 import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 const breakpoints = {
-    mobile: '480px',
-    tablet: '768px',
-    desktop: '1024px',
+  mobile: '480px',
+  tablet: '768px',
+  desktop: '1024px',
 }
 const fadeIn = keyframes`
   from {
@@ -33,6 +33,7 @@ const Modal = styled.div`
   justify-content: center;
   align-items: center;
   position: fixed;
+  z-index: 100;
   top: 0;
   left: 0;
   width: 100%;
@@ -235,11 +236,15 @@ const CloseButton = styled.span`
 // `
 const DownIcon = styled.img`
   cursor: pointer;
+  height:7px;
+  width:10px;
 `
 
 const UpIcon = styled.img`
   transform: rotate(180deg);
   cursor: pointer;
+  height:7px;
+  width:10px;
 `
 const SelectLocation = styled.div`
 display:flex;
@@ -317,445 +322,445 @@ const Location = styled.div`
 `
 
 interface SubEventModalProps {
-    onClose: () => void
-    addSubEvent: (subEvent: CalendarSubEvents) => void
-    currentSubEvent?: CalendarSubEvents | null
-    currentLength: number
-    locationList: string[]
-    setLocationList: (locationList: string[]) => void
+  onClose: () => void
+  addSubEvent: (subEvent: CalendarSubEvents) => void
+  currentSubEvent?: CalendarSubEvents | null
+  currentLength: number
+  locationList: string[]
+  setLocationList: (locationList: string[]) => void
 }
 
 const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
-    onClose,
-    addSubEvent,
-    currentSubEvent,
-    currentLength,
-    locationList,
-    setLocationList,
+  onClose,
+  addSubEvent,
+  currentSubEvent,
+  currentLength,
+  locationList,
+  setLocationList,
 }) => {
-    const [eventName, setEventName] = useState<string>('')
-    const [id, SetId] = useState<number>(currentLength + 1)
-    const [eventLocation, setEventLocation] = useState<string>('')
-    const [locationPickerModal, setLocationPickerModal] = useState<boolean>(false)
-    const [isLocationListOpen, setIsLocationListOpen] = useState(false)
-    const [startDate, setStartDate] = useState('')
-    const [endDate, setEndDate] = useState('')
-    const [eventMembers, setEventMembers] = useState<number[]>([])
-    const [selectedMembers, setSelectedMembers] = useState<number[]>([])
+  const [eventName, setEventName] = useState<string>('')
+  const [id, SetId] = useState<number>(currentLength + 1)
+  const [eventLocation, setEventLocation] = useState<string>('')
+  const [locationPickerModal, setLocationPickerModal] = useState<boolean>(false)
+  const [isLocationListOpen, setIsLocationListOpen] = useState(false)
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+  const [eventMembers, setEventMembers] = useState<number[]>([])
+  const [selectedMembers, setSelectedMembers] = useState<number[]>([])
 
-    const selectionRef = useRef<HTMLSelectElement>(null)
+  const selectionRef = useRef<HTMLSelectElement>(null)
 
-    const selectMenuRef = useRef<HTMLDivElement>(null)
-    const startDateRef = useRef<HTMLInputElement>(null)
-    const [showError, setShowError] = useState(false)
-    const endDateRef = useRef<HTMLInputElement>(null)
-    const [addMemberMenu, setAddMemberMenu] = useState(false)
-    const [deleteMember, setDeleteMember] = useState<number[]>([])
-    const [subEventMembers, seSubEventMembers] = useState<
-        { id: number; member: number }[]
-    >([])
-    const { members } = useAppSelector((state) => state.member)
-    useEffect(() => {
-        if (currentSubEvent) {
-            setEventName(currentSubEvent.sub_event_name)
-            setEventLocation(currentSubEvent.location)
-            setStartDate((new Date(currentSubEvent.start_date + 'T' + currentSubEvent.start_time)).toString())
-            setEndDate((new Date(currentSubEvent.end_date + 'T' + currentSubEvent.end_time)).toString())
-            // setEndDate(currentSubEvent.end_date)
-            SetId(currentSubEvent.id)
-        }
-        return () => {
-            setEventName('')
-            setEventLocation('')
-            setStartDate('')
-            setEndDate('')
-        }
-    }, [currentSubEvent])
-
-    const onChangeData = (name: string, value: string) => {
-        if (name === 'event_name' && value.length <= 25) setEventName(value)
-        else if (name === 'event_location' && value.length <= 200)
-            setEventLocation(value)
-        else if (name === 'start_date') setStartDate(value)
-        else if (name === 'end_date') setEndDate(value)
+  const selectMenuRef = useRef<HTMLDivElement>(null)
+  const startDateRef = useRef<HTMLInputElement>(null)
+  const [showError, setShowError] = useState(false)
+  const endDateRef = useRef<HTMLInputElement>(null)
+  const [addMemberMenu, setAddMemberMenu] = useState(false)
+  const [deleteMember, setDeleteMember] = useState<number[]>([])
+  const [subEventMembers, seSubEventMembers] = useState<
+    { id: number; member: number }[]
+  >([])
+  const { members } = useAppSelector((state) => state.member)
+  useEffect(() => {
+    if (currentSubEvent) {
+      setEventName(currentSubEvent.sub_event_name)
+      setEventLocation(currentSubEvent.location)
+      setStartDate((new Date(currentSubEvent.start_date + 'T' + currentSubEvent.start_time)).toString())
+      setEndDate((new Date(currentSubEvent.end_date + 'T' + currentSubEvent.end_time)).toString())
+      // setEndDate(currentSubEvent.end_date)
+      SetId(currentSubEvent.id)
     }
-
-    const validEventName = (eventNames: string) => {
-        if (eventNames.length > 0 && eventNames.length < 40) return true
-        else return false
+    return () => {
+      setEventName('')
+      setEventLocation('')
+      setStartDate('')
+      setEndDate('')
     }
+  }, [currentSubEvent])
 
-    const setEventDate = (startDateTime: string, endDateTime: string) => {
-        const formattedStartDateTime = giveFormattedDateTime(startDateTime)
-        const formattedEndDateTime = giveFormattedDateTime(endDateTime)
+  const onChangeData = (name: string, value: string) => {
+    if (name === 'event_name' && value.length <= 25) setEventName(value)
+    else if (name === 'event_location' && value.length <= 200)
+      setEventLocation(value)
+    else if (name === 'start_date') setStartDate(value)
+    else if (name === 'end_date') setEndDate(value)
+  }
 
-        const start_time = formattedStartDateTime.formattedTime
-        const start_date = formattedStartDateTime.formattedDate
-        const end_date = formattedEndDateTime.formattedDate
-        const end_time = formattedEndDateTime.formattedTime
-        return { start_date, start_time, end_time, end_date }
-    }
+  const validEventName = (eventNames: string) => {
+    if (eventNames.length > 0 && eventNames.length < 40) return true
+    else return false
+  }
 
-    const giveFormattedDateTime = (fdate: string) => {
-        const date = new Date(fdate)
+  const setEventDate = (startDateTime: string, endDateTime: string) => {
+    const formattedStartDateTime = giveFormattedDateTime(startDateTime)
+    const formattedEndDateTime = giveFormattedDateTime(endDateTime)
 
-        // Extract year, month, and day
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-indexed
-        const day = String(date.getDate()).padStart(2, '0')
+    const start_time = formattedStartDateTime.formattedTime
+    const start_date = formattedStartDateTime.formattedDate
+    const end_date = formattedEndDateTime.formattedDate
+    const end_time = formattedEndDateTime.formattedTime
+    return { start_date, start_time, end_time, end_date }
+  }
 
-        // Format date as yyyy-mm-dd
-        const formattedDate = `${year}-${month}-${day}`
+  const giveFormattedDateTime = (fdate: string) => {
+    const date = new Date(fdate)
 
-        // Extract hours, minutes, and seconds
-        const hours = String(date.getHours()).padStart(2, '0')
-        const minutes = String(date.getMinutes()).padStart(2, '0')
-        const seconds = String(date.getSeconds()).padStart(2, '0')
+    // Extract year, month, and day
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0') // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, '0')
 
-        // Format time as HH:MM:SS
-        const formattedTime = `${hours}:${minutes}:${seconds}`
-        return { formattedDate, formattedTime }
-    }
+    // Format date as yyyy-mm-dd
+    const formattedDate = `${year}-${month}-${day}`
 
-    const validDateTime = (startDateTime: Date, endDateTime: Date) => {
-        if (
-            startDateTime.toString().length !== 0 &&
-            endDateTime.toString().length !== 0 &&
-            startDateTime < endDateTime
-        )
-            return true
-        else return false
-    }
+    // Extract hours, minutes, and seconds
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
 
-    const validateLocation = (location: string) => {
-        if (location.length > 0 && location.length < 300) return true
-        else return false
-    }
+    // Format time as HH:MM:SS
+    const formattedTime = `${hours}:${minutes}:${seconds}`
+    return { formattedDate, formattedTime }
+  }
 
-    const handleSubmit = () => {
-        if (
-            !validateLocation(eventLocation) ||
-            !validEventName(eventName) ||
-            !validDateTime(new Date(startDate), new Date(endDate))
-        ) {
-            setShowError(true)
-        } else {
-            let { start_date, start_time, end_date, end_time } = setEventDate(
-                startDate,
-                endDate,
-            )
-            addSubEvent({
-                sub_event_name: eventName,
-                location: eventLocation,
-                start_date: start_date,
-                start_time: start_time,
-                end_date: end_date,
-                end_time: end_time,
-                // sub_event_coordinates: "test coordinates",
-                id: id,
-                members: [],
-            })
-        }
-    }
-
-    const setPickLocation = (loc: string) => {
-        setEventLocation(loc)
-    }
-    const setLocation = (loc: string) => {
-        setLocationList([...locationList, loc])
-        setLocationPickerModal(false)
-        setIsLocationListOpen(false)
-        setEventLocation(loc)
-    }
-
-
-    const handleMember = (id: number) => {
-        if (deleteMember.includes(id)) {
-            setDeleteMember(pre => pre.filter(member => member !== id));
-            eventMembers.push(id);
-        } else {
-
-            if (selectedMembers.includes(id)) {
-                setSelectedMembers(pre => pre.filter(val => val !== id));
-            } else {
-                setSelectedMembers(pre => [...pre, id]);
-            }
-        }
-
-    }
-    const handleButtonClick = (buttonAction: () => void) => {
-        setAddMemberMenu(false);
-        buttonAction();
-    };
-    const handleDeleteMember = (id: number) => {
-        if (!deleteMember.includes(id) && eventMembers.includes(id)) {
-            setDeleteMember([...deleteMember, id]);
-            setEventMembers(pre => pre.filter(member => member !== id));
-        }
-    }
-    return (
-        <Modal>
-            <ModalContent>
-                <CloseButton onClick={onClose}>&times;</CloseButton>
-                {locationPickerModal && (
-                    <LocationPickerModal
-                        onClose={() => setLocationPickerModal(false)}
-                        isOpen={locationPickerModal}
-                        onSelect={setLocation}
-                    />
-                )}
-                <Form>
-                    <FormField>
-                        <InputContainer>
-                            <Label htmlFor="name">Sub Event Name</Label>
-                            <Input
-                                type="text"
-                                id="name"
-                                placeholder=""
-                                name="name"
-                                onChange={(e) => onChangeData('event_name', e.target.value)}
-                                value={eventName}
-                            />
-                        </InputContainer>
-                        <UnderLine width={100} isPercent={true} />
-                        <Errortext
-                            show={showError && !validEventName(eventName)}
-                            message={'Please provide valid event name.'}
-                        />
-                    </FormField>
-                    <FormField>
-                        <Label htmlFor="name">Sub Event Date</Label>
-                        <InputMainDateContainer>
-                            <InputDateContainer>
-                                <DateContainer
-                                    onClick={() => startDateRef.current?.showPicker()}
-                                >
-                                    <Label htmlFor="from_date">From</Label>
-                                    <Input
-                                        type="datetime-local"
-                                        id="from_date"
-                                        ref={startDateRef}
-                                        name="from_date"
-                                        onChange={(e) => onChangeData('start_date', e.target.value)}
-                                        value={startDate}
-                                    />
-                                </DateContainer>
-                                <UnderLine width={100} isPercent={true} />
-                            </InputDateContainer>
-                            <InputDateContainer>
-                                <DateContainer onClick={() => endDateRef.current?.showPicker()}>
-                                    <Label htmlFor="to_date">To</Label>
-                                    <Input
-                                        type="datetime-local"
-                                        id="to_date "
-                                        name="to_date"
-                                        ref={endDateRef}
-                                        onChange={(e) => onChangeData('end_date', e.target.value)}
-                                        value={endDate}
-                                    />
-                                </DateContainer>
-                                <UnderLine width={100} isPercent={true} />
-                            </InputDateContainer>
-                        </InputMainDateContainer>
-                        <Errortext
-                            show={
-                                showError &&
-                                !validDateTime(new Date(startDate), new Date(endDate))
-                            }
-                            message={'Please provide valid event date.'}
-                        />
-                    </FormField>
-                    <FormField>
-                        <InputContainer>
-                            <InputContainerLocation>
-                                <Label htmlFor="location">Sub Event Location</Label>
-                            </InputContainerLocation>
-                            <SelectLocation>
-                                <Input
-                                    type="text"
-                                    id="location"
-                                    name="location"
-                                    placeholder="Select Location"
-                                    value={eventLocation}
-                                    readOnly={true}
-                                    onClick={() => setIsLocationListOpen((pre) => !pre)}
-                                />
-                                {isLocationListOpen ? (
-                                    <UpIcon
-                                        src={DownIconPNG}
-                                        onClick={() => setIsLocationListOpen(false)}
-                                    />
-                                ) : (
-                                    <DownIcon
-                                        src={DownIconPNG}
-                                        onClick={() => setIsLocationListOpen(true)}
-                                    />
-                                )}
-                            </SelectLocation>
-                        </InputContainer>
-                        <UnderLine width={100} isPercent={true} />
-                        <Errortext
-                            show={showError && !validateLocation(eventLocation)}
-                            message={'Please provide valid event location.'}
-                        />
-                        {isLocationListOpen && (
-                            <SelectionMenu menuOpen={isLocationListOpen}>
-                                <LocationMenuHeader>
-                                    <LocationMenuHeaderTitle>Locations</LocationMenuHeaderTitle>
-                                    <AddNewLocationButton
-                                        onClick={() => setLocationPickerModal(true)}
-                                    >
-                                        Add New{' '}
-                                    </AddNewLocationButton>
-                                </LocationMenuHeader>
-                                <LocationItemContainer>
-                                    {locationList.map((location) => (
-                                        <>
-                                            <LocationItem onClick={() => setPickLocation(location)}>
-                                                <Location>{location}</Location>
-                                            </LocationItem>
-                                            <UnderLine width={100} isPercent={true} />
-                                        </>
-                                    ))}
-                                </LocationItemContainer>
-                            </SelectionMenu>
-                        )}
-                    </FormField>
-                    <FormField>
-                        <MemberSelecetionConatiner>
-                            <SelectMemberHeadingConatiner>
-                                <SelectMemberHeading>
-                                    Selected Members {`(${selectedMembers.length})`}
-                                </SelectMemberHeading>
-                            </SelectMemberHeadingConatiner>
-                            <SelectedMemberConatiner>
-                                <SelectedMembersList>
-                                    {currentSubEvent &&
-                                        members &&
-                                        eventMembers.length > 0 &&
-                                        members.map(
-                                            (member) =>
-                                                eventMembers.includes(parseInt(member.id)) && (
-                                                    <SelectedMemberDataConatiner>
-                                                        <SelectedMemberData>
-                                                            <MemberData>
-                                                                <MeberProfileImage src={member.profile_image} />
-                                                                <MemberText>
-                                                                    <MemberName>{member.name}</MemberName>
-                                                                    <MemberRole>{member.job_type}</MemberRole>
-                                                                </MemberText>
-                                                            </MemberData>
-                                                            <DeleteIcon
-                                                                onClick={(e) =>
-                                                                    handleButtonClick(() =>
-                                                                        handleDeleteMember(parseInt(member.id)),
-                                                                    )
-                                                                }
-                                                                src={DeleteIconPNG}
-                                                            />
-                                                        </SelectedMemberData>
-                                                    </SelectedMemberDataConatiner>
-                                                ),
-                                        )}
-                                    {members &&
-                                        members.map(
-                                            (member) =>
-                                                selectedMembers.includes(parseInt(member.id)) && (
-                                                    <SelectedMemberDataConatiner>
-                                                        <SelectedMemberData>
-                                                            <MemberData>
-                                                                <MeberProfileImage src={member.profile_image} />
-                                                                <MemberText>
-                                                                    <MemberName>{member.name}</MemberName>
-                                                                    <MemberRole>{member.job_type}</MemberRole>
-                                                                </MemberText>
-                                                            </MemberData>
-                                                            <CloseButton
-                                                                onClick={() =>
-                                                                    handleMember(parseInt(member.id))
-                                                                }
-                                                            >
-                                                                &times;
-                                                            </CloseButton>
-                                                        </SelectedMemberData>
-                                                    </SelectedMemberDataConatiner>
-                                                ),
-                                        )}
-                                </SelectedMembersList>
-                            </SelectedMemberConatiner>
-                            <SelectionMenuListConatiner>
-                                <div
-                                    onClick={() => {
-                                        !members
-                                            ? showErrorToast('No Members Available.')
-                                            : setAddMemberMenu((pre) => !pre)
-                                    }}
-                                >
-                                    <AddMemberConatiner>
-                                        <AddMemberLabel>Add Member</AddMemberLabel>
-                                        <SelectMemberLabel
-                                            ref={selectionRef}
-                                            defaultValue={'Add Member'}
-                                        >
-                                            {/* <option value="Add Member" selected >Add Member</option> */}
-                                        </SelectMemberLabel>
-                                    </AddMemberConatiner>
-                                    <UnderLine width={100} isPercent={true} />
-                                </div>
-                                <Errortext
-                                    show={
-                                        showError &&
-                                        selectedMembers.length <= 0 &&
-                                        eventMembers.length <= 0
-                                    }
-                                    message="Please add event member."
-                                />
-                                <MemberMenuConatriner>
-                                    {addMemberMenu && (
-                                        <AddMemberListConatiner ref={selectMenuRef}>
-                                            <MemberList>
-                                                {members &&
-                                                    members.map(
-                                                        (member) =>
-                                                            !eventMembers.includes(parseInt(member.id)) && (
-                                                                <MemberListItem htmlFor={`member${member.id}`}>
-                                                                    <MemberData>
-                                                                        <MeberProfileImage
-                                                                            src={member.profile_image}
-                                                                        />
-                                                                        <MemberText>
-                                                                            <MemberName>{member.name}</MemberName>
-                                                                            <MemberRole>{member.job_type}</MemberRole>
-                                                                        </MemberText>
-                                                                    </MemberData>
-                                                                    <MemberSelectButton
-                                                                        id={`member${member.id}`}
-                                                                        type="checkbox"
-                                                                        onChange={() => {
-                                                                            handleMember(parseInt(member.id))
-                                                                        }}
-                                                                        checked={selectedMembers.includes(
-                                                                            parseInt(member.id),
-                                                                        )}
-                                                                    ></MemberSelectButton>
-                                                                </MemberListItem>
-                                                            ),
-                                                    )}
-                                            </MemberList>
-                                        </AddMemberListConatiner>
-                                    )}
-                                </MemberMenuConatriner>
-                            </SelectionMenuListConatiner>
-                        </MemberSelecetionConatiner>
-                    </FormField>
-
-                    <Button onClick={() => handleSubmit()}>
-                        {currentSubEvent ? `Update` : `Add`}
-                    </Button>
-                </Form>
-            </ModalContent>
-        </Modal>
+  const validDateTime = (startDateTime: Date, endDateTime: Date) => {
+    if (
+      startDateTime.toString().length !== 0 &&
+      endDateTime.toString().length !== 0 &&
+      startDateTime < endDateTime
     )
+      return true
+    else return false
+  }
+
+  const validateLocation = (location: string) => {
+    if (location.length > 0 && location.length < 300) return true
+    else return false
+  }
+
+  const handleSubmit = () => {
+    if (
+      !validateLocation(eventLocation) ||
+      !validEventName(eventName) ||
+      !validDateTime(new Date(startDate), new Date(endDate))
+    ) {
+      setShowError(true)
+    } else {
+      let { start_date, start_time, end_date, end_time } = setEventDate(
+        startDate,
+        endDate,
+      )
+      addSubEvent({
+        sub_event_name: eventName,
+        location: eventLocation,
+        start_date: start_date,
+        start_time: start_time,
+        end_date: end_date,
+        end_time: end_time,
+        // sub_event_coordinates: "test coordinates",
+        id: id,
+        members: [],
+      })
+    }
+  }
+
+  const setPickLocation = (loc: string) => {
+    setEventLocation(loc)
+  }
+  const setLocation = (loc: string) => {
+    setLocationList([...locationList, loc])
+    setLocationPickerModal(false)
+    setIsLocationListOpen(false)
+    setEventLocation(loc)
+  }
+
+
+  const handleMember = (id: number) => {
+    if (deleteMember.includes(id)) {
+      setDeleteMember(pre => pre.filter(member => member !== id));
+      eventMembers.push(id);
+    } else {
+
+      if (selectedMembers.includes(id)) {
+        setSelectedMembers(pre => pre.filter(val => val !== id));
+      } else {
+        setSelectedMembers(pre => [...pre, id]);
+      }
+    }
+
+  }
+  const handleButtonClick = (buttonAction: () => void) => {
+    setAddMemberMenu(false);
+    buttonAction();
+  };
+  const handleDeleteMember = (id: number) => {
+    if (!deleteMember.includes(id) && eventMembers.includes(id)) {
+      setDeleteMember([...deleteMember, id]);
+      setEventMembers(pre => pre.filter(member => member !== id));
+    }
+  }
+  return (
+    <Modal>
+      <ModalContent>
+        <CloseButton onClick={onClose}>&times;</CloseButton>
+        {locationPickerModal && (
+          <LocationPickerModal
+            onClose={() => setLocationPickerModal(false)}
+            isOpen={locationPickerModal}
+            onSelect={setLocation}
+          />
+        )}
+        <Form>
+          <FormField>
+            <InputContainer>
+              <Label htmlFor="name">Sub Event Name</Label>
+              <Input
+                type="text"
+                id="name"
+                placeholder=""
+                name="name"
+                onChange={(e) => onChangeData('event_name', e.target.value)}
+                value={eventName}
+              />
+            </InputContainer>
+            <UnderLine width={100} isPercent={true} />
+            <Errortext
+              show={showError && !validEventName(eventName)}
+              message={'Please provide valid event name.'}
+            />
+          </FormField>
+          <FormField>
+            <Label htmlFor="name">Sub Event Date</Label>
+            <InputMainDateContainer>
+              <InputDateContainer>
+                <DateContainer
+                  onClick={() => startDateRef.current?.showPicker()}
+                >
+                  <Label htmlFor="from_date">From</Label>
+                  <Input
+                    type="datetime-local"
+                    id="from_date"
+                    ref={startDateRef}
+                    name="from_date"
+                    onChange={(e) => onChangeData('start_date', e.target.value)}
+                    value={startDate}
+                  />
+                </DateContainer>
+                <UnderLine width={100} isPercent={true} />
+              </InputDateContainer>
+              <InputDateContainer>
+                <DateContainer onClick={() => endDateRef.current?.showPicker()}>
+                  <Label htmlFor="to_date">To</Label>
+                  <Input
+                    type="datetime-local"
+                    id="to_date "
+                    name="to_date"
+                    ref={endDateRef}
+                    onChange={(e) => onChangeData('end_date', e.target.value)}
+                    value={endDate}
+                  />
+                </DateContainer>
+                <UnderLine width={100} isPercent={true} />
+              </InputDateContainer>
+            </InputMainDateContainer>
+            <Errortext
+              show={
+                showError &&
+                !validDateTime(new Date(startDate), new Date(endDate))
+              }
+              message={'Please provide valid event date.'}
+            />
+          </FormField>
+          <FormField>
+            <InputContainer>
+              <InputContainerLocation>
+                <Label htmlFor="location">Sub Event Location</Label>
+              </InputContainerLocation>
+              <SelectLocation>
+                <Input
+                  type="text"
+                  id="location"
+                  name="location"
+                  placeholder="Select Location"
+                  value={eventLocation}
+                  readOnly={true}
+                  onClick={() => setIsLocationListOpen((pre) => !pre)}
+                />
+                {isLocationListOpen ? (
+                  <UpIcon
+                    src={DownIconPNG}
+                    onClick={() => setIsLocationListOpen(false)}
+                  />
+                ) : (
+                  <DownIcon
+                    src={DownIconPNG}
+                    onClick={() => setIsLocationListOpen(true)}
+                  />
+                )}
+              </SelectLocation>
+            </InputContainer>
+            <UnderLine width={100} isPercent={true} />
+            <Errortext
+              show={showError && !validateLocation(eventLocation)}
+              message={'Please provide valid event location.'}
+            />
+            {isLocationListOpen && (
+              <SelectionMenu menuOpen={isLocationListOpen}>
+                <LocationMenuHeader>
+                  <LocationMenuHeaderTitle>Locations</LocationMenuHeaderTitle>
+                  <AddNewLocationButton
+                    onClick={() => setLocationPickerModal(true)}
+                  >
+                    Add New{' '}
+                  </AddNewLocationButton>
+                </LocationMenuHeader>
+                <LocationItemContainer>
+                  {locationList.map((location) => (
+                    <>
+                      <LocationItem onClick={() => setPickLocation(location)}>
+                        <Location>{location}</Location>
+                      </LocationItem>
+                      <UnderLine width={100} isPercent={true} />
+                    </>
+                  ))}
+                </LocationItemContainer>
+              </SelectionMenu>
+            )}
+          </FormField>
+          <FormField>
+            <MemberSelecetionConatiner>
+              <SelectMemberHeadingConatiner>
+                <SelectMemberHeading>
+                  Selected Members {`(${selectedMembers.length})`}
+                </SelectMemberHeading>
+              </SelectMemberHeadingConatiner>
+              <SelectedMemberConatiner>
+                <SelectedMembersList>
+                  {currentSubEvent &&
+                    members &&
+                    eventMembers.length > 0 &&
+                    members.map(
+                      (member) =>
+                        eventMembers.includes(parseInt(member.id)) && (
+                          <SelectedMemberDataConatiner>
+                            <SelectedMemberData>
+                              <MemberData>
+                                <MeberProfileImage src={member.profile_image} />
+                                <MemberText>
+                                  <MemberName>{member.name}</MemberName>
+                                  <MemberRole>{member.job_type}</MemberRole>
+                                </MemberText>
+                              </MemberData>
+                              <DeleteIcon
+                                onClick={(e) =>
+                                  handleButtonClick(() =>
+                                    handleDeleteMember(parseInt(member.id)),
+                                  )
+                                }
+                                src={DeleteIconPNG}
+                              />
+                            </SelectedMemberData>
+                          </SelectedMemberDataConatiner>
+                        ),
+                    )}
+                  {members &&
+                    members.map(
+                      (member) =>
+                        selectedMembers.includes(parseInt(member.id)) && (
+                          <SelectedMemberDataConatiner>
+                            <SelectedMemberData>
+                              <MemberData>
+                                <MeberProfileImage src={member.profile_image} />
+                                <MemberText>
+                                  <MemberName>{member.name}</MemberName>
+                                  <MemberRole>{member.job_type}</MemberRole>
+                                </MemberText>
+                              </MemberData>
+                              <CloseButton
+                                onClick={() =>
+                                  handleMember(parseInt(member.id))
+                                }
+                              >
+                                &times;
+                              </CloseButton>
+                            </SelectedMemberData>
+                          </SelectedMemberDataConatiner>
+                        ),
+                    )}
+                </SelectedMembersList>
+              </SelectedMemberConatiner>
+              <SelectionMenuListConatiner>
+                <div
+                  onClick={() => {
+                    !members
+                      ? showErrorToast('No Members Available.')
+                      : setAddMemberMenu((pre) => !pre)
+                  }}
+                >
+                  <AddMemberConatiner>
+                    <AddMemberLabel>Add Member</AddMemberLabel>
+                    <SelectMemberLabel
+                      ref={selectionRef}
+                      defaultValue={'Add Member'}
+                    >
+                      {/* <option value="Add Member" selected >Add Member</option> */}
+                    </SelectMemberLabel>
+                  </AddMemberConatiner>
+                  <UnderLine width={100} isPercent={true} />
+                </div>
+                <Errortext
+                  show={
+                    showError &&
+                    selectedMembers.length <= 0 &&
+                    eventMembers.length <= 0
+                  }
+                  message="Please add event member."
+                />
+                <MemberMenuConatriner>
+                  {addMemberMenu && (
+                    <AddMemberListConatiner ref={selectMenuRef}>
+                      <MemberList>
+                        {members &&
+                          members.map(
+                            (member) =>
+                              !eventMembers.includes(parseInt(member.id)) && (
+                                <MemberListItem htmlFor={`member${member.id}`}>
+                                  <MemberData>
+                                    <MeberProfileImage
+                                      src={member.profile_image}
+                                    />
+                                    <MemberText>
+                                      <MemberName>{member.name}</MemberName>
+                                      <MemberRole>{member.job_type}</MemberRole>
+                                    </MemberText>
+                                  </MemberData>
+                                  <MemberSelectButton
+                                    id={`member${member.id}`}
+                                    type="checkbox"
+                                    onChange={() => {
+                                      handleMember(parseInt(member.id))
+                                    }}
+                                    checked={selectedMembers.includes(
+                                      parseInt(member.id),
+                                    )}
+                                  ></MemberSelectButton>
+                                </MemberListItem>
+                              ),
+                          )}
+                      </MemberList>
+                    </AddMemberListConatiner>
+                  )}
+                </MemberMenuConatriner>
+              </SelectionMenuListConatiner>
+            </MemberSelecetionConatiner>
+          </FormField>
+
+          <Button onClick={() => handleSubmit()}>
+            {currentSubEvent ? `Update` : `Add`}
+          </Button>
+        </Form>
+      </ModalContent>
+    </Modal>
+  )
 }
 
 export default SubCalendarEventModal
