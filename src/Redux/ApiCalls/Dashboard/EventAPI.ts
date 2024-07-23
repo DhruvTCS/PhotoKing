@@ -8,7 +8,7 @@ export const getAllEventsAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
-                url: `/project/user-event/?start_date=${data.start_date}&end_date=${data.end_date}`,
+                url: `/project/business-event/?start_date=${data.start_date}&end_date=${data.end_date}`,
 
             })
 
@@ -25,7 +25,7 @@ export const createEventAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'POST',
-                url: '/project/user-event/',
+                url: '/project/business-event/',
                 data: data
             })
             // console.log(response.data);
@@ -40,7 +40,7 @@ export const updateEventAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'PUT',
-                url: '/project/user-event/',
+                url: '/project/business-event/',
                 data: data
             })
             // console.log(response.data);
@@ -55,7 +55,7 @@ export const deleteEventAPI = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'DELETE',
-                url: `/project/user-event/?business_event_id=${data.id}`,
+                url: `/project/business-event/?business_event_id=${data.id}`,
 
             })
             return response.data;

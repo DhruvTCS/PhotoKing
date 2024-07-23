@@ -33,7 +33,7 @@ import EventForm from './components/pages/ShareCreateEventForm/EventForm';
 import UserCreatedEvents from './components/organisms/Dashboard/UserCreatedEvents';
 import SubEventPage from './components/molecules/Dashboard/UserEvents/SubEventPage';
 function App() {
-
+  // console.log(process.env)
   const navigate = useNavigate();
   // async function requestPermission() {
   //   const permission = await Notification.requestPermission();

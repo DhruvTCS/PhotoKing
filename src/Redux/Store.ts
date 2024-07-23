@@ -5,6 +5,7 @@ import memberSlice from './Slice/Dashboard/MemberSlice';
 import extraSlice from './Slice/Dashboard/ExtraSlice';
 import eventSlice from './Slice/Dashboard/EventSlice'
 import PackageSlice from './Slice/Dashboard/PackageSlice';
+import PaymentSlice from './Slice/Dashboard/PaymentSlice';
 const store = configureStore({
     reducer: {
         auth: authSlice,
@@ -12,7 +13,8 @@ const store = configureStore({
         member: memberSlice,
         extra: extraSlice,
         event: eventSlice,
-        package: PackageSlice
+        package: PackageSlice,
+        payment: PaymentSlice
     },
 });
 

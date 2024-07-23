@@ -10,7 +10,7 @@ import { useAppDispatch } from '../../Redux/Hooks'
 import { clearToken } from '../../Redux/Slice/Auth/AuthSlice'
 import LogoutPopup from '../atoms/Dashboard/HomePage/LogOutPopUp'
 const SidebarContainer = styled.div<{ isExpand: boolean }>`
-  width: ${(props) => (props.isExpand ? '19%' : '4%')};
+  width: ${(props) => (props.isExpand ? '19%' : '5%')};
   height: 1090px;
   transition: all 0.2s ease-in-out;
   background-color: white;
@@ -25,6 +25,7 @@ const ActionSidebarconatiner = styled.div<{ isExpand: boolean }>`
         props.isExpand
             ? `
         margin:10px;
+        margin-bottom:0px;
         `
             : `
     margin:3px;
@@ -41,13 +42,15 @@ const OpenSidebar = styled.img`
 `
 
 const LogoContainer = styled.div<{ isExpand: boolean }>`
-  position: absolute;
+    width:100%;
+    display: flex;
+
+    justify-content:center;
   transition: all 0.4s ease-in-out;
   ${(props) =>
         !props.isExpand
             ? `
-    top:43px;
-    left:10px;
+            margin-top:30px;
     `
             : `
     
@@ -56,14 +59,15 @@ left:30px;
 `
 
 const CompanyLogoIcon = styled.img`
-  height: 45px;
-  width: 45px;
+  height: 60px;
+  width: 74px;
 `
 const SiderbarOptionsContainer = styled.div<{ isExpand: boolean }>`
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: relative;
-  top: 100px;
+  top: 40px;
   margin-left: ${(props) => (props.isExpand ? '20px' : '10px')};
   // left :20px;
   height: 80%;
@@ -113,8 +117,16 @@ const Optiontext = styled.p<OptionProps>`
 
 const IconContainer = styled.div``
 const PngIcon = styled.img`
-  height: 27px;
-  width: 27px;
+  height: 35px;
+  width: 35px;
+`
+const DashboardIcon = styled.img`
+  height: 28px;
+  width: 28px;
+`
+const ClosePngIcon = styled.img`
+height: 30px;
+  width: 30px;
 `
 const Sidebar: React.FC<{ isExpand: boolean; toggelExpand: () => void }> = ({
     isExpand,
@@ -161,15 +173,30 @@ const Sidebar: React.FC<{ isExpand: boolean; toggelExpand: () => void }> = ({
                             isActive={option.key === activeTab.key}
                             onClick={() => handleClick(option)}
                         >
-                            <IconContainer>
-                                <PngIcon
-                                    src={
-                                        option.key === activeTab.key
-                                            ? option.whiteIcon
-                                            : option.icon
-                                    }
-                                />
-                            </IconContainer>
+                            {option.key === "Dashboard"
+
+                                ?
+                                <IconContainer>
+                                    <DashboardIcon
+                                        src={
+                                            option.key === activeTab.key
+                                                ? option.whiteIcon
+                                                : option.icon
+                                        }
+                                    />
+                                </IconContainer>
+                                :
+                                <IconContainer>
+                                    <PngIcon
+                                        src={
+                                            option.key === activeTab.key
+                                                ? option.whiteIcon
+                                                : option.icon
+                                        }
+                                    />
+                                </IconContainer>
+                            }
+
 
                             <Optiontext
                                 isActive={option.key === activeTab.key}
@@ -184,15 +211,29 @@ const Sidebar: React.FC<{ isExpand: boolean; toggelExpand: () => void }> = ({
                             isActive={option.key === activeTab.key}
                             onClick={() => handleClick(option)}
                         >
-                            <IconContainer>
-                                <PngIcon
-                                    src={
-                                        option.key === activeTab.key
-                                            ? option.whiteIcon
-                                            : option.icon
-                                    }
-                                />
-                            </IconContainer>
+                            {option.key === "Dashboard"
+
+                                ?
+                                <IconContainer>
+                                    <DashboardIcon
+                                        src={
+                                            option.key === activeTab.key
+                                                ? option.whiteIcon
+                                                : option.icon
+                                        }
+                                    />
+                                </IconContainer>
+                                :
+                                <IconContainer>
+                                    <ClosePngIcon
+                                        src={
+                                            option.key === activeTab.key
+                                                ? option.whiteIcon
+                                                : option.icon
+                                        }
+                                    />
+                                </IconContainer>
+                            }
                         </OptionContainer>
                     ),
                 )}

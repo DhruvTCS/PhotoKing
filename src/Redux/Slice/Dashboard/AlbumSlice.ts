@@ -34,7 +34,7 @@ const initialState: AlbumState = {
     currentPage: 1,
     folderLoading: false,
     isUpdate: true,
-    isFolderChange: true,
+    isFolderChange: false,
     success: false,
     isSearchData: false,
     isRedeemUserUpdates: false,

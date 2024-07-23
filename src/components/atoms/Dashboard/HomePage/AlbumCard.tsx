@@ -178,9 +178,8 @@ height:17px;
 width: 15px;
 `
 const HideIconImg = styled.img`
-height:17px;
+height:23px;
 width: 24px;
-// margin-left:10px;
 `
 const AlbumCard: React.FC<CardProps> = ({ album }) => {
   const [menuOpen, setMenuOpen] = useState(false);

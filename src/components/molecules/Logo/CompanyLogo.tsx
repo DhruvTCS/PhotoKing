@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 
 const LogoContainer = styled.div`
-  width: 244px;
+  width: 89%;
   height: 48px;
-  position:absolute;
   top:34px;
   gap: 0px;
   opacity: 0px;
+  margin-top: 30px;
   display:flex;
   flex-direction:row;
 `;

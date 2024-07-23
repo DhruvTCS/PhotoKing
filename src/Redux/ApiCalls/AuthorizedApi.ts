@@ -22,7 +22,7 @@ const apiCall = async (options: AxiosRequestConfig<any>) => {
     // Attach the access token to the request
     const headers = {
         'Authorization': `Bearer ${accessToken}`,
-        // 'ngrok-skip-browser-warning': true,
+        // "ngrok-skip-browser-warning": true,
         ...options.headers,
     };
 

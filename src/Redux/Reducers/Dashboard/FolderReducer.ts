@@ -11,7 +11,8 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
     })
         .addCase(lockMultipleFoldersAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
-            showSuccessToast("Folder successfully locked.")
+            state.isFolderChange = true;
+            showSuccessToast("Folders successfully locked.")
 
 
         })

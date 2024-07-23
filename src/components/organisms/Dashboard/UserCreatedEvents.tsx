@@ -140,6 +140,7 @@ const AddUserEventFomButton = styled.button`
   box-shadow: 0px 4px 18px 0px #a720b966;
 `
 const NoEventContainer = styled.div`
+margin-top:30px;
 width:100%;
 display:flex;
 align-items: center;

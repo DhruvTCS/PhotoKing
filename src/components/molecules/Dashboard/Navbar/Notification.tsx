@@ -23,7 +23,8 @@ align-items: center;
 justify-content: center;
 `;
 const NotificationIcon = styled.img`
-
+height:30px;
+width:30px;
 `;
 const NotificationText = styled.p`
 

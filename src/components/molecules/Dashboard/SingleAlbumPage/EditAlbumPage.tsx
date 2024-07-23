@@ -268,7 +268,6 @@ const EditAlbumPage: React.FC = () => {
 
                 return album
             })
-            console.log("called ++++")
             console.log(album.image)
             setImagePreview(currentAlbum.image)
             if (currentAlbum.folders && currentAlbum.folders.length > 0)

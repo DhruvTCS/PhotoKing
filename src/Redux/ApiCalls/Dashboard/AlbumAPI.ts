@@ -7,6 +7,9 @@ export const getAllAlbums = createAsyncThunk(
         try {
             const response = await apiCall({
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
                 url: `/project/user/projects/?page=${page}`
             })
             // console.log(response);
@@ -39,6 +42,7 @@ export const lockAlbum = createAsyncThunk(
             const response = await apiCall({
                 method: 'POST',
                 url: `/project/user/lock-project/`,
+
                 data: data
             })
             // console.log(response);
