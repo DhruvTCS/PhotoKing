@@ -168,7 +168,7 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             }))
             // console.log(isUpdate)
             // console.log(subEventsData)
-            console.log(eventName, subEvents)
+            console.log(eventName, subEventsData, [...selectedMembers, ...eventMembers])
             // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             // if (isUpdate && currentEvent)
             //     dispatch(updateEventAPI({ business_event_id: currentEvent.id, title: eventName, event_member: [...selectedMembers, ...eventMembers], sub_events: subEventsData }))

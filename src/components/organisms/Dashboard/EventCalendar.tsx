@@ -48,7 +48,7 @@ const EventCalendar: React.FC = () => {
         // const timeout = setTimeout(() => {
 
         // console.log(currentQuarter);
-        // fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
+        fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
         // }, 500)
 
         return () => {
@@ -89,7 +89,7 @@ const EventCalendar: React.FC = () => {
             let endDate = `${endYear}-${endMonth}-${endDay}`;
 
             // console.log(currentEvents);
-            // dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
+            dispatch(getAllEventsAPI({ start_date: startDate, end_date: endDate }))
         }
         return () => {
             dispatch(clearError())
