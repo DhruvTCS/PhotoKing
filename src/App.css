@@ -35,3 +35,12 @@
     transform: rotate(360deg);
   }
 }
+
+.css-1e3wlyl-MuiButtonBase-root-MuiMenuItem-root-MuiMultiSectionDigitalClockSection-item.Mui-selected{
+background-color: #AE2AB1 !important;
+}
+
+.css-1wy8uaa-MuiButtonBase-root-MuiPickersDay-root.Mui-selected{
+
+  background-color:  #AE2AB1 !important;
+}
