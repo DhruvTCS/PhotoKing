@@ -110,6 +110,8 @@ const EventCalendar: React.FC = () => {
 
             })
             setCurrentEvents(newEvents);
+        } else {
+            setCurrentEvents([]);
         }
     }, [Events])
 
