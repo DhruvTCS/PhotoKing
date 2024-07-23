@@ -168,12 +168,13 @@ const EventCreateModal: React.FC<ModalProps> = ({ isOpen, onClose, onSubmit, sel
             }))
             // console.log(isUpdate)
             // console.log(subEventsData)
+            console.log(eventName, subEvents)
             // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
-            if (isUpdate && currentEvent)
-                dispatch(updateEventAPI({ business_event_id: currentEvent.id, title: eventName, event_member: [...selectedMembers, ...eventMembers], sub_events: subEventsData }))
-            // dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
-            else
-                dispatch(createEventAPI({ title: eventName, event_member_id: selectedMembers, sub_events: subEventsData }))
+            // if (isUpdate && currentEvent)
+            //     dispatch(updateEventAPI({ business_event_id: currentEvent.id, title: eventName, event_member: [...selectedMembers, ...eventMembers], sub_events: subEventsData }))
+            // // dispatch(updateEventAPI({ event_id: currentEvent.id, start_date: startDate, end_date: endDate, start_time: startTime, end_time: endTime, title: eventName, location: eventLocation, member_ids: [...selectedMembers, ...eventMembers] }))
+            // else
+            //     dispatch(createEventAPI({ title: eventName, event_member_id: selectedMembers, sub_events: subEventsData }))
             // console.log(selectedMembers)
 
             setAddMemberMenu(false);
