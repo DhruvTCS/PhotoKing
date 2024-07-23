@@ -115,7 +115,7 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
     return (
         <ModalOverlay>
             <ModalContent>
-                <ReasonHeading>Reason for lock the album</ReasonHeading>
+                <ReasonHeading>Select Reason</ReasonHeading>
                 <ReasonListContainer>
 
                     <ReasonLabelContainer>
