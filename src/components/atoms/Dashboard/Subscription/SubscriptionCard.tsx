@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components';
 import TickIconPNG from '../../../../assets/Icons/tick.png'
 import TransParentIconPNG from '../../../../assets/Icons/transparent-tick.png'
@@ -6,10 +6,12 @@ import { SubscriptionType } from '../../../../Data/subscription.dto';
 import CompanyLogoPNG from '../../../../assets/images/Logo.png'
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { paymentSuccess } from '../../../../Redux/Slice/Dashboard/PaymentSlice';
+import GetDurationPopup from './GetPlanDurationPopUp';
 interface CardProps {
     card: SubscriptionType,
     isActivated: boolean;
     onClick1: (id: number) => void;
+    setDurationPopup: (boolean: boolean) => void;
 }
 const CardContainer = styled.div<{ isActivated: boolean }>`
 width: 292px;
@@ -148,68 +150,10 @@ cursor:pointer;
 background:${props => props.isActivated ? 'linear-gradient(360deg, #7A11A1 0%, #C62BC9 100%);' : '#8b85A4'};
 ${props => props.isActivated ? `box-shadow: 0px 4px 18px 0px #A720B966;` : null}
 `;
-const SubscriptionCard: React.FC<CardProps> = ({ card, isActivated, onClick1 }) => {
-    const { order, loading, error, paymentSuccess: paymentCompleted } = useAppSelector((state) => state.payment);
-    const { user } = useAppSelector(state => state.auth)
-    const dispatch = useAppDispatch();
-    function loadScript(src: string) {
-        return new Promise((resolve) => {
-            const script = document.createElement("script");
-            script.src = src;
-            script.onload = () => {
-                console.log("called")
-                resolve(true);
-            };
-            script.onerror = () => {
-                resolve(false);
-            };
-            document.body.appendChild(script);
-        });
-    }
-    async function displayRazorpay(id: number) {
-        console.log(id)
-        console.log("calling 1")
+const SubscriptionCard: React.FC<CardProps> = ({ card, isActivated, onClick1, setDurationPopup }) => {
 
 
-    }
 
-    useEffect(() => {
-        if (order && !paymentCompleted) {
-            const options = {
-                key: 'your_key_id',
-                amount: order.amount,
-                currency: 'INR',
-                name: 'Phot King',
-                logo: { CompanyLogoPNG },
-                description: `${card.description}`,
-                order_id: order.id,
-                handler: async function (response: any) {
-                    console.log(response);
-
-                    // Dispatch payment success action
-                    // dispatch(paymentSuccess());
-
-                    // Update user data on backend
-
-                    // Optionally, fetch updated user data from backend and update Redux store
-                },
-                prefill: {
-                    name: `${user?.name}`,
-                    email: `${user?.email}`,
-                    contact: `${user?.phone_number}`,
-                },
-                notes: {
-                    address: 'Razorpay Corporate Office',
-                },
-                theme: {
-                    color: '#F37254',
-                },
-            };
-
-            const rzp = new (window as any).Razorpay(options);
-            rzp.open();
-        }
-    }, [order, paymentCompleted, dispatch]);
 
 
     return (
@@ -223,7 +167,7 @@ const SubscriptionCard: React.FC<CardProps> = ({ card, isActivated, onClick1 }) 
                     {card.storage_size}
                 </CardStorage>
                 <CardPrice>
-                    {card.price_per_month} ₹ / Month
+                    ₹ {card.price_per_month}  / Month
                 </CardPrice>
                 <PlanType>
                     {card.description[0]}
@@ -245,7 +189,7 @@ const SubscriptionCard: React.FC<CardProps> = ({ card, isActivated, onClick1 }) 
 
             </CardDescriptionContainer>
             <ButtonContainer>
-                <SubmitButton isActivated={isActivated} onClick={(e) => { e.stopPropagation(); onClick1(card.id); displayRazorpay(card.id) }}>Choose Plan</SubmitButton>
+                <SubmitButton isActivated={isActivated} onClick={(e) => { !isActivated ? onClick1(card.id) : setDurationPopup(true) }}>Choose Plan</SubmitButton>
             </ButtonContainer>
         </CardContainer>
     )

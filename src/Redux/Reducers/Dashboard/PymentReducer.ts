@@ -11,6 +11,7 @@ export const PaymentReducer = (builder: ActionReducerMapBuilder<PaymentState>) =
         .addCase(createOrderAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.order = action.payload;
+            console.log(action.payload);
         }).addCase(createOrderAPI.rejected, (state, action: PayloadAction<any>) => {
 
             state.loading = false;
