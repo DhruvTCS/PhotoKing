@@ -39,7 +39,6 @@ const EventCreateModal: React.FC<ModalProps> = ({
     selectedSlot,
 }) => {
     const [eventName, setEventName] = useState('')
-    const [eventLocation, setEventLocation] = useState('')
     const [eventMembers, setEventMembers] = useState<number[]>([])
     const [selectedMembers, setSelectedMembers] = useState<number[]>([])
     const [startDateTime, setStartDateTime] = useState('')
@@ -115,7 +114,6 @@ const EventCreateModal: React.FC<ModalProps> = ({
         }
         return () => {
             // dispatch(clearCurrentEvent());
-            setEventLocation('')
             setEventName('')
             setSubEvents([])
             setStartDateTime('')
@@ -327,7 +325,7 @@ const EventCreateModal: React.FC<ModalProps> = ({
                     )}
                     <InputContainer>
                         <AddSubEventHeaderContainer>
-                            <Label htmlFor="name">Sub Events</Label>
+                            <Label htmlFor="name">Sub Events {`(${subEvents.length})`}</Label>
                             {subEvents.length <= 10 && (
                                 <AddSubEventButton
                                     onClick={() => {
@@ -440,7 +438,7 @@ const EventCreateModal: React.FC<ModalProps> = ({
                                 }}
                             >
                                 <AddMemberConatiner>
-                                    <AddMemberLabel>Add Member</AddMemberLabel>
+                                    {!(selectedMembers.length > 0) && <AddMemberLabel>Add Member</AddMemberLabel>}
                                     <SelectMemberLabel
                                         ref={selectionRef}
                                         defaultValue={'Add Member'}
@@ -592,7 +590,7 @@ const ModalDateConatiner = styled.div`
   align-items: baseline;
 `
 const SelectMemberLabel = styled.select`
-  width: 50%;
+  width: 100%;
   border: none;
   outline: none;
 `
@@ -604,6 +602,7 @@ const AddMemberLabel = styled.label`
   line-height: 18px;
   text-align: left;
   color: grey;
+  width:111px;
 `
 
 const MemberSelecetionConatiner = styled.div`
@@ -627,6 +626,7 @@ const SelectMemberHeading = styled.p`
   font-weight: 600;
   line-height: 18px;
   text-align: left;
+  margin-top:14px;
   color: #424242;
 `
 const MemberMenuConatriner = styled.div`

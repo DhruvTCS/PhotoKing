@@ -35,7 +35,7 @@
     transform: rotate(360deg);
   }
 }
-
+/* 
 .css-1e3wlyl-MuiButtonBase-root-MuiMenuItem-root-MuiMultiSectionDigitalClockSection-item.Mui-selected{
 background-color: #AE2AB1 !important;
 }
@@ -43,4 +43,25 @@ background-color: #AE2AB1 !important;
 .css-1wy8uaa-MuiButtonBase-root-MuiPickersDay-root.Mui-selected{
 
   background-color:  #AE2AB1 !important;
+} */
+
+/* styles.css or a similar global CSS file */
+
+.Mui-selected {
+  background-color: #AE2AB1 !important;
+  color: white !important;
+}
+
+
+.MuiClockNumber:hover {
+  background-color: #f0a3c1; /* Optional: Light pink for hover effect */
+}
+
+.MuiPickersClock-ampmButton.Mui-selected {
+  background-color: #AE2AB1 !important;
+  color: white !important;
+}
+
+.MuiPickersClock-ampmButton:hover {
+  background-color: #f0a3c1; /* Optional: Light pink for hover effect */
 }

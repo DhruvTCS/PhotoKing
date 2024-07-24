@@ -14,8 +14,8 @@ import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
-import dayjs from 'dayjs'
+import DatePicker from './DatePicker'
+
 const breakpoints = {
   mobile: '480px',
   tablet: '768px',
@@ -325,51 +325,6 @@ const Location = styled.div`
     font-size: 13px;
   }
 `
-const StyledDateTimePicker = styled(DateTimePicker)`
-  .MuiInputBase-root {
-    background-color: transparent;
-    border: none;
-    width: 99%;
-    border-bottom: 1px solid gray;
-  }
-
-  .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-
-  .Mui-focused .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-
-  .MuiInputLabel-root {
-    // color: purple;
-  }
-
-  .Mui-focused .MuiInputLabel-root {
-    color: purple !important;
-  }
-
-  .MuiInputAdornment-root .MuiTypography-root {
-    color: purple;
-  }
-
-  .MuiSvgIcon-root {
-    color: purple;
-  }
-
-  .Mui-selected {
-    color: purple !important;
-  }
-
-  .MuiPickersDay-daySelected {
-    background-color: purple !important;
-    color: white !important;
-  }
-
-  .MuiInputAdornment-root .MuiSvgIcon-root {
-    color: purple;
-  }
-`
 interface SubEventModalProps {
   onClose: () => void
   addSubEvent: (subEvent: CalendarSubEvents) => void
@@ -645,12 +600,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
                 >
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
-                      <StyledDateTimePicker
-                        label=" Start Date and Time"
-                        onChange={(e) => { if (e) onChangeData('start_date', e.toString()) }}
-                        format="DD/MM/YYYY HH:mm"
-                        value={dayjs(startDate)}
-                      />
+                      <DatePicker value={startDate} onChangeData={(e) => onChangeData("start_date", e)} />
                     </DemoContainer>
                   </LocalizationProvider>
                 </DateContainer>
@@ -660,14 +610,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
-                      <StyledDateTimePicker
-                        label=" End Date and Time"
-                        onChange={(e) => {
-                          if (e) onChangeData("end_date", e.toDate().toString())
-                        }}
-                        value={dayjs(endDate)}
-                        format="DD/MM/YYYY HH:mm"
-                      />
+                      <DatePicker value={endDate} onChangeData={(e) => onChangeData("end_date", e)} />
                     </DemoContainer>
                   </LocalizationProvider>
                 </DateContainer>
