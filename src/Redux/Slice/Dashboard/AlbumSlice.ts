@@ -7,6 +7,12 @@ import { AlbumOptionReducer } from '../../Reducers/Dashboard/AlbumOptionReducer'
 import { FolderReducer } from '../../Reducers/Dashboard/FolderReducer';
 import { User } from '../../../Data/user.dto';
 
+
+export interface UpdatingFolder {
+    folderName: string;
+    totalProgress: number;
+    folderId: number;
+}
 export interface AlbumState {
     loading: boolean;
     total_projects: number;
@@ -23,6 +29,7 @@ export interface AlbumState {
     success: boolean;
     isRedeemUserUpdates: boolean;
     isSearchData: boolean;
+    uploadFolderProgress: UpdatingFolder[];
 }
 
 const initialState: AlbumState = {
@@ -39,6 +46,9 @@ const initialState: AlbumState = {
     isSearchData: false,
     isRedeemUserUpdates: false,
     redeemUsers: [],
+    uploadFolderProgress: [],
+
+
 }
 
 
@@ -92,6 +102,28 @@ const albumSlice = createSlice({
         },
         setIsRedeemUserUpdates(state, action: PayloadAction<boolean>) {
             state.isRedeemUserUpdates = action.payload;
+        },
+
+        removeFromUpdatingFolderProgress(state, action: PayloadAction<number>) {
+            state.uploadFolderProgress = state.uploadFolderProgress.filter(folder => folder.folderId !== action.payload)
+        },
+        updateTotalProgress(state, action: PayloadAction<{ folderId: number, totalProgress: number, folderName: string }>) {
+            console.log(action.payload)
+            if (state.uploadFolderProgress.length === 0) {
+                state.uploadFolderProgress.push({ folderId: action.payload.folderId, totalProgress: action.payload.totalProgress, folderName: action.payload.folderName })
+            } else {
+                let flag = false;
+                state.uploadFolderProgress.forEach(folder => {
+                    if (folder.folderId === action.payload.folderId) {
+                        flag = true;
+                        folder.totalProgress = action.payload.totalProgress;
+                    }
+                })
+                if (!flag) {
+                    state.uploadFolderProgress.push(action.payload)
+                }
+            }
+
         }
 
     },
@@ -102,7 +134,7 @@ const albumSlice = createSlice({
     },
 });
 
-export const { setAlbumLoading, setAlbums, setError, clearError, setCurrentPage, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setIsRedeemUserUpdates, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
+export const { removeFromUpdatingFolderProgress, updateTotalProgress, setAlbumLoading, setAlbums, setError, clearError, setCurrentPage, setCurrentAlbum, clearFlagAlbums, setSearchDataFlag, setIsRedeemUserUpdates, setCurrentFolder, removeCurrentFolder } = albumSlice.actions;
 
 
 export default albumSlice.reducer;

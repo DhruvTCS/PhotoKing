@@ -1,5 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiCall from "../AuthorizedApi";
+import store from "../../Store";
+import { updateTotalProgress } from "../../Slice/Dashboard/AlbumSlice";
 export const getFoldersForAlbum = createAsyncThunk(
     'album/getFoldersForAlbum',
     async (albumId: number, { rejectWithValue }) => {
@@ -34,19 +36,54 @@ export const createFolderAPI = createAsyncThunk(
     });
 export const updateFolderAPI = createAsyncThunk(
     'album/updateFolderAPI',
-    async (data: any, { rejectWithValue }) => {
+    async (data: { id: number, project_id: number, folder_name: string, folderImages: File[] }, { rejectWithValue }) => {
         try {
-            const response = await apiCall({
-                method: 'POST',
-                url: `/project/user/upload-image/`,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                },
-                data: data
-            })
+
+            const files = data.folderImages;
+            const chunkSize = 5;
+            const fileChunks = [];
+
+            for (let i = 0; i < files.length; i += chunkSize) {
+                fileChunks.push(files.slice(i, i + chunkSize));
+            }
+
+            let uploadedFilesCount = 0;
+            store.dispatch(updateTotalProgress({
+                folderId: data.id, folderName: data.folder_name,
+                totalProgress: 1
+            }));
+            for (const chunk of fileChunks) {
+                const formData = new FormData();
+                formData.append('folder_name', data.folder_name);
+                formData.append('folder_id', `${data.id}`);
+                formData.append('project_id', `${data.project_id}`);
+                chunk.forEach((image, index) => {
+                    formData.append(`media[${index}][image]`, image);
+                    formData.append(`media[${index}][media_type]`, "1");
+                })
+
+                const response = await apiCall({
+                    method: 'POST',
+                    url: `/project/user/upload-image/`,
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    },
+                    data: formData
+                })
+                if (response) {
+
+
+                    uploadedFilesCount += chunk.length;
+                    store.dispatch(updateTotalProgress({
+                        folderId: data.id, folderName: data.folder_name,
+                        totalProgress: (uploadedFilesCount / files.length) * 100
+                    }));
+                }
+            }
             // console.log(response);
-            return response.data;
+            return true;
         } catch (error: any) {
+            console.log(error);
             return rejectWithValue(error.response.data);
         }
     });
