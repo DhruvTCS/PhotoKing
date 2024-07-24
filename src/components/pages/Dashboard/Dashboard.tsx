@@ -7,6 +7,7 @@ import { getUserByToken } from '../../../Redux/ApiCalls/Auth/login'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { clearError } from '../../../Redux/Slice/Auth/AuthSlice'
 import { getAllNotificationAPI } from '../../../Redux/ApiCalls/Dashboard/NotificationAPI'
+import ProgressSnackbar from '../../atoms/Dashboard/Folder/FolderProgressbar'
 
 const DashboardContainer = styled.div`
 display:flex;
@@ -121,7 +122,9 @@ const Dashboard: React.FC = () => {
                         <Outlet />
                     </MainPage>
                 </MainSection>
+                <ProgressSnackbar />
             </MainConatiner>
+
         </DashboardContainer>
     )
 }

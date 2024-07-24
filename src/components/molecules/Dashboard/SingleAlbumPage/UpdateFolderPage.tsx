@@ -286,6 +286,7 @@ const UpdateFolderPage = () => {
   const [discardPopup, setDiscardPopup] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    console.log(urls);
     if (!currentFolder) {
       navigate(-1);
 
@@ -353,10 +354,10 @@ const UpdateFolderPage = () => {
     // // console.log("calling")
     const files = event.target.files;
     if (!files) return;
-    if (files.length + newFolderImages.length > 20) {
-      showErrorToast('You can only upload up to 20 images at a time.');
-      return;
-    }
+    // if (newFolderImages.length > 20) {
+    //   showErrorToast('You can only select up to 20 images at a time.');
+    //   return;
+    // }
     setCompresedImageLoading(true);
     const acceptedFiles = Array.from(files);
     // // console.log(acceptedFiles);
@@ -410,17 +411,19 @@ const UpdateFolderPage = () => {
   }
   const handleUpdateFolder = () => {
     const formData = new FormData();
+    console.log(newFolderImages.length)
     formData.append('project_id', `${folder?.project_id}`)
-    formData.append('folder_id', `${folder?.id}`);
-    if (folderName)
-      formData.append('folder_name', folderName);
-    else
-      formData.append('folder_name', `${folder?.name}`);
-    newFolderImages.forEach((image, index) => {
-      formData.append(`media[${index}][image]`, image);
-      formData.append(`media[${index}][media_type]`, "1");
-    })
-    dispatch(updateFolderAPI(formData));
+    if (folder)
+      dispatch(updateFolderAPI({ project_id: folder.project_id, id: folder?.id, folder_name: folder.name, folderImages: newFolderImages }));
+    // formData.append('folder_id', `${folder?.id}`);
+    // if (folderName)
+    //   formData.append('folder_name', folderName);
+    // else
+    //   formData.append('folder_name', `${folder?.name}`);
+    // newFolderImages.forEach((image, index) => {
+    //   formData.append(`media[${index}][image]`, image);
+    //   formData.append(`media[${index}][media_type]`, "1");
+    // })
 
   }
   const deleteFolderImages = () => {

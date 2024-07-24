@@ -1,8 +1,9 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
-import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
+import { AlbumState, removeFromUpdatingFolderProgress } from '../../Slice/Dashboard/AlbumSlice';
 import { createFolderAPI, deleteFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, hideFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
 import { Folder } from '../../../Data/album.dto';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
+import store from '../../Store';
 export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(lockMultipleFoldersAPI.pending, (state) => {
@@ -55,7 +56,6 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             // console.log(action.payload);
             state.error = action.payload;
         }).addCase(updateFolderAPI.pending, (state) => {
-            state.folderLoading = true;
 
         })
         .addCase(updateFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
