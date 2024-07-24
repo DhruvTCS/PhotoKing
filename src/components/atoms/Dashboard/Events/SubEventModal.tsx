@@ -5,6 +5,11 @@ import Errortext from '../../Utlis/Errortext'
 import { EnteredSubEventType } from '../../../../Data/event.dto'
 import LocationPickerModal from './SetLocationModal'
 import DownIconPNG from '../../../../assets/Icons/downicon.png'
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import DatePicker from './DatePicker'
 const breakpoints = {
   mobile: '480px',
   tablet: '768px',
@@ -163,7 +168,6 @@ const InputMainDateContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-top: 15px;
-  border: 1px solid grey;
   border-radius: 10px;
   padding: 10px;
   justify-content: space-between;
@@ -354,13 +358,35 @@ const SubEventModal: React.FC<SubEventModal> = ({
   }, [currentSubEvent])
 
   const onChangeData = (name: string, value: string) => {
+    console.log(startDate)
     if (name === 'event_name' && value.length <= 25) setEventName(value)
     else if (name === 'event_location' && value.length <= 200)
       setEventLocation(value)
-    else if (name === 'start_date') setStartDate(value)
-    else if (name === 'end_date') setEndDate(value)
+    else if (name === 'start_date') setStartDate(formatEnterDate(value))
+    else if (name === 'end_date') setEndDate(formatEnterDate(value))
   }
 
+  const formatEnterDate = (dateString: string): string => {
+    const date = new Date(dateString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  const parseDate = (formattedDate: string): Date => {
+    // Expected format: YYYY-MM-DDTHH:MM
+    const [datePart, timePart] = formattedDate.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes] = timePart.split(':').map(Number);
+
+    // JavaScript Date object months are zero-based, so we need to subtract 1 from the month
+    return new Date(year, month - 1, day, hours, minutes);
+  };
   const validEventName = (eventNames: string) => {
     if (eventNames.length > 0 && eventNames.length < 40) return true
     else return false
@@ -416,14 +442,26 @@ const SubEventModal: React.FC<SubEventModal> = ({
     if (
       !validateLocation(eventLocation) ||
       !validEventName(eventName) ||
-      !validDateTime(new Date(startDate), new Date(endDate))
+      !validDateTime(parseDate(startDate), parseDate(endDate))
     ) {
       setShowError(true)
     } else {
       let { start_date, start_time, end_date, end_time } = setEventDate(
-        startDate,
-        endDate,
+        parseDate(startDate).toString(),
+        parseDate(endDate).toString(),
       )
+      console.log({
+        sub_event_name: eventName,
+        sub_event_location: eventLocation,
+        starting_date: start_date,
+        starting_time: start_time,
+        ending_date: end_date,
+        ending_time: end_time,
+        sub_event_end_date_time: endDate,
+        sub_event_start_date_time: startDate,
+        sub_event_coordinates: "test coordinates",
+        id: id,
+      })
       addSubEvent({
         sub_event_name: eventName,
         sub_event_location: eventLocation,
@@ -485,31 +523,23 @@ const SubEventModal: React.FC<SubEventModal> = ({
                 <DateContainer
                   onClick={() => startDateRef.current?.showPicker()}
                 >
-                  <Label htmlFor="from_date">From</Label>
-                  <Input
-                    type="datetime-local"
-                    id="from_date"
-                    ref={startDateRef}
-                    name="from_date"
-                    onChange={(e) => onChangeData('start_date', e.target.value)}
-                    value={startDate}
-                  />
+
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateTimePicker']}>
+                      <DatePicker value={startDate} onChangeData={(e) => onChangeData("start_date", e)} />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </DateContainer>
-                <UnderLine width={100} isPercent={true} />
               </InputDateContainer>
               <InputDateContainer>
                 <DateContainer onClick={() => endDateRef.current?.showPicker()}>
-                  <Label htmlFor="to_date">To</Label>
-                  <Input
-                    type="datetime-local"
-                    id="to_date "
-                    name="to_date"
-                    ref={endDateRef}
-                    onChange={(e) => onChangeData('end_date', e.target.value)}
-                    value={endDate}
-                  />
+
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateTimePicker']}>
+                      <DatePicker value={endDate} onChangeData={(e) => onChangeData("end_date", e)} />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </DateContainer>
-                <UnderLine width={100} isPercent={true} />
               </InputDateContainer>
             </InputMainDateContainer>
             <Errortext
@@ -564,16 +594,19 @@ const SubEventModal: React.FC<SubEventModal> = ({
                   </AddNewLocationButton>
                 </LocationMenuHeader>
                 <LocationItemContainer>
-                  {locationList.map((location) =>
-                    <>
-                      <LocationItem onClick={() => setPickLocation(location)}>
-                        <Location>
-                          {location}
-                        </Location>
-                      </LocationItem>
-                      <UnderLine width={100} isPercent={true} />
-                    </>
-                  )}
+                  {locationList.length > 0 ?
+
+                    locationList.map((location) => (
+                      <>
+                        <LocationItem onClick={() => setPickLocation(location)}>
+                          <Location>{location}</Location>
+                        </LocationItem>
+                        <UnderLine width={100} isPercent={true} />
+                      </>
+                    ))
+                    :
+                    <div style={{ "width": "100%", "display": "flex", "alignItems": "center", "justifyContent": "center" }}>Please Add New Location.</div>
+                  }
                 </LocationItemContainer>
               </SelectionMenu>
             )}
