@@ -6,7 +6,7 @@ import { subscriptionsPlansAPI } from '../../../Redux/ApiCalls/Dashboard/Subscri
 import { SubscriptionType } from '../../../Data/subscription.dto';
 import LoadingDots from '../../atoms/Utlis/LoadinDots';
 import GetDurationPopup from '../../atoms/Dashboard/Subscription/GetPlanDurationPopUp';
-import { createOrderAPI } from '../../../Redux/ApiCalls/Dashboard/PaymentAPI';
+import { completePaymentAPI, createOrderAPI } from '../../../Redux/ApiCalls/Dashboard/PaymentAPI';
 import CompanyLogoPNG from '../../../assets/images/Logo.png';
 import { cancelPayment } from '../../../Redux/Slice/Dashboard/PaymentSlice';
 const PageContainer = styled.div`
@@ -62,6 +62,7 @@ const SubscriptionPage: React.FC = () => {
     const { subscriptions, loading } = useAppSelector(state => state.extra);
     const [activeCard, setActiveCard] = useState<number>();
     const [durationPopup, setDurationPopup] = useState(false)
+    const [duration, setDuration] = useState<number>()
     const [currentCard, setCurrentCard] = useState<SubscriptionType>()
     const { order, paymentSuccess } = useAppSelector(state => state.payment)
     const { user } = useAppSelector(state => state.auth)
@@ -83,7 +84,7 @@ const SubscriptionPage: React.FC = () => {
     }, [subscriptions, dispatch]);
     useEffect(() => {
 
-        if (order && !paymentSuccess && currentCard) {
+        if (order && !paymentSuccess && currentCard && duration) {
             console.log(order.amount)
             const options = {
                 key: 'rzp_test_OcmQGXNlHWXXCM',
@@ -96,12 +97,9 @@ const SubscriptionPage: React.FC = () => {
                 handler: async function (response: any) {
                     console.log(response);
 
-                    // Dispatch payment success action
-                    // dispatch(paymentSuccess());
 
-                    // Update user data on backend
+                    dispatch(completePaymentAPI({ plan_id: currentCard.id, duration, payment_id: response.razorpay_payment_id, order_id: response.razorpay_order_id, signature: response.razorpay_signature }))
 
-                    // Optionally, fetch updated user data from backend and update Redux store
                 },
                 prefill: {
                     name: `${user?.name}`,
@@ -109,7 +107,7 @@ const SubscriptionPage: React.FC = () => {
                     contact: `${user?.phone_number}`,
                 },
                 notes: {
-                    address: 'Razorpay Corporate Office',
+                    address: 'Photo King Address.',
                 },
                 theme: {
                     color: '#AE2AB1',
@@ -142,6 +140,7 @@ const SubscriptionPage: React.FC = () => {
         }
     }
     const startPayment = (id: number, duration: number) => {
+        setDuration(duration)
         dispatch(createOrderAPI({ storage_plan_id: id, duration }))
     }
     return (
