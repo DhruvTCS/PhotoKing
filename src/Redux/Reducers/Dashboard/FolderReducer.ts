@@ -64,6 +64,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(getSingleFolderAPI.fulfilled, (state, action: PayloadAction<Folder>) => {
             state.isFolderChange = false;
             state.folderLoading = false;
+            state.updatedFolderList = state.updatedFolderList.filter(folder => folder.folder_id !== action.payload.id)
             state.currentFolder = action.payload;
         })
         .addCase(getSingleFolderAPI.rejected, (state, action: PayloadAction<any>) => {

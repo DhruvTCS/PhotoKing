@@ -295,7 +295,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
-      setDisplayImages(currentFolder.images.slice(0, 40))
+      setDisplayImages(currentFolder.images.slice(0, 30))
       setSelectedFolderImages([])
       setPreviewImageUrl([]);
     }
@@ -315,22 +315,30 @@ const UpdateFolderPage = () => {
 
     isUploadActiveButton();
   }, [newFolderImages, folderName])
+
   useEffect(() => {
     // // console.log("calling ++++")
-    if (isFolderChange && currentFolder) {
+    if (currentFolder) {
+      if (updatedFolderList.find(folder => folder.folder_id === currentFolder.id)) {
 
-      setSelectedFolderImages([])
-      setIsUpdate(false);
-      setIsImageSelected(false);
-      setNewFolderImages([]);
-      dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
+        setSelectedFolderImages([])
+        setIsUpdate(false);
+        setIsImageSelected(false);
+        setNewFolderImages([]);
+        dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
+      }
     }
-  }, [isFolderChange])
+  }, [updatedFolderList])
   useEffect(() => {
+
+    if (uploadFolderProgress && uploadFolderProgress.length > 0 && currentFolder && uploadFolderProgress.find(f => f.folderId === currentFolder.id)) {
+      navigate(-1);
+    }
+
     return () => {
       urls.forEach(link => URL.revokeObjectURL(link))
     }
-  }, [])
+  }, [uploadFolderProgress])
 
   const blobToFile = (blob: Blob, fileName: string): File => {
     return new File([blob], fileName, { type: blob.type });

@@ -448,6 +448,11 @@ const EditAlbumPage: React.FC = () => {
         })
         setSelectedImage(null)
     }
+    const isUploadProgress = (id: number) => {
+        if (uploadFolderProgress && uploadFolderProgress.length > 0 && uploadFolderProgress.find(folder => folder.folderId === id)) {
+            return true;
+        } else return false;
+    }
 
     return (
         <AlbumPageContainer>
