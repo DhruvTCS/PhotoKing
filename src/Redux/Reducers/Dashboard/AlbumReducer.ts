@@ -4,6 +4,7 @@ import { createAlbumAPI, getAllAlbums, updateAlbumAPI } from '../../ApiCalls/Das
 import { Folder } from '../../../Data/album.dto';
 import { getFoldersForAlbum } from '../../ApiCalls/Dashboard/FolderApi';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
+import store from '../../Store';
 export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
 
     builder.addCase(getAllAlbums.pending, (state) => {
@@ -81,10 +82,12 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
                         }
                     })
                 }
+                state.updatedFolderList = state.updatedFolderList.filter(
+                    (folder) => folder.project_id !== action.payload[0].project_id,
+                )
             }
             state.folderLoading = false;
             state.isFolderChange = false;
-
 
         })
         .addCase(getFoldersForAlbum.rejected, (state, action: PayloadAction<any>) => {

@@ -238,6 +238,8 @@ const EditAlbumPage: React.FC = () => {
         currentAlbum,
         folderLoading,
         isFolderChange,
+        updatedFolderList,
+        uploadFolderProgress
     } = useAppSelector((state) => state.album)
     const [createFolderModal, setCreateFolderModal] = useState(false)
     const navigate = useNavigate()
@@ -278,11 +280,11 @@ const EditAlbumPage: React.FC = () => {
         return () => { }
     }, [currentAlbum])
     useEffect(() => {
-        if (currentAlbum && isFolderChange) {
-
-            dispatch(getFoldersForAlbum(currentAlbum.id))
+        if (currentAlbum) {
+            if (updatedFolderList.find(folder => folder.project_id === currentAlbum.id))
+                dispatch(getFoldersForAlbum(currentAlbum.id))
         }
-    }, [isFolderChange])
+    }, [updatedFolderList])
     useEffect(() => {
         if (isError) {
             if (error && error.message) {

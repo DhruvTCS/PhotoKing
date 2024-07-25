@@ -40,7 +40,9 @@ export const updateFolderAPI = createAsyncThunk(
         try {
 
             const files = data.folderImages;
-            const chunkSize = 5;
+            console.log("images length")
+            console.log(data.folderImages.length)
+            const chunkSize = 10;
             const fileChunks = [];
 
             for (let i = 0; i < files.length; i += chunkSize) {
@@ -81,10 +83,10 @@ export const updateFolderAPI = createAsyncThunk(
                 }
             }
             // console.log(response);
-            return true;
+            return { folder_id: data.id, project_id: data.project_id };
         } catch (error: any) {
             console.log(error);
-            return rejectWithValue(error.response.data);
+            return rejectWithValue({ error: error.response.data, data });
         }
     });
 
@@ -165,7 +167,7 @@ export const lockMultipleFoldersAPI = createAsyncThunk(
     });
 export const deleteFolderImagesAPI = createAsyncThunk(
     'album/deleteFolderImagesAPI',
-    async (data: { media_ids: number[] }, { rejectWithValue }) => {
+    async (data: { media_ids: number[], folder_id: number, project_id: number }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'DELETE',
@@ -173,7 +175,7 @@ export const deleteFolderImagesAPI = createAsyncThunk(
                 data: data
             })
             // console.log(response);
-            return response.data;
+            return { folder_id: data.folder_id, project_id: data.project_id };
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }

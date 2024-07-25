@@ -269,7 +269,7 @@ const SlectImageRadio = styled.input``;
 let urls: string[] = [];
 const UpdateFolderPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFolder, isError, isFolderChange, folderLoading, error } = useAppSelector(state => state.album)
+  const { currentFolder, isError, isFolderChange, folderLoading, error, updatedFolderList, uploadFolderProgress } = useAppSelector(state => state.album)
   const [folder, setFolder] = useState<Folder>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
@@ -361,8 +361,8 @@ const UpdateFolderPage = () => {
     }
     setCompresedImageLoading(true);
     const acceptedFiles = Array.from(files);
-    // // console.log(acceptedFiles);
-
+    console.log(acceptedFiles.length);
+    console.log("compress file size")
     const compressedFiles = await Promise.all(
       acceptedFiles.map(async (file) => {
 
@@ -429,7 +429,8 @@ const UpdateFolderPage = () => {
 
   }
   const deleteFolderImages = () => {
-    dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages }));
+    if (currentFolder)
+      dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages, folder_id: currentFolder.id, project_id: currentFolder.project_id }));
 
     setDeleteModal(false);
   }
