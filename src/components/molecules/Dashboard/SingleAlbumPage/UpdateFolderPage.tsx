@@ -282,8 +282,8 @@ const UpdateFolderPage = () => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [popUpFunction, setPopUpFunction] = useState<{ fun: () => void }>();
   const [discardPopup, setDiscardPopup] = useState(false);
+  const [displayedImages, setDisplayImages] = useState<{ id: number, project_id: number, image: string, media_type: number }[]>([])
   const navigate = useNavigate();
   useEffect(() => {
     console.log(urls);
@@ -295,6 +295,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
+      setDisplayImages(currentFolder.images.slice(0, 40))
       setSelectedFolderImages([])
       setPreviewImageUrl([]);
     }
@@ -354,20 +355,21 @@ const UpdateFolderPage = () => {
     // // console.log("calling")
     const files = event.target.files;
     if (!files) return;
-    // if (newFolderImages.length > 20) {
-    //   showErrorToast('You can only select up to 20 images at a time.');
-    //   return;
-    // }
+    if (files.length + newFolderImages.length > 100) {
+      showErrorToast('You can only select up to 100 images at a time.');
+      return;
+    }
     setCompresedImageLoading(true);
     const acceptedFiles = Array.from(files);
     // // console.log(acceptedFiles);
+
     const compressedFiles = await Promise.all(
       acceptedFiles.map(async (file) => {
 
         try {
           if (file.size / 1024 / 1024 > 3) {
 
-            const compressedBlob = await compressImage(file); // Your image compression function
+            const compressedBlob = await compressImage(file);
             const compressedFile = blobToFile(compressedBlob, file.name);
             // // console.log("compressed")
             return compressedFile;
@@ -502,6 +504,21 @@ const UpdateFolderPage = () => {
       }
     }
   }
+  const loadMoreImages = () => {
+    const currentLength = displayedImages.length;
+    if (folderImages && currentLength < folderImages.length) {
+      console.log("called", currentLength)
+      const moreImages = folderImages.slice(currentLength, currentLength + 40);
+      setDisplayImages([...displayedImages, ...moreImages]);
+    }
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop === clientHeight) {
+      loadMoreImages()
+    }
+  };
   return (
     <PageConatiner>
       {discardPopup && <DiscardPopUp cancel={() => setDiscardPopup(false)} Delete={() => DiscardAllChanges()} />}
@@ -527,7 +544,7 @@ const UpdateFolderPage = () => {
             <SelectImageLabel htmlFor='selecheck' isCheck={isImageSelected}>Select Images</SelectImageLabel>
           </SelectImageRadioConatiner>
         </InputContainer>
-        <Conatiner2>
+        <Conatiner2 onScroll={handleScroll}>
           <ImageUploadContainer onClick={() => { if (!compresedImageLoading) ImageUploadCheck() }}>
             {
               compresedImageLoading ?
@@ -562,10 +579,10 @@ const UpdateFolderPage = () => {
 
           }
           {
-            folderImages && folderImages.length !== 0 ?
-              folderImages.map((image, index) => (
+            folderImages && folderImages.length !== 0 && displayedImages.length !== 0 ?
+              displayedImages.map((image, index) => (
                 <ImagePreview key={index} onClick={() => { if (isImageSelected) handleSelectedImage(image.id, image.image) }}>
-                  <PreviewImage src={image.image} alt="preview" />
+                  <PreviewImage src={image.image} alt="preview" loading='lazy' />
                   {
                     isImageSelected && <SelectedIconContainer  >
                       {
