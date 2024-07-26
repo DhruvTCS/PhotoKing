@@ -85,6 +85,7 @@ const SubscriptionPage: React.FC = () => {
     useEffect(() => {
 
         if (order && !paymentSuccess && currentCard && duration) {
+            setDurationPopup(false);
             console.log(order.amount)
             const options = {
                 key: 'rzp_test_OcmQGXNlHWXXCM',
