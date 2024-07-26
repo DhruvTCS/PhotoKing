@@ -16,7 +16,8 @@ import {
     deleteFolderAPI,
     hideFolderAPI,
 } from '../../../../Redux/ApiCalls/Dashboard/FolderApi'
-import { showErrorToast } from '../../Utlis/Toast'
+import LockFolderPopup from '../Folder/LockPopup'
+import ReasonModal from '../HomePage/ReasonModal'
 interface FolderCardProps {
     folder?: Folder
     newFolder?: NewFolder
@@ -170,7 +171,7 @@ const DropdownMenu = styled.div`
   right: 16px;
   background: white;
   width: 183px;
-  height: 116px;
+  height: 173px;
   z-index: 5;
   border-radius: 10px;
   box-shadow: 0px 8px 222px 0px #00000026;
@@ -180,7 +181,7 @@ const HideFolderIcon = styled.img`
   width: 20px;
   // margin-left:10px;
 `
-const HideConatinerIcon = styled.div`
+const HideContainerIcon = styled.div`
   height: 30px;
   width: 30px;
   border-radius: 50%;
@@ -188,6 +189,17 @@ const HideConatinerIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`
+
+const LockIconContainer = styled.div`
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #ac22bb26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
 `
 const FolderHeaderContainer = styled.div`
   display: flex;
@@ -199,6 +211,9 @@ const FolderCard: React.FC<FolderCardProps> = ({
     onClick,
     isNew,
 }) => {
+    const [showReasonModal, setShowReasonModal] = useState(false);
+    const [reason, setReason] = useState('');
+    const [selectedReason, setSelectedReason] = useState(0);
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const menuRef = useRef<HTMLDivElement>(null)
@@ -206,7 +221,8 @@ const FolderCard: React.FC<FolderCardProps> = ({
     const [menuOpen, setMenuOpen] = useState(false)
     const [isDeletePopup, setIsDeletePopup] = useState(false)
     const [isHidePopup, setIsHidePopup] = useState(false)
-    const { uploadFolderProgress } = useAppSelector((state) => state.album)
+    const [lockPopup, setLockPopup] = useState(false)
+
     const handleClickOutside = (event: MouseEvent) => {
         if (
             menuRef.current &&
@@ -306,12 +322,21 @@ const FolderCard: React.FC<FolderCardProps> = ({
                                 is_hide={!folder.is_hide}
                             />
                         )}
+                        {showReasonModal && (
+                            <ReasonModal selectedReason={selectedReason} handleSubmit={handleReasonSubmit} setShowReasonModal={setShowReasonModal} setReason={setReason} handleReasonChange={handleReasonChange} reason={reason} />
+                        )}
+
                         <FolderHeaderContainer>
                             <FolderName>{folder.name}</FolderName>
                             {folder.is_hide ? (
-                                <HideConatinerIcon>
+                                <HideContainerIcon>
                                     <HideFolderIcon src={HideAlbumPNG} />
-                                </HideConatinerIcon>
+                                </HideContainerIcon>
+                            ) : null}
+                            {folder.is_locked ? (
+                                <LockIconContainer>
+                                    <HideFolderIcon src={LockIconPNG} />
+                                </LockIconContainer>
                             ) : null}
                         </FolderHeaderContainer>
                         <MenuButton ref={buttonRef} onClick={openMenu}>
@@ -342,6 +367,19 @@ const FolderCard: React.FC<FolderCardProps> = ({
                                     <MenuItem onClick={() => setIsHidePopup(true)}>
                                         <HideIcon src={HideIconPNG} />
                                         <ItemName>Hide Folder</ItemName>
+                                    </MenuItem>
+                                )}
+
+                                <Hr />
+                                {folder.is_locked ? (
+                                    <MenuItem onClick={() => setLockPopup(true)}>
+                                        <HideIcon src={LockIconPNG} />
+                                        <ItemName>Unlock Folder</ItemName>
+                                    </MenuItem>
+                                ) : (
+                                    <MenuItem onClick={() => setShowReasonModal(true)}>
+                                        <HideIcon src={LockIconPNG} />
+                                        <ItemName>Lock Folder</ItemName>
                                     </MenuItem>
                                 )}
 
