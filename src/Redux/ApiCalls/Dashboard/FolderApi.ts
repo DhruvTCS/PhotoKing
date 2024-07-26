@@ -29,7 +29,7 @@ export const createFolderAPI = createAsyncThunk(
                 data: data
             })
             // console.log(response);
-            return response.data;
+            return { folder_id: response.data.folder_id, project_id: response.data.project_id };
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }

@@ -319,7 +319,7 @@ const CreateNewAlbumPage: React.FC = () => {
         //     isValidDate(album.date)
         // )
         // // console.log(album.date)
-        if (isValidDate(album.date) && album.name.length > 3 && selectedImage) {
+        if (isValidDate(album.date) && album.name.length > 0 && selectedImage) {
             setActiveButton(false)
         } else {
             setActiveButton(true)

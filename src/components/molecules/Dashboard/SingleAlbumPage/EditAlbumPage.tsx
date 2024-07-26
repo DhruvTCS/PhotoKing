@@ -271,6 +271,7 @@ const EditAlbumPage: React.FC = () => {
                 return album
             })
             console.log(album.image)
+            setActiveButton(true);
             setImagePreview(currentAlbum.image)
             if (currentAlbum.folders && currentAlbum.folders.length > 0)
                 setFolders(currentAlbum.folders)
@@ -301,12 +302,14 @@ const EditAlbumPage: React.FC = () => {
 
     useEffect(() => {
         // This function will be called every time `state` changes
-        if (isAlbumChange()) {
+        console.log(currentAlbum && currentAlbum.name !== album.name, "album changed")
+        if (currentAlbum && isAlbumChange()) {
+
             setActiveButton(false)
         } else {
             setActiveButton(true)
         }
-    }, [slectedImage, album])
+    }, [slectedImage, album.name, album.image, album.date])
     const handleImageChange = async (event: ChangeEvent<HTMLInputElement>) => {
         // console.log(event.target.files)
         if (event.target.files && event.target.files[0]) {
@@ -347,19 +350,17 @@ const EditAlbumPage: React.FC = () => {
         else return false
     }
     const isAlbumChange = () => {
-        console.log(album.name !== currentAlbum?.name ||
-            album.date !== currentAlbum?.date ||
-            album.image !== currentAlbum?.image ||
-            slectedImage !== null)
-        // console.log(album.name !== currentAlbum?.name)
-        if (
-            album.name !== currentAlbum?.name ||
-            album.date !== currentAlbum?.date ||
-            album.image !== currentAlbum?.image ||
-            slectedImage
-        )
-            return true
-        else return false
+        if (currentAlbum) {
+
+            if (
+                album.name !== currentAlbum.name ||
+                album.date !== currentAlbum.date ||
+                album.image !== currentAlbum.image ||
+                slectedImage !== null
+            )
+                return true
+            else return false
+        } else return false;
     }
     const blobToFile = (blob: Blob, fileName: string): File => {
         return new File([blob], fileName, { type: blob.type })

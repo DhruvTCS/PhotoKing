@@ -91,7 +91,7 @@ const SubscriptionPage: React.FC = () => {
                 key: 'rzp_test_OcmQGXNlHWXXCM',
                 amount: (order.amount * 100),
                 currency: 'INR',
-                name: 'Phot King',
+                name: 'Photo King',
                 logo: { CompanyLogoPNG },
                 description: `${currentCard.description}`,
                 order_id: order.id,

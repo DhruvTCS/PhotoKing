@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import BackButtonIconPng from '../../../../assets/Icons/SingleAlbum/back.png'
-import { useNavigate } from 'react-router-dom'
-import { UserCreatedEvents } from '../../../../Data/event.dto'
-import { useAppSelector } from '../../../../Redux/Hooks'
-import UnderLine from '../../../atoms/Login/UnderLine'
-import DateIconPNG from '../../../../assets/Icons/clock.png'
-import LocationIconPNG from '../../../../assets/Icons/Location.png'
+// src/pages/SubEventPage.tsx
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import BackButtonIconPng from '../../../../assets/Icons/SingleAlbum/back.png';
+import { useNavigate } from 'react-router-dom';
+import { UserCreatedEvents } from '../../../../Data/event.dto';
+import { useAppSelector } from '../../../../Redux/Hooks';
+import UnderLine from '../../../atoms/Login/UnderLine';
+import DateIconPNG from '../../../../assets/Icons/clock.png';
+import LocationIconPNG from '../../../../assets/Icons/Location.png';
 
 const SubEventPage: React.FC = () => {
-  const [currentEvent, setCurrentEvent] = useState<UserCreatedEvents>()
-  const { currentCreatedEvent, isError, error } = useAppSelector(
-    (state) => state.event,
-  )
+  const [currentEvent, setCurrentEvent] = useState<UserCreatedEvents>();
+  const { currentCreatedEvent } = useAppSelector((state) => state.event);
+
   useEffect(() => {
     if (currentCreatedEvent) {
-      setCurrentEvent(currentCreatedEvent)
+      setCurrentEvent(currentCreatedEvent);
     }
-  }, [currentCreatedEvent])
-  const navigate = useNavigate()
+  }, [currentCreatedEvent]);
+
+  const navigate = useNavigate();
+
   return currentCreatedEvent ? (
     <Container>
       <BackButtonContainer>
@@ -32,7 +34,7 @@ const SubEventPage: React.FC = () => {
         <SubEventCardListContainer>
           <SubEventCardList>
             {currentEvent?.sub_events.map((event) => (
-              <SubEventCard>
+              <SubEventCard key={event.sub_event_name}>
                 <CardTitleContainer>
                   <CardTitle>{event.sub_event_name}</CardTitle>
                 </CardTitleContainer>
@@ -46,14 +48,14 @@ const SubEventPage: React.FC = () => {
                     <DateContainer>
                       <FromDateContainer>
                         <FromDateLabel>From :</FromDateLabel>
-                        <Date>{event.starting_date} at{' '}
-                          {event.starting_time}
+                        <Date>
+                          {event.starting_date} at {event.starting_time}
                         </Date>
                       </FromDateContainer>
                       <FromDateContainer>
                         <FromDateLabel>To :</FromDateLabel>
                         <Date>
-                          on &nbsp;{event.ending_date} at {event.ending_time}
+                          {event.ending_date} at {event.ending_time}
                         </Date>
                       </FromDateContainer>
                     </DateContainer>
@@ -63,9 +65,7 @@ const SubEventPage: React.FC = () => {
                       <LocationIcon src={LocationIconPNG} />
                       <LocationLabel>Location :</LocationLabel>
                     </LocationLabelContainer>
-                    <LocationText>
-                      {event.sub_event_location}
-                    </LocationText>
+                    <LocationText>{event.sub_event_location}</LocationText>
                   </LocationContainer>
                 </CardBody>
               </SubEventCard>
@@ -74,200 +74,177 @@ const SubEventPage: React.FC = () => {
         </SubEventCardListContainer>
       </BodyContainer>
     </Container>
-  ) : null
-}
+  ) : null;
+};
 
-export default SubEventPage
+export default SubEventPage;
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
   margin-left: 34px;
-`
+  padding: 20px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+`;
 
 const BackButtonContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  width: 98%;
   align-items: center;
   margin-bottom: 16px;
-`
+`;
+
 const BackButtonIcon = styled.img`
-  width: 16px;
-  height: 13.8px;
-  color: #171717;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-`
+`;
 
 const BackButtonText = styled.p`
-  height: 23px;
   font-family: Urbanist, sans-serif;
   font-size: 16px;
   font-weight: 500;
-  line-height: 22.8px;
-  text-align: left;
   color: #171717;
-  margin: 0px;
-  margin-left: 11px;
-`
+  margin: 0 0 0 10px;
+`;
 
 const BodyContainer = styled.div`
-  background-color: #ffffff9e;
+  height:80%;
+  width: 90%;
+  background-color: #ffffffb8;
   border-radius: 15px;
-  min-height: 800px;
   padding: 30px;
-`
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+`;
 
 const HeaderContainer = styled.div`
-  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-`
+  margin-bottom: 20px;
+`;
 
-const HeaderTitle = styled.div`
+const HeaderTitle = styled.h1`
   font-family: Urbanist, sans-serif;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 700;
-  line-height: 22.8px;
-`
+  color: #333;
+`;
 
 const SubEventCardListContainer = styled.div`
-  margin-top: 30px;
-`
+  margin-top: 20px;
+`;
 
 const SubEventCardList = styled.div`
-  max-height: 650px;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 40px 0px 0px 0px;
-`
+  gap: 20px;
+`;
 
 const SubEventCard = styled.div`
-  min-height: 352px;
-  width: 28%;
-  min-width: 392px;
   background-color: white;
-  border: 1px solid black;
-  border-radius: 15px;
-  margin: 20px;
-  padding: 15px;
-  border: none;
-  opacity: 1;
-  box-shadow: 0px 4px 24px 0px hsla(0, 0%, 0%, 0.5);
-`
+  border-radius: 10px;
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1;
+  min-width: 300px;
+  max-width: 350px;
+`;
+
 const CardTitleContainer = styled.div`
+  text-align: center;
+  margin-bottom: 10px;
+`;
+
+const CardTitle = styled.h2`
   font-family: Urbanist, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  text-decoration: underline;
-  line-height: 22.8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin: 0;
-`
-
-const CardTitle = styled.p``
+`;
 
 const CardBody = styled.div`
-padding-top:20px;
-`
+  margin-top: 10px;
+`;
 
 const EventDateContainer = styled.div`
-  // margin-top:30px;
-  width: 100%;
-`
+  margin-bottom: 20px;
+`;
 
-const EventDateLabel = styled.p`
-  font-family: Urbanist;
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 21.6px;
-  margin: 0;
-  color: gray;
-`
-
-const DateContainer = styled.div`
-  border: 1px solid #00000014;
+const EventDateLabelContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  border-radius: 10px;
-  padding: 10px;
-  height: 40px;
-`
+  margin-bottom: 5px;
+`;
+
+const EventDateLabel = styled.p`
+  font-family: Urbanist, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #555;
+  margin: 0 0 0 5px;
+`;
+
+const DateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
 
 const FromDateContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  
-`
+  align-items: center;
+`;
+
 const FromDateLabel = styled.p`
-  font-family: Urbanist;
-  font-size: 16px;
+  font-family: Urbanist, sans-serif;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 21.6px;
-  margin: 0;
-`
+  color: #777;
+  margin: 0 5px 0 0;
+`;
+
 const Date = styled.p`
-  font-family: Urbanist;
-  font-size: 17px;
+  font-family: Urbanist, sans-serif;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 21.6px;
+  color: #333;
   margin: 0;
-`
+`;
 
 const LocationContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: baseline;
-  margin-top:30px;
-`
-const LocationLabelContainer = styled.div`
-display:flex;
-align-items: center;
-
-  margin-bottom:10px;
 `;
+
+const LocationLabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
 const LocationLabel = styled.p`
-  font-family: Urbanist;
-  font-size: 20px;
-  color: gray;
+  font-family: Urbanist, sans-serif;
+  font-size: 16px;
   font-weight: 500;
-  line-height: 21.6px;
-  margin: 0;
-`
+  color: #555;
+  margin: 0 0 0 5px;
+`;
 
 const LocationText = styled.p`
-  font-family: Urbanist;
-  font-size: 18px;
+  font-family: Urbanist, sans-serif;
+  font-size: 14px;
   font-weight: 500;
-  line-height: 21.6px;
+  color: #333;
   margin: 0;
-`
+`;
 
 const LocationIcon = styled.img`
-    height: 18px;
-  width: 18px;
-  margin:4px;
-`
+  width: 20px;
+  height: 20px;
+`;
 
 const DateIcon = styled.img`
-  height: 18px;
-  width: 18px;
-  margin:4px;
-`
-
-const EventDateLabelContainer = styled.div`
-display:flex;
-align-items: center;
-
-  margin-bottom:10px;
-`
-
-
+  width: 20px;
+  height: 20px;
+`;

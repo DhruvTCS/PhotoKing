@@ -193,12 +193,13 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
             <LabelContainer>
 
               <PhotoLabel>Photos</PhotoLabel>
+              <Span>You can upload images after creating of folder.</Span>
               {imageLimit === 0 && (
                 <Span>You can upload max 20 images while creating album.</Span>
               )}
             </LabelContainer>
 
-            <ImageContainer>
+            {/* <ImageContainer>
               {imageLimit !== 0 && (
                 <ImageUploadContainer
                   onClick={() => {
@@ -217,27 +218,27 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
                     onChange={handleImageUpload}
                     style={{ display: 'none' }}
                   />
-                </ImageUploadContainer>
-              )}
-              {compressedImageLoading ? (
-                <LoadingDots />
-              ) : (
-                <>
-                  {newFolderImages.map((file, index) => (
-                    <LazyLoad height={100} offset={100} key={index}>
-                      <ImagePreview>
-                        <PreviewImage src={imageUrls[index]} alt="preview1" />
-                        <RemoveButtonContainer
-                          onClick={() => handleRemoveImage(index)}
-                        >
-                          <CancelIcon src={CancleIconPNG} />
-                        </RemoveButtonContainer>
-                      </ImagePreview>
-                    </LazyLoad>
-                  ))}
-                </>
-              )}
-            </ImageContainer>
+                </ImageUploadContainer> */}
+            {/* )} */}
+            {/* {compressedImageLoading ? (
+              <LoadingDots />
+            ) : (
+              <>
+                {newFolderImages.map((file, index) => (
+                  <LazyLoad height={100} offset={100} key={index}>
+                    <ImagePreview>
+                      <PreviewImage src={imageUrls[index]} alt="preview1" />
+                      <RemoveButtonContainer
+                        onClick={() => handleRemoveImage(index)}
+                      >
+                        <CancelIcon src={CancleIconPNG} />
+                      </RemoveButtonContainer>
+                    </ImagePreview>
+                  </LazyLoad>
+                ))}
+              </>
+            )}
+          </ImageContainer> */}
           </PhotoContainer>
         </ModalBody>
         <ButtonContainer>
@@ -252,7 +253,7 @@ const AddFolderModal: React.FC<AddFolderModalProps> = ({
           <CancelButton onClick={onRequestClose}> Cancel</CancelButton>
         </ButtonContainer>
       </ModalContent>
-    </ModalOverlay>
+    </ModalOverlay >
   )
 }
 
