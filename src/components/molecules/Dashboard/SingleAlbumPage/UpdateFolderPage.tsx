@@ -314,7 +314,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
-      setDisplayImages(currentFolder.images.slice(0, 30))
+      setDisplayImages(currentFolder.images.slice(0, 40))
       setSelectedFolderImages([])
       setPreviewImageUrl([]);
     }
@@ -406,7 +406,7 @@ const UpdateFolderPage = () => {
         worker.onmessage = (e) => {
           resolve(e.data);
         };
-        worker.postMessage(chunk);
+        worker.postMessage({ files: chunk, work: index });
       });
     });
 

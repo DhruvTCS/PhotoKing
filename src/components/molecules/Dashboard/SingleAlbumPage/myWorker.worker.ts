@@ -2,13 +2,16 @@
 import imageCompression from 'browser-image-compression';
 
 
-self.onmessage = async (e: MessageEvent<File[]>) => {
-    const files = e.data;
+self.onmessage = async (e: MessageEvent<{ files: File[], work: number }>) => {
+    const files = e.data.files;
+    console.log(e.data.work, "started")
 
     try {
         const options = {
             maxSizeMB: 3,
             maxWidthOrHeight: 1920,
+            useWebWorker: false,
+
         };
 
         const compressedFiles = await Promise.all(files.map(async (file) => {
@@ -25,7 +28,7 @@ self.onmessage = async (e: MessageEvent<File[]>) => {
                 return undefined;
             }
         }));
-
+        console.log(e.data.work, "end")
         self.postMessage(compressedFiles);
     } catch (error) {
         console.error('Error in worker:', error);
