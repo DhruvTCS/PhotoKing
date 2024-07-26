@@ -112,12 +112,12 @@ export const lockFolderAPI = createAsyncThunk(
     async (data: { project_id: number, folder_id: number, reason?: number, lock_type: string, custom_reason?: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
-                method: 'GET',
+                method: 'POST',
                 url: `/project/user/lock-folder/`,
                 data
             })
             // console.log(response);
-            return response.data;
+            return { folder_id: data.folder_id, project_id: data.project_id };
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }
@@ -132,7 +132,7 @@ export const unlockFolderAPI = createAsyncThunk(
                 data
             })
             // console.log(response);
-            return response.data;
+            return { folder_id: data.folder_id, project_id: data.project_id };
         } catch (error: any) {
             return rejectWithValue(error.response.data);
         }

@@ -19,6 +19,7 @@ const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
+  z-index:1000;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
@@ -134,8 +135,8 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
 
     return (
         <ModalOverlay>
-            <ModalContent>
-                <ReasonHeading>Select Reason</ReasonHeading>
+            <ModalContent onClick={(e) => { e.stopPropagation() }}>
+                <ReasonHeading>Reason for lock the album</ReasonHeading>
                 <ReasonListContainer>
 
                     <ReasonLabelContainer>
@@ -145,6 +146,7 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
                             value={1}
                             checked={selectedReason === 1}
                             onChange={handleReasonChange}
+
                         />
                         <ReasonLabel htmlFor='radio1'>
 

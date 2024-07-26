@@ -9,15 +9,18 @@ import HideIconPNG from '../../../../assets/Icons/DropDownMenu/hide.png'
 import DeletePopup from '../Folder/DeletePopup'
 import DeleteIconPNG from '../../../../assets/Icons/SingleAlbum/delete.png'
 import HideFolderPopup from '../Folder/HidePopup'
-
+import LockIconPNG from '../../../../assets/Icons/DropDownMenu/Lock.png'
 import HideAlbumPNG from '../../../../assets/Icons/DropDownMenu/hideAlbumBig.png'
 
 import {
     deleteFolderAPI,
     hideFolderAPI,
+    lockFolderAPI,
+    unlockFolderAPI,
 } from '../../../../Redux/ApiCalls/Dashboard/FolderApi'
-import LockFolderPopup from '../Folder/LockPopup'
+// import LockFolderPopup from '../Folder/LockPopup'
 import ReasonModal from '../HomePage/ReasonModal'
+import { showErrorToast } from '../../Utlis/Toast'
 interface FolderCardProps {
     folder?: Folder
     newFolder?: NewFolder
@@ -222,7 +225,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
     const [isDeletePopup, setIsDeletePopup] = useState(false)
     const [isHidePopup, setIsHidePopup] = useState(false)
     const [lockPopup, setLockPopup] = useState(false)
-
+    const { updatedFolderList, uploadFolderProgress } = useAppSelector(state => state.album)
     const handleClickOutside = (event: MouseEvent) => {
         if (
             menuRef.current &&
@@ -298,7 +301,29 @@ const FolderCard: React.FC<FolderCardProps> = ({
             return true
         } else return false
     }
+    const handleReasonSubmit = (folder_id: number, project_id: number) => {
+        console.log(reason, selectedReason)
+        if (selectedReason === 4) {
+            dispatch(lockFolderAPI({ folder_id: folder_id, project_id, custom_reason: reason, lock_type: 'lock' }))
+        } else {
+            dispatch(lockFolderAPI({
+                folder_id: folder_id, project_id, reason: selectedReason,
+                lock_type: 'lock'
+            }))
 
+        }
+        setShowReasonModal(false);
+    }
+    const handleReasonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.stopPropagation();
+        setSelectedReason(parseInt(e.target.value));
+        console.log(e.target.value);
+
+
+    }
+    const handleUnlockFolder = (folder_id: number, project_id: number) => {
+        dispatch(unlockFolderAPI({ folder_id, project_id, lock_type: 'unlock' }))
+    }
     return (
         <div>
             {folder ? (
@@ -323,7 +348,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
                             />
                         )}
                         {showReasonModal && (
-                            <ReasonModal selectedReason={selectedReason} handleSubmit={handleReasonSubmit} setShowReasonModal={setShowReasonModal} setReason={setReason} handleReasonChange={handleReasonChange} reason={reason} />
+                            <ReasonModal selectedReason={selectedReason} handleSubmit={() => handleReasonSubmit(folder.id, folder.project_id)} setShowReasonModal={setShowReasonModal} setReason={setReason} handleReasonChange={handleReasonChange} reason={reason} />
                         )}
 
                         <FolderHeaderContainer>
@@ -372,7 +397,7 @@ const FolderCard: React.FC<FolderCardProps> = ({
 
                                 <Hr />
                                 {folder.is_locked ? (
-                                    <MenuItem onClick={() => setLockPopup(true)}>
+                                    <MenuItem onClick={() => handleUnlockFolder(folder.id, folder.project_id)}>
                                         <HideIcon src={LockIconPNG} />
                                         <ItemName>Unlock Folder</ItemName>
                                     </MenuItem>
