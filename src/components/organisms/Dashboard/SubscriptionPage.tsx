@@ -144,6 +144,7 @@ const SubscriptionPage: React.FC = () => {
         setDuration(duration)
         dispatch(createOrderAPI({ storage_plan_id: id, duration }))
     }
+
     return (
         <PageContainer>
             {durationPopup && currentCard && <GetDurationPopup cancel={() => setDurationPopup(false)} Buy={(id, duration) => { startPayment(id, duration) }} card={currentCard} />}

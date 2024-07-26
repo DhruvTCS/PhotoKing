@@ -1,0 +1,10 @@
+{
+  "overrides": [
+    {
+      "files": ["src/workers/*.ts", "src/components/molecules/Dashboard/SingleAlbumPage/worker.js", "src/components/molecules/Dashboard/SingleAlbumPage/worker.ts"],
+      "rules": {
+        "no-restricted-globals": "off"
+      }
+    }
+  ]
+}

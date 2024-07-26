@@ -15,6 +15,8 @@ import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup';
 import { deleteFolderImagesAPI, getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import DiscardPopUp from '../../../atoms/Dashboard/Folder/DiscardSelectedImagesPopup';
 import { removeCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+
+
 const PageConatiner = styled.div`
 margin-left: 30px;
 `;
@@ -266,6 +268,20 @@ color:${props => props.isCheck ? 'black' : 'grey'}
 
 `;
 const SlectImageRadio = styled.input``;
+const createWorker = (num: number) => {
+  let workers = [];
+  // console.log(new URL('./workers/worker.js', import.meta.url)
+  // const worker = new Worker('')
+  // worker.onmessage = () => {
+  //   console.log("TESTING")
+  // }
+  // console.log(worker)
+
+  // workers.push(worker);
+  // for (let i = 0; i < num; i++) {
+  // }
+  // return workers;
+}
 let urls: string[] = [];
 const UpdateFolderPage = () => {
   const dispatch = useAppDispatch();
@@ -284,9 +300,12 @@ const UpdateFolderPage = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const [discardPopup, setDiscardPopup] = useState(false);
   const [displayedImages, setDisplayImages] = useState<{ id: number, project_id: number, image: string, media_type: number }[]>([])
+  const [workers, setWorkers] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(urls);
+    const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
+
+    console.log(worker)
     if (!currentFolder) {
       navigate(-1);
 
@@ -302,6 +321,7 @@ const UpdateFolderPage = () => {
 
   }, [currentFolder]);
   useEffect(() => {
+    // const worker = new MyWorker('')
     if (isError && error && error.message) {
       showErrorToast(error.message)
     }
@@ -368,33 +388,56 @@ const UpdateFolderPage = () => {
       return;
     }
     setCompresedImageLoading(true);
-    const acceptedFiles = Array.from(files);
-    console.log(acceptedFiles.length);
-    console.log("compress file size")
-    const compressedFiles = await Promise.all(
-      acceptedFiles.map(async (file) => {
 
-        try {
-          if (file.size / 1024 / 1024 > 3) {
 
-            const compressedBlob = await compressImage(file);
-            const compressedFile = blobToFile(compressedBlob, file.name);
-            // // console.log("compressed")
-            return compressedFile;
-          } else {
-            return file;
-          }
-        } catch (error) {
-          console.error('Error compressing file:', error);
-          showErrorToast('Error compressing file');
-          return undefined; // Return undefined if there's an error
-        }
-      })
-    );
+    // const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
+    // worker.onmessage = (event) => {
+    //         ;
+    // }
+
+    // worker.postMessage("hey from worker");
+    const fileArray = Array.from(files);
+    const chunkSize = Math.ceil(fileArray.length / 3);
+    const imageChunks = splitArrayIntoChunks(fileArray, chunkSize);
+
+    const workerPromises = imageChunks.map((chunk, index) => {
+      return new Promise<File[]>((resolve) => {
+        const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
+        worker.onmessage = (e) => {
+          resolve(e.data);
+        };
+        worker.postMessage(chunk);
+      });
+    });
+
+    // const compressedFiles = await Promise.all(
+    //   // acceptedFiles.map(async (file) => {
+
+    //   //   try {
+    //   //     if (file.size / 1024 / 1024 > 3) {
+
+    //   //       const compressedBlob = await compressImage(file);
+    //   //       const compressedFile = blobToFile(compressedBlob, file.name);
+    //   //       // // console.log("compressed")
+    //   //       return compressedFile;
+    //   //     } else {
+    //   //       return file;
+    //   //     }
+    //   //   } catch (error) {
+    //   //     console.error('Error compressing file:', error);
+    //   //     showErrorToast('Error compressing file');
+    //   //     return undefined; // Return undefined if there's an error
+    //   //   }
+    //   // })
+    // );
+    const result = await Promise.all(workerPromises);
+    const compressedFiles = result.flat()
+    setCompresedImageLoading(false);
 
     // Filter out any undefined values
+
     const validCompressedFiles = compressedFiles.filter((file): file is File => file !== undefined);
-    setCompresedImageLoading(false);
+    result.forEach
     let previewURL = validCompressedFiles.map(file => URL.createObjectURL(file))
     setPreviewImageUrl(pre => {
       urls = [...pre, ...previewURL]
@@ -403,6 +446,16 @@ const UpdateFolderPage = () => {
 
     setNewFolderImages((prev) => [...prev, ...validCompressedFiles]);
   };
+  const splitArrayIntoChunks = (arr: any[], chunkSize: number) => {
+    const chunks = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      chunks.push(arr.slice(i, i + chunkSize));
+    }
+    console.log("chunks")
+    console.log(chunks)
+    return chunks;
+  };
+
   const handleRemoveImage = (index: number) => {
     setNewFolderImages((prev) => prev.filter((_, i) => i !== index));
   };
@@ -634,3 +687,49 @@ const UpdateFolderPage = () => {
 export default UpdateFolderPage
 
 
+
+
+// const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+//   // // console.log("calling")
+//   const files = event.target.files;
+//   if (!files) return;
+//   if (files.length + newFolderImages.length > 100) {
+//     showErrorToast('You can only select up to 100 images at a time.');
+//     return;
+//   }
+//   setCompresedImageLoading(true);
+//   const acceptedFiles = Array.from(files);
+//   console.log(acceptedFiles.length);
+//   console.log("compress file size")
+//   const compressedFiles = await Promise.all(
+//     acceptedFiles.map(async (file) => {
+
+//       try {
+//         if (file.size / 1024 / 1024 > 3) {
+
+//           const compressedBlob = await compressImage(file);
+//           const compressedFile = blobToFile(compressedBlob, file.name);
+//           // // console.log("compressed")
+//           return compressedFile;
+//         } else {
+//           return file;
+//         }
+//       } catch (error) {
+//         console.error('Error compressing file:', error);
+//         showErrorToast('Error compressing file');
+//         return undefined; // Return undefined if there's an error
+//       }
+//     })
+//   );
+
+//   // Filter out any undefined values
+//   const validCompressedFiles = compressedFiles.filter((file): file is File => file !== undefined);
+//   setCompresedImageLoading(false);
+//   let previewURL = validCompressedFiles.map(file => URL.createObjectURL(file))
+//   setPreviewImageUrl(pre => {
+//     urls = [...pre, ...previewURL]
+//     return [...pre, ...previewURL]
+//   })
+
+//   setNewFolderImages((prev) => [...prev, ...validCompressedFiles]);
+// };
