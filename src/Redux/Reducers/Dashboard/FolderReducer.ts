@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState, UpdatedFolderType, removeFromUpdatingFolderProgress } from '../../Slice/Dashboard/AlbumSlice';
-import { createFolderAPI, deleteFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, hideFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
+import { createFolderAPI, deleteFolderAPI, deleteFolderImagesAPI, getSingleFolderAPI, hideFolderAPI, lockFolderAPI, lockMultipleFoldersAPI, unlockFolderAPI, updateFolderAPI } from '../../ApiCalls/Dashboard/FolderApi';
 import { Folder } from '../../../Data/album.dto';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 import store from '../../Store';
@@ -23,9 +23,10 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(unlockFolderAPI.pending, (state) => {
             state.folderLoading = true;
         })
-        .addCase(unlockFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
+        .addCase(unlockFolderAPI.fulfilled, (state, action: PayloadAction<{ folder_id: number, project_id: number }>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            state.updatedFolderList.push(action.payload)
             showSuccessToast("Folder successfully unlocked.");
         })
         .addCase(unlockFolderAPI.rejected, (state, action: PayloadAction<any>) => {
@@ -116,5 +117,17 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             state.folderLoading = false;
             state.isError = true;
             state.error = action.payload;
+        }).addCase(lockFolderAPI.pending, (state) => {
+            state.folderLoading = true;
+        }).addCase(lockFolderAPI.fulfilled, (state, action: PayloadAction<{ folder_id: number, project_id: number }>) => {
+            state.updatedFolderList.push(action.payload)
+            state.folderLoading = false;
+            showSuccessToast("Folder's status updated successfully.");
+        })
+        .addCase(lockFolderAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.folderLoading = false;
+            state.isError = true;
+            state.error = action.payload;
         });
 };
+
