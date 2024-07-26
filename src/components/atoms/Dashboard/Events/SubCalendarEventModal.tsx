@@ -11,6 +11,11 @@ import DownIconPNG from '../../../../assets/Icons/downicon.png'
 import { useAppSelector } from '../../../../Redux/Hooks'
 import { showErrorToast } from '../../Utlis/Toast'
 import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import DatePicker from './DatePicker'
+
 const breakpoints = {
   mobile: '480px',
   tablet: '768px',
@@ -33,7 +38,7 @@ const Modal = styled.div`
   justify-content: center;
   align-items: center;
   position: fixed;
-  z-index: 100;
+  z-index: 10000;
   top: 0;
   left: 0;
   width: 100%;
@@ -72,7 +77,7 @@ const ModalContent = styled.div`
 
   @media (min-width: ${breakpoints.desktop}) {
     max-width: 60%;
-    min-width:650px;
+    min-width: 650px;
   }
 `
 
@@ -171,9 +176,8 @@ const InputMainDateContainer = styled.div`
   align-items: center;
   flex-wrap: wrap;
   margin-top: 15px;
-  border: 1px solid grey;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 0px;
   justify-content: space-between;
 
   @media (max-width: ${breakpoints.tablet}) {
@@ -237,15 +241,15 @@ const CloseButton = styled.span`
 // `
 const DownIcon = styled.img`
   cursor: pointer;
-  height:7px;
-  width:10px;
+  height: 7px;
+  width: 10px;
 `
 
 const UpIcon = styled.img`
   transform: rotate(180deg);
   cursor: pointer;
-  height:7px;
-  width:10px;
+  height: 7px;
+  width: 10px;
 `
 const SelectLocation = styled.div`
 display:flex;
@@ -273,7 +277,7 @@ const SelectionMenu = styled.div<{ menuOpen: boolean }>`
   }
 
   @media (min-width: ${breakpoints.desktop}) {
-    height: 300px;
+    height: 228px;
     padding: 15px;
   }
 `
@@ -321,14 +325,16 @@ const Location = styled.div`
     font-size: 13px;
   }
 `
-
 interface SubEventModalProps {
   onClose: () => void
   addSubEvent: (subEvent: CalendarSubEvents) => void
   currentSubEvent?: CalendarSubEvents | null
   currentLength: number
   locationList: string[]
-  setLocationList: (locationList: string[]) => void
+  setLocationList: (locationList: string[]) => void,
+  startInitialDate: string,
+  endInitialDate: string,
+
 }
 
 const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
@@ -338,6 +344,9 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
   currentLength,
   locationList,
   setLocationList,
+  startInitialDate,
+  endInitialDate,
+
 }) => {
   const [eventName, setEventName] = useState<string>('')
   const [id, SetId] = useState<number>(currentLength + 1)
@@ -363,16 +372,37 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
   const { members } = useAppSelector((state) => state.member)
   useEffect(() => {
     if (currentSubEvent) {
-      console.log(currentSubEvent.start_date + 'T' + currentSubEvent.start_time.substring(0, 5))
+      console.log(
+        currentSubEvent
+      )
       setEventName(currentSubEvent.sub_event_name)
       setEventLocation(currentSubEvent.location)
-      setStartDate(currentSubEvent.start_date + 'T' + currentSubEvent.start_time.substring(0, 5))
-      setEndDate(currentSubEvent.end_date + 'T' + currentSubEvent.end_time.substring(0, 5))
+      setStartDate(
+        currentSubEvent.start_date +
+        'T' +
+        currentSubEvent.start_time.substring(0, 5),
+      )
+      setEndDate(
+        currentSubEvent.end_date +
+        'T' +
+        currentSubEvent.end_time.substring(0, 5),
+      )
+
       // setEndDate(currentSubEvent.end_date)
       // console.log((new Date(currentSubEvent.start_date + 'T' + currentSubEvent.start_time)).toString())
       SetId(currentSubEvent.id)
-      setEventMembers(currentSubEvent.members.map(member => member.member))
+      setEventMembers(currentSubEvent.members.map((member) => member.member))
       // if(currentSubEvent.members)
+    } else {
+      if (startInitialDate && endInitialDate) {
+        setStartDate(startInitialDate)
+        setEndDate(endInitialDate)
+      } else {
+
+        const currentStartDateTime = new Date();
+        setStartDate(`${currentStartDateTime.getFullYear()}-${currentStartDateTime.getMonth()}-${currentStartDateTime.getDate()}T${currentStartDateTime.getHours()}:${currentStartDateTime.getMinutes()}`)
+        setEndDate(`${currentStartDateTime.getFullYear()}-${currentStartDateTime.getMonth()}-${currentStartDateTime.getDate()}T${currentStartDateTime.getHours()}:${currentStartDateTime.getMinutes()}`)
+      }
     }
     return () => {
       setEventName('')
@@ -387,8 +417,8 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
     if (name === 'event_name' && value.length <= 25) setEventName(value)
     else if (name === 'event_location' && value.length <= 200)
       setEventLocation(value)
-    else if (name === 'start_date') setStartDate(value)
-    else if (name === 'end_date') setEndDate(value)
+    else if (name === 'start_date') setStartDate(formatEnterDate(value))
+    else if (name === 'end_date') setEndDate(formatEnterDate(value))
   }
 
   const validEventName = (eventNames: string) => {
@@ -444,19 +474,19 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
   }
 
   const handleSubmit = () => {
+    console.log(parseDate(startDate), endDate)
     if (
       !validateLocation(eventLocation) ||
       !validEventName(eventName) ||
-      !validDateTime(new Date(startDate), new Date(endDate))
+      !validDateTime(parseDate(startDate), parseDate(endDate))
     ) {
       setShowError(true)
     } else {
       let { start_date, start_time, end_date, end_time } = setEventDate(
-        startDate,
-        endDate,
+        parseDate(startDate).toString(),
+        parseDate(endDate).toString(),
       )
-      console.log(selectedMembers);
-      console.log(eventMembers);
+      console.log(start_date, end_date, start_time, end_time)
       addSubEvent({
         sub_event_name: eventName,
         location: eventLocation,
@@ -466,8 +496,14 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
         end_time: end_time,
         // sub_event_coordinates: "test coordinates",
         id: id,
-        members: [...selectedMembers.map(member => { return { member: member, id: member } }), ...eventMembers.map(member => { return { member: member, id: member } })]
-        ,
+        members: [
+          ...selectedMembers.map((member) => {
+            return { member: member, id: member }
+          }),
+          ...eventMembers.map((member) => {
+            return { member: member, id: member }
+          }),
+        ],
       })
     }
   }
@@ -482,31 +518,49 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
     setEventLocation(loc)
   }
 
-
   const handleMember = (id: number) => {
     if (deleteMember.includes(id)) {
-      setDeleteMember(pre => pre.filter(member => member !== id));
-      eventMembers.push(id);
+      setDeleteMember((pre) => pre.filter((member) => member !== id))
+      eventMembers.push(id)
     } else {
-
       if (selectedMembers.includes(id)) {
-        setSelectedMembers(pre => pre.filter(val => val !== id));
+        setSelectedMembers((pre) => pre.filter((val) => val !== id))
       } else {
-        setSelectedMembers(pre => [...pre, id]);
+        setSelectedMembers((pre) => [...pre, id])
       }
     }
-
   }
   const handleButtonClick = (buttonAction: () => void) => {
-    setAddMemberMenu(false);
-    buttonAction();
-  };
+    setAddMemberMenu(false)
+    buttonAction()
+  }
   const handleDeleteMember = (id: number) => {
     if (!deleteMember.includes(id) && eventMembers.includes(id)) {
-      setDeleteMember([...deleteMember, id]);
-      setEventMembers(pre => pre.filter(member => member !== id));
+      setDeleteMember([...deleteMember, id])
+      setEventMembers((pre) => pre.filter((member) => member !== id))
     }
   }
+
+  const formatEnterDate = (dateString: string): string => {
+    const date = new Date(dateString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  const parseDate = (formattedDate: string): Date => {
+    // Expected format: YYYY-MM-DDTHH:MM
+    const [datePart, timePart] = formattedDate.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes] = timePart.split(':').map(Number);
+
+    // JavaScript Date object months are zero-based, so we need to subtract 1 from the month
+    return new Date(year, month - 1, day, hours, minutes);
+  };
   return (
     <Modal>
       <ModalContent>
@@ -544,30 +598,22 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
                 <DateContainer
                   onClick={() => startDateRef.current?.showPicker()}
                 >
-                  <Label htmlFor="from_date">From</Label>
-                  <Input
-                    type="datetime-local"
-                    name="from_date"
-                    ref={startDateRef}
-                    onChange={(e) => onChangeData('start_date', e.target.value)}
-                    value={startDate}
-                  />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateTimePicker']}>
+                      <DatePicker value={startDate} onChangeData={(e) => onChangeData("start_date", e)} />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </DateContainer>
-                <UnderLine width={100} isPercent={true} />
               </InputDateContainer>
               <InputDateContainer>
                 <DateContainer onClick={() => endDateRef.current?.showPicker()}>
-                  <Label htmlFor="to_date">To</Label>
-                  <Input
-                    type="datetime-local"
-                    id="to_date "
-                    name="to_date"
-                    ref={endDateRef}
-                    onChange={(e) => onChangeData('end_date', e.target.value)}
-                    value={endDate}
-                  />
+
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateTimePicker']}>
+                      <DatePicker value={endDate} onChangeData={(e) => onChangeData("end_date", e)} />
+                    </DemoContainer>
+                  </LocalizationProvider>
                 </DateContainer>
-                <UnderLine width={100} isPercent={true} />
               </InputDateContainer>
             </InputMainDateContainer>
             <Errortext
@@ -622,14 +668,19 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
                   </AddNewLocationButton>
                 </LocationMenuHeader>
                 <LocationItemContainer>
-                  {locationList.map((location) => (
-                    <>
-                      <LocationItem onClick={() => setPickLocation(location)}>
-                        <Location>{location}</Location>
-                      </LocationItem>
-                      <UnderLine width={100} isPercent={true} />
-                    </>
-                  ))}
+                  {locationList.length > 0 ?
+
+                    locationList.map((location) => (
+                      <>
+                        <LocationItem onClick={() => setPickLocation(location)}>
+                          <Location>{location}</Location>
+                        </LocationItem>
+                        <UnderLine width={100} isPercent={true} />
+                      </>
+                    ))
+                    :
+                    <div style={{ "width": "100%", "display": "flex", "alignItems": "center", "justifyContent": "center" }}>Please Add New Location.</div>
+                  }
                 </LocationItemContainer>
               </SelectionMenu>
             )}
@@ -775,7 +826,6 @@ export default SubCalendarEventModal
 
 const MemberSelecetionConatiner = styled.div`
   width: 100%;
-  margin-top: 1rem;
 `
 const SelectedMemberConatiner = styled.div``
 const SelectionMenuListConatiner = styled.div`
@@ -795,6 +845,7 @@ const SelectMemberHeading = styled.p`
   line-height: 18px;
   text-align: left;
   color: #424242;
+  margin-top:5px;
 `
 const MemberMenuConatriner = styled.div`
   display: flex;

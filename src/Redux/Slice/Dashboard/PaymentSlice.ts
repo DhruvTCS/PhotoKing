@@ -25,14 +25,17 @@ const paymentSlice = createSlice({
     name: 'payment',
     initialState,
     reducers: {
-        paymentSuccess: (state) => {
+        paymentSuccess(state) {
             state.paymentSuccess = true;
         },
+        cancelPayment(state) {
+            state.order = null;
+        }
     },
     extraReducers: (builder) => {
         PaymentReducer(builder)
     },
 });
 
-export const { paymentSuccess } = paymentSlice.actions;
+export const { paymentSuccess, cancelPayment } = paymentSlice.actions;
 export default paymentSlice.reducer;

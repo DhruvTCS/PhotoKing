@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Folder, NewFolder } from '../../../../Data/album.dto'
 import TestImageIcon from '../../../../assets/images/Extra/folderIconImage.png'
-import { useAppDispatch } from '../../../../Redux/Hooks'
+import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
 import { setCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice'
 import { useNavigate } from 'react-router-dom'
 import HideIconPNG from '../../../../assets/Icons/DropDownMenu/hide.png'
 import DeletePopup from '../Folder/DeletePopup'
 import DeleteIconPNG from '../../../../assets/Icons/SingleAlbum/delete.png'
 import HideFolderPopup from '../Folder/HidePopup'
-import LockIconPNG from '../../../../assets/Icons/DropDownMenu/Lock.png'
+
 import HideAlbumPNG from '../../../../assets/Icons/DropDownMenu/hideAlbumBig.png'
 
 import {
@@ -255,10 +255,14 @@ const FolderCard: React.FC<FolderCardProps> = ({
         dispatch(deleteFolderAPI({ folder_id: id }))
     }
 
-    const handleCardClick = (e: React.MouseEvent) => {
+    const handleCardClick = (e: React.MouseEvent, id: number) => {
         if (!menuOpen && folder) {
-            dispatch(setCurrentFolder(folder))
-            navigate(`/dashboard/albums/folder/${folder.id}`)
+            if (isUploadProgress(id)) {
+                showErrorToast('Please wait for upload progress.')
+            } else {
+                dispatch(setCurrentFolder(folder))
+                navigate(`/dashboard/albums/folder/${folder.id}`)
+            }
         }
     }
     const handleHideFolder = (
@@ -285,17 +289,20 @@ const FolderCard: React.FC<FolderCardProps> = ({
 
         setIsHidePopup(false)
     }
-    const handleReasonSubmit = () => {
-
-        console.log(reason, selectedReason)
+    const isUploadProgress = (id: number) => {
+        if (
+            uploadFolderProgress &&
+            uploadFolderProgress.length > 0 &&
+            uploadFolderProgress.find((folder) => folder.folderId === id)
+        ) {
+            return true
+        } else return false
     }
-    const handleReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedReason(parseInt(event.target.value));
-    };
+
     return (
         <div>
             {folder ? (
-                <CardContainer onClick={handleCardClick}>
+                <CardContainer onClick={(e) => handleCardClick(e, folder.id)}>
                     {/* <UpdateFolderModal isOpen={updateFolderModal} onRequestClose={() => setUpdateFolderModal(false)} currentFolder={folder} /> */}
                     <FolderHeader>
                         {isDeletePopup && (
@@ -342,7 +349,9 @@ const FolderCard: React.FC<FolderCardProps> = ({
                                 <MenuItem
                                     onClick={(e: React.MouseEvent) => {
                                         e.stopPropagation()
-                                        setIsDeletePopup(true)
+                                        if (isUploadProgress(folder.id))
+                                            showErrorToast('Please wait for image uploading')
+                                        else setIsDeletePopup(true)
                                     }}
                                 >
                                     <ItemIcon src={DeleteIconPNG} />

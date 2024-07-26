@@ -238,6 +238,8 @@ const EditAlbumPage: React.FC = () => {
         currentAlbum,
         folderLoading,
         isFolderChange,
+        updatedFolderList,
+        uploadFolderProgress
     } = useAppSelector((state) => state.album)
     const [createFolderModal, setCreateFolderModal] = useState(false)
     const navigate = useNavigate()
@@ -278,11 +280,11 @@ const EditAlbumPage: React.FC = () => {
         return () => { }
     }, [currentAlbum])
     useEffect(() => {
-        if (currentAlbum && isFolderChange) {
-
-            dispatch(getFoldersForAlbum(currentAlbum.id))
+        if (currentAlbum) {
+            if (updatedFolderList.find(folder => folder.project_id === currentAlbum.id))
+                dispatch(getFoldersForAlbum(currentAlbum.id))
         }
-    }, [isFolderChange])
+    }, [updatedFolderList])
     useEffect(() => {
         if (isError) {
             if (error && error.message) {
@@ -345,6 +347,10 @@ const EditAlbumPage: React.FC = () => {
         else return false
     }
     const isAlbumChange = () => {
+        console.log(album.name !== currentAlbum?.name ||
+            album.date !== currentAlbum?.date ||
+            album.image !== currentAlbum?.image ||
+            slectedImage !== null)
         // console.log(album.name !== currentAlbum?.name)
         if (
             album.name !== currentAlbum?.name ||
@@ -445,6 +451,11 @@ const EditAlbumPage: React.FC = () => {
             return album
         })
         setSelectedImage(null)
+    }
+    const isUploadProgress = (id: number) => {
+        if (uploadFolderProgress && uploadFolderProgress.length > 0 && uploadFolderProgress.find(folder => folder.folderId === id)) {
+            return true;
+        } else return false;
     }
 
     return (
@@ -568,13 +579,14 @@ const EditAlbumPage: React.FC = () => {
                 {loading ? (
                     <LoadingDots />
                 ) : (
-                    <SubmitButton
-                        width={291}
-                        text="Submit"
-                        needArrow={false}
-                        onClick={() => handleSubmit()}
-                        active={activeButton}
-                    ></SubmitButton>
+                    activeButton ? null :
+                        <SubmitButton
+                            width={291}
+                            text="Submit"
+                            needArrow={false}
+                            onClick={() => handleSubmit()}
+
+                        ></SubmitButton>
                 )}
             </SubmitButtonContainer>
         </AlbumPageContainer>

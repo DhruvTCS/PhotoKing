@@ -269,7 +269,7 @@ const SlectImageRadio = styled.input``;
 let urls: string[] = [];
 const UpdateFolderPage = () => {
   const dispatch = useAppDispatch();
-  const { currentFolder, isError, isFolderChange, folderLoading, error } = useAppSelector(state => state.album)
+  const { currentFolder, isError, isFolderChange, folderLoading, error, updatedFolderList, uploadFolderProgress } = useAppSelector(state => state.album)
   const [folder, setFolder] = useState<Folder>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
@@ -282,10 +282,11 @@ const UpdateFolderPage = () => {
   const [isImageSelected, setIsImageSelected] = useState(false);
   const [previewImageUrl, setPreviewImageUrl] = useState<string[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
-  const [popUpFunction, setPopUpFunction] = useState<{ fun: () => void }>();
   const [discardPopup, setDiscardPopup] = useState(false);
+  const [displayedImages, setDisplayImages] = useState<{ id: number, project_id: number, image: string, media_type: number }[]>([])
   const navigate = useNavigate();
   useEffect(() => {
+    console.log(urls);
     if (!currentFolder) {
       navigate(-1);
 
@@ -294,6 +295,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
+      setDisplayImages(currentFolder.images.slice(0, 30))
       setSelectedFolderImages([])
       setPreviewImageUrl([]);
     }
@@ -313,22 +315,30 @@ const UpdateFolderPage = () => {
 
     isUploadActiveButton();
   }, [newFolderImages, folderName])
+
   useEffect(() => {
     // // console.log("calling ++++")
-    if (isFolderChange && currentFolder) {
+    if (currentFolder) {
+      if (updatedFolderList.find(folder => folder.folder_id === currentFolder.id)) {
 
-      setSelectedFolderImages([])
-      setIsUpdate(false);
-      setIsImageSelected(false);
-      setNewFolderImages([]);
-      dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
+        setSelectedFolderImages([])
+        setIsUpdate(false);
+        setIsImageSelected(false);
+        setNewFolderImages([]);
+        dispatch(getSingleFolderAPI({ folder_id: currentFolder?.id }))
+      }
     }
-  }, [isFolderChange])
+  }, [updatedFolderList])
   useEffect(() => {
+
+    if (uploadFolderProgress && uploadFolderProgress.length > 0 && currentFolder && uploadFolderProgress.find(f => f.folderId === currentFolder.id)) {
+      navigate(-1);
+    }
+
     return () => {
       urls.forEach(link => URL.revokeObjectURL(link))
     }
-  }, [])
+  }, [uploadFolderProgress])
 
   const blobToFile = (blob: Blob, fileName: string): File => {
     return new File([blob], fileName, { type: blob.type });
@@ -353,20 +363,21 @@ const UpdateFolderPage = () => {
     // // console.log("calling")
     const files = event.target.files;
     if (!files) return;
-    if (files.length + newFolderImages.length > 20) {
-      showErrorToast('You can only upload up to 20 images at a time.');
+    if (files.length + newFolderImages.length > 100) {
+      showErrorToast('You can only select up to 100 images at a time.');
       return;
     }
     setCompresedImageLoading(true);
     const acceptedFiles = Array.from(files);
-    // // console.log(acceptedFiles);
+    console.log(acceptedFiles.length);
+    console.log("compress file size")
     const compressedFiles = await Promise.all(
       acceptedFiles.map(async (file) => {
 
         try {
           if (file.size / 1024 / 1024 > 3) {
 
-            const compressedBlob = await compressImage(file); // Your image compression function
+            const compressedBlob = await compressImage(file);
             const compressedFile = blobToFile(compressedBlob, file.name);
             // // console.log("compressed")
             return compressedFile;
@@ -410,21 +421,24 @@ const UpdateFolderPage = () => {
   }
   const handleUpdateFolder = () => {
     const formData = new FormData();
+    console.log(newFolderImages.length)
     formData.append('project_id', `${folder?.project_id}`)
-    formData.append('folder_id', `${folder?.id}`);
-    if (folderName)
-      formData.append('folder_name', folderName);
-    else
-      formData.append('folder_name', `${folder?.name}`);
-    newFolderImages.forEach((image, index) => {
-      formData.append(`media[${index}][image]`, image);
-      formData.append(`media[${index}][media_type]`, "1");
-    })
-    dispatch(updateFolderAPI(formData));
+    if (folder)
+      dispatch(updateFolderAPI({ project_id: folder.project_id, id: folder?.id, folder_name: folder.name, folderImages: newFolderImages }));
+    // formData.append('folder_id', `${folder?.id}`);
+    // if (folderName)
+    //   formData.append('folder_name', folderName);
+    // else
+    //   formData.append('folder_name', `${folder?.name}`);
+    // newFolderImages.forEach((image, index) => {
+    //   formData.append(`media[${index}][image]`, image);
+    //   formData.append(`media[${index}][media_type]`, "1");
+    // })
 
   }
   const deleteFolderImages = () => {
-    dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages }));
+    if (currentFolder)
+      dispatch(deleteFolderImagesAPI({ media_ids: selectedFolderImages, folder_id: currentFolder.id, project_id: currentFolder.project_id }));
 
     setDeleteModal(false);
   }
@@ -499,6 +513,21 @@ const UpdateFolderPage = () => {
       }
     }
   }
+  const loadMoreImages = () => {
+    const currentLength = displayedImages.length;
+    if (folderImages && currentLength < folderImages.length) {
+      console.log("called", currentLength)
+      const moreImages = folderImages.slice(currentLength, currentLength + 40);
+      setDisplayImages([...displayedImages, ...moreImages]);
+    }
+  };
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop === clientHeight) {
+      loadMoreImages()
+    }
+  };
   return (
     <PageConatiner>
       {discardPopup && <DiscardPopUp cancel={() => setDiscardPopup(false)} Delete={() => DiscardAllChanges()} />}
@@ -524,7 +553,7 @@ const UpdateFolderPage = () => {
             <SelectImageLabel htmlFor='selecheck' isCheck={isImageSelected}>Select Images</SelectImageLabel>
           </SelectImageRadioConatiner>
         </InputContainer>
-        <Conatiner2>
+        <Conatiner2 onScroll={handleScroll}>
           <ImageUploadContainer onClick={() => { if (!compresedImageLoading) ImageUploadCheck() }}>
             {
               compresedImageLoading ?
@@ -559,10 +588,10 @@ const UpdateFolderPage = () => {
 
           }
           {
-            folderImages && folderImages.length !== 0 ?
-              folderImages.map((image, index) => (
+            folderImages && folderImages.length !== 0 && displayedImages.length !== 0 ?
+              displayedImages.map((image, index) => (
                 <ImagePreview key={index} onClick={() => { if (isImageSelected) handleSelectedImage(image.id, image.image) }}>
-                  <PreviewImage src={image.image} alt="preview" />
+                  <PreviewImage src={image.image} alt="preview" loading='lazy' />
                   {
                     isImageSelected && <SelectedIconContainer  >
                       {
