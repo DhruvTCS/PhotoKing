@@ -101,13 +101,33 @@ font-weight: 500;
 line-height: 34px;
 text-align: left;
 margin-left:10px;
+cursor:pointer;
 
 `
 const ReasonInput = styled.input`
-width: 20px;
-height: 20px;
-
-
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+ &:checked::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #AE2AB1; /* Change this to your desired color */
+    position: absolute;
+    top: 50%;
+    left: 51%;
+    transform: translate(-50%, -50%);
+  }
 `
 
 const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonChange, reason, setReason, setShowReasonModal, handleSubmit }) => {
@@ -121,11 +141,12 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
                     <ReasonLabelContainer>
                         <ReasonInput
                             type="radio"
+                            id="radio1"
                             value={1}
                             checked={selectedReason === 1}
                             onChange={handleReasonChange}
                         />
-                        <ReasonLabel>
+                        <ReasonLabel htmlFor='radio1'>
 
                             For relate to security
                         </ReasonLabel>
@@ -134,11 +155,12 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
                     <ReasonLabelContainer>
                         <ReasonInput
                             type="radio"
+                            id="radio2"
                             value={2}
                             checked={selectedReason === 2}
                             onChange={handleReasonChange}
                         />
-                        <ReasonLabel>
+                        <ReasonLabel htmlFor='radio2'>
 
                             For team member only
                         </ReasonLabel>
@@ -147,11 +169,12 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
                     <ReasonLabelContainer>
                         <ReasonInput
                             type="radio"
+                            id="radio3"
                             value={3}
                             checked={selectedReason === 3}
                             onChange={handleReasonChange}
                         />
-                        <ReasonLabel>
+                        <ReasonLabel htmlFor='radio3'>
 
                             For personal use
                         </ReasonLabel>
@@ -161,10 +184,11 @@ const ReasonModal: React.FC<ReasonModalProps> = ({ selectedReason, handleReasonC
                         <ReasonInput
                             type="radio"
                             value={4}
+                            id="radio4"
                             checked={selectedReason === 4}
                             onChange={handleReasonChange}
                         />
-                        <ReasonLabel>
+                        <ReasonLabel htmlFor='radio4'>
 
                             Other
                         </ReasonLabel>

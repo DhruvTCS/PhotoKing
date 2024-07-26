@@ -347,6 +347,10 @@ const EditAlbumPage: React.FC = () => {
         else return false
     }
     const isAlbumChange = () => {
+        console.log(album.name !== currentAlbum?.name ||
+            album.date !== currentAlbum?.date ||
+            album.image !== currentAlbum?.image ||
+            slectedImage !== null)
         // console.log(album.name !== currentAlbum?.name)
         if (
             album.name !== currentAlbum?.name ||
@@ -575,13 +579,14 @@ const EditAlbumPage: React.FC = () => {
                 {loading ? (
                     <LoadingDots />
                 ) : (
-                    <SubmitButton
-                        width={291}
-                        text="Submit"
-                        needArrow={false}
-                        onClick={() => handleSubmit()}
-                        active={activeButton}
-                    ></SubmitButton>
+                    activeButton ? null :
+                        <SubmitButton
+                            width={291}
+                            text="Submit"
+                            needArrow={false}
+                            onClick={() => handleSubmit()}
+
+                        ></SubmitButton>
                 )}
             </SubmitButtonContainer>
         </AlbumPageContainer>

@@ -39,6 +39,7 @@ export const FolderReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
         .addCase(createFolderAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.isFolderChange = true;
             state.folderLoading = false;
+            showSuccessToast("Folder is successfully created.")
         })
         .addCase(createFolderAPI.rejected, (state, action: PayloadAction<any>) => {
             state.folderLoading = false;
