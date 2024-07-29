@@ -254,6 +254,7 @@ const EventCreateModal: React.FC<ModalProps> = ({
         buttonAction()
     }
     const handleAddSubEvents = (subEvent: CalendarSubEvents) => {
+        console.log(subEvent)
         let filteredSubEvents = subEvents.filter((e) => e.id !== subEvent.id)
         setSubEvents([...filteredSubEvents, subEvent])
         const notIncludedmembers = subEvent.members.filter(

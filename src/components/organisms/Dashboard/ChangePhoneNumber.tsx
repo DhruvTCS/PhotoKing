@@ -243,51 +243,54 @@ const ChangePhoneNumber: React.FC = () => {
                 <BackButtonIcon src={BackButtonIconPng} onClick={() => navigate(-1)} />
                 <BackButtonText>Back</BackButtonText>
             </BackButtonContainer>
-            <ChangePhoneHeader>
-                <ChangePhoneText>
-                    Change Phone Number
-                </ChangePhoneText>
-            </ChangePhoneHeader>
-            <InputContainer>
-                <InputField>
+            <div style={{ "background": "#ffffffb0", "padding": "20px", "borderRadius": "10px", "width": "95%" }}>
 
-                    <InputLabel>
-                        Current Phone Number
-                    </InputLabel>
-                    <Input readOnly={true} id='current_number' name='current_number' type='text' value={"+91   " + currentNumber} />
-                    <UnderLine width={100} isPercent={true} />
-                </InputField>
+                <ChangePhoneHeader>
+                    <ChangePhoneText>
+                        Change Phone Number
+                    </ChangePhoneText>
+                </ChangePhoneHeader>
+                <InputContainer>
+                    <InputField>
 
-
-                <InputField>
-                    <InputLabel>
-                        New Phone Number
-                    </InputLabel>
-                    <InputContact>
-                        <CountryCode readOnly={true} id='countryCode' name='countryCode' type='text' value={"+91"} />
-                        <Input id='new_number' name='current_number' type='number' value={newNumber} onChange={(e) => { if (e.target.value.length <= 10) setNewNumber(e.target.value) }} readOnly={changePhonenumberOrderId ? true : false} />
-                    </InputContact>
-                    <UnderLine width={100} isPercent={true} />
-                    <Errortext show={showError && !validatePhoneNumber()} message={'Provide valid phone number.'} />
-                </InputField>
+                        <InputLabel>
+                            Current Phone Number
+                        </InputLabel>
+                        <Input readOnly={true} id='current_number' name='current_number' type='text' value={"+91   " + currentNumber} />
+                        <UnderLine width={100} isPercent={true} />
+                    </InputField>
 
 
-                <InputField>
-                    <InputLabel>
-                        OTP
-                    </InputLabel>
-                    <Input id='current' name='current_number' type='number' value={otp} onChange={(e) => { if (e.target.value.length <= 4 && changePhonenumberOrderId) setOtp(e.target.value) }} />
-                    <UnderLine width={100} isPercent={true} />
-                    <Errortext show={(changePhonenumberOrderId ? true : false) && showError && !handleValidateOTP()} message={'Provide valid 4 digit OTP.'} />
-                </InputField>
-
-            </InputContainer>
-            <SubmitButtonContainer>
-                {loading ? <LoadingDots /> : changePhonenumberOrderId ? <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} /> : <SubmitButton width={291} text='Send OTP' needArrow={false} onClick={() => handleSendOTP()} />}
-
+                    <InputField>
+                        <InputLabel>
+                            New Phone Number
+                        </InputLabel>
+                        <InputContact>
+                            <CountryCode readOnly={true} id='countryCode' name='countryCode' type='text' value={"+91"} />
+                            <Input id='new_number' name='current_number' type='number' value={newNumber} onChange={(e) => { if (e.target.value.length <= 10) setNewNumber(e.target.value) }} readOnly={changePhonenumberOrderId ? true : false} />
+                        </InputContact>
+                        <UnderLine width={100} isPercent={true} />
+                        <Errortext show={showError && !validatePhoneNumber()} message={'Provide valid phone number.'} />
+                    </InputField>
 
 
-            </SubmitButtonContainer>
+                    <InputField>
+                        <InputLabel>
+                            OTP
+                        </InputLabel>
+                        <Input id='current' name='current_number' type='number' value={otp} onChange={(e) => { if (e.target.value.length <= 4 && changePhonenumberOrderId) setOtp(e.target.value) }} />
+                        <UnderLine width={100} isPercent={true} />
+                        <Errortext show={(changePhonenumberOrderId ? true : false) && showError && !handleValidateOTP()} message={'Provide valid 4 digit OTP.'} />
+                    </InputField>
+
+                </InputContainer>
+                <SubmitButtonContainer>
+                    {loading ? <LoadingDots /> : changePhonenumberOrderId ? <SubmitButton width={291} text='Submit' needArrow={false} onClick={() => handleSubmit()} /> : <SubmitButton width={291} text='Send OTP' needArrow={false} onClick={() => handleSendOTP()} />}
+
+
+
+                </SubmitButtonContainer>
+            </div>
         </Container>
     )
 }

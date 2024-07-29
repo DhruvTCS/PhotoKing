@@ -20,15 +20,24 @@ export interface UserState {
     isAuthticated: boolean;
     access_token: string | null;
     refresh_token: string | null;
+    isUserChanged: boolean;
     remeberMe: boolean;
     otp?: string;
     subscription_plans?: any;
+    SocialLinks: {
+        website?: string;
+        facebook_link?: string;
+        insta_link?: string;
+        youtube_link?: string;
+    }
+    isSocialChanged: boolean;
 
 }
 
 const initialState: UserState = {
     user: null,
     loading: false,
+    isUserChanged: true,
     error: {},
     isError: false,
     apiStatus: false,
@@ -40,6 +49,8 @@ const initialState: UserState = {
     refresh_token: null,
     remeberMe: false,
     isRegister: false,
+    SocialLinks: {},
+    isSocialChanged: true,
 
 };
 

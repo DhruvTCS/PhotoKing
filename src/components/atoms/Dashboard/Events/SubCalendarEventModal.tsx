@@ -349,7 +349,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
 
 }) => {
   const [eventName, setEventName] = useState<string>('')
-  const [id, SetId] = useState<number>(currentLength + 1)
+  const [id, SetId] = useState<number>(0 - (currentLength + 1))
   const [eventLocation, setEventLocation] = useState<string>('')
   const [locationPickerModal, setLocationPickerModal] = useState<boolean>(false)
   const [isLocationListOpen, setIsLocationListOpen] = useState(false)
@@ -495,6 +495,7 @@ const SubCalendarEventModal: React.FC<SubEventModalProps> = ({
         end_date: end_date,
         end_time: end_time,
         // sub_event_coordinates: "test coordinates",
+        // for not making same id to new event with existing 
         id: id,
         members: [
           ...selectedMembers.map((member) => {
