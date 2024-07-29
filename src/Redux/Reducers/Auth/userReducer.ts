@@ -5,6 +5,8 @@ import { refreshAccessToken } from '../../ApiCalls/Auth/refreshToken';
 import store from '../../Store';
 import { clearError as clearAlbumError } from '../../Slice/Dashboard/AlbumSlice';
 import { clearError as clearMemberError } from '../../Slice/Dashboard/MemberSlice'
+import { getBusinessDetailsAPI, updateUserDetailsAPI } from '../../ApiCalls/Auth/user';
+import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(getUserByToken.pending, (state) => {
         state.loading = true;
@@ -14,6 +16,7 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             state.loading = false;
             // console.log("payload")
             // console.log(action.payload)
+
             if (action.payload.role === null) {
                 state.isError = true;
                 state.error = {
@@ -28,6 +31,7 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
                 }
             } else {
                 state.user = action.payload;
+                state.isUserChanged = false;
                 state.access_token = localStorage.getItem('access_token');
                 state.refresh_token = localStorage.getItem('refresh_token');
                 state.isAuthticated = true;
@@ -41,31 +45,55 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             // console.log(action.payload);
             state.error = action.payload;
         })
-    // .addCase(refreshAccessToken.pending, (state) => {
-    //     state.loading = true;
-    //     state.error = {};
-    //     state.isError = false;
+        .addCase(getBusinessDetailsAPI.pending, (state) => {
+            state.loading = true;
+            state.error = {};
+            state.isError = false;
 
-    // })
-    // .addCase(refreshAccessToken.fulfilled, (state, action: PayloadAction<any>) => {
-    //     state.access_token = action.payload;
-    //     state.loading = false;
-    //     state.isError = false;
-    //     state.error = {};
-    //     store.dispatch(clearAlbumError());
-    //     store.dispatch(clearMemberError());
+        })
+        .addCase(getBusinessDetailsAPI.fulfilled, (state, action: PayloadAction<{
+            business_details: {
+                website: string,
+                facebook_link: string,
+                insta_link: string,
+                youtube_link: string
+            }
+        }>) => {
+            state.loading = false;
+            if (action.payload.business_details.website)
+                state.SocialLinks.website = action.payload.business_details.website
+            if (action.payload.business_details.facebook_link)
+                state.SocialLinks.facebook_link = action.payload.business_details.facebook_link
+            if (action.payload.business_details.insta_link)
+                state.SocialLinks.insta_link = action.payload.business_details.insta_link
+            if (action.payload.business_details.youtube_link)
+                state.SocialLinks.youtube_link = action.payload.business_details.youtube_link
+            state.isSocialChanged = false
+        })
+        .addCase(getBusinessDetailsAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            // state.isError = true;
 
-    //     if (localStorage.getItem('access_token')) {
-    //         localStorage.setItem('access_token', action.payload);
-    //     }
+            // // console.log(action.payload);
+            // state.error = action.payload;
+        })
+        .addCase(updateUserDetailsAPI.pending, (state) => {
+            state.loading = true;
+            state.error = {};
+            state.isError = false;
 
-    // })
-    // .addCase(refreshAccessToken.rejected, (state, action: PayloadAction<any>) => {
-    //     state.loading = false;
-    //     state.isError = true;
+        })
+        .addCase(updateUserDetailsAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            showSuccessToast("User updated successfully.")
+            state.isUserChanged = true;
+            state.isSocialChanged = true;
+        })
+        .addCase(updateUserDetailsAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            // state.isError = true;
 
-    //     // console.log(action.payload);
-    //     state.error = action.payload;
-    // })
+            // // console.log(action.payload);
+            // state.error = action.payload;
+        })
 
 };

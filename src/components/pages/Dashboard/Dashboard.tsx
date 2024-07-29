@@ -74,7 +74,7 @@ height:100%;
 // z-index:1;
 `
 const Dashboard: React.FC = () => {
-    const { isAuthticated, user, access_token, refresh_token, isError, error } = useAppSelector(state => state.auth);
+    const { isAuthticated, user, access_token, refresh_token, isError, error, isUserChanged } = useAppSelector(state => state.auth);
     const navigate = useNavigate()
     const [isExpand, setIsexpand] = useState(true);
     const toggelExpand = () => {
@@ -106,6 +106,11 @@ const Dashboard: React.FC = () => {
             dispatch(clearError());
         }
     }, [isError, isAuthticated, dispatch])
+    useEffect(() => {
+        if (isUserChanged) {
+            dispatch(getUserByToken());
+        }
+    }, [isUserChanged])
 
     return (
         <DashboardContainer>

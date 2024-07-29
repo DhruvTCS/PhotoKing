@@ -5,7 +5,7 @@ import EventFormPNG from '../../../../assets/Icons/Sidebar/calendar.png'
 import LogOutPNG from '../../../../assets/Icons/Sidebar/logout.png'
 import { useLocation, useNavigate } from 'react-router-dom';
 import ShareEventFormLinkPopup from '../../../atoms/Dashboard/Navbar/ShareFormLinkPopup';
-
+import UserIconPNG from '../../../../assets/Icons/addMemebrIcon.png'
 import { useAppDispatch } from '../../../../Redux/Hooks'
 import { clearToken } from '../../../../Redux/Slice/Auth/AuthSlice'
 import LogoutPopup from '../../../atoms/Dashboard/HomePage/LogOutPopUp'
@@ -38,7 +38,7 @@ const DropdownMenu = styled.div<{ menuOpen: boolean }>`
   right: -4px;
   background: white;
   width: 225px;
-  height: 130px;
+  height: 171px;
   z-index: 5;
   border-radius: 10px;
   display: ${({ menuOpen }) => (menuOpen ? 'block' : 'none')};
@@ -117,6 +117,11 @@ const ProfileMenu: React.FC<{ menuOpen: boolean, setMenuOpen: (boolean: boolean)
       <MenuItem onClick={() => navigate('/dashboard/user/changePhoneNumber')}>
         <ItemIcon src={PhonePNG} />
         <ItemName>Change Phone Number</ItemName>
+      </MenuItem>
+      <Hr />
+      <MenuItem onClick={() => navigate('/dashboard/user/profile')}>
+        <ItemIcon src={UserIconPNG} />
+        <ItemName>Profile</ItemName>
       </MenuItem>
       <Hr />
 
