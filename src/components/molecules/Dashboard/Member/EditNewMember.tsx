@@ -237,7 +237,7 @@ const EditMemberPage: React.FC = () => {
         const options = {
             maxSizeMB: 1,          // Maximum size in MB
             maxWidthOrHeight: 1920, // Max width or height
-            useWebWorker: true      // Use web worker for faster compression
+            useWebWorker: false      // Use web worker for faster compression
         };
 
         try {

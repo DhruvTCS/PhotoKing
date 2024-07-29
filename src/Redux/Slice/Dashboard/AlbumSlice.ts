@@ -34,6 +34,7 @@ export interface AlbumState {
     isSearchData: boolean
     uploadFolderProgress: UpdatingFolder[]
     updatedFolderList: UpdatedFolderType[]
+    currentCompressingFolder: UpdatingFolder[]
 }
 
 const initialState: AlbumState = {
@@ -52,6 +53,7 @@ const initialState: AlbumState = {
     redeemUsers: [],
     uploadFolderProgress: [],
     updatedFolderList: [],
+    currentCompressingFolder: []
 }
 
 const albumSlice = createSlice({
@@ -165,6 +167,21 @@ const albumSlice = createSlice({
                 (folder) => folder.project_id !== action.payload.project_id,
             )
         },
+        addToCompressingFolder(state, action: PayloadAction<{ folderId: number, folderName: string, totalProgress: number }>) {
+            let flag = false;
+            state.currentCompressingFolder.forEach(folder => {
+                if (folder.folderId === action.payload.folderId) {
+                    folder.totalProgress = action.payload.totalProgress
+                    flag = true;
+                    return;
+                }
+            })
+            if (!flag) state.currentCompressingFolder.push(action.payload);
+        },
+        removeFromCompressingFolder(state, action: PayloadAction<number>) {
+            state.currentCompressingFolder = state.currentCompressingFolder.filter(folder => folder.folderId !== action.payload);
+        }
+
     },
     extraReducers: (builder) => {
         AlbumReducer(builder)
@@ -189,7 +206,9 @@ export const {
     removeCurrentFolder,
     addToUpdatedFolders,
     removeFolderFromUpdateList,
-    removeAllFolderFromUpdateListForSingleAlbum
+    removeAllFolderFromUpdateListForSingleAlbum,
+    addToCompressingFolder,
+    removeFromCompressingFolder
 } = albumSlice.actions
 
 export default albumSlice.reducer

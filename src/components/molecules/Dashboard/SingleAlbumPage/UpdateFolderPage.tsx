@@ -14,7 +14,7 @@ import SelectedIconPNG from '../../../../assets/Icons/tick.png'
 import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup';
 import { deleteFolderImagesAPI, getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import DiscardPopUp from '../../../atoms/Dashboard/Folder/DiscardSelectedImagesPopup';
-import { removeCurrentFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import { addToCompressingFolder, removeCurrentFolder, removeFromCompressingFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
 
 
 const PageConatiner = styled.div`
@@ -303,9 +303,9 @@ const UpdateFolderPage = () => {
   const [workers, setWorkers] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
 
-    console.log(worker)
+
+
     if (!currentFolder) {
       navigate(-1);
 
@@ -366,7 +366,7 @@ const UpdateFolderPage = () => {
 
   const compressImage = async (file: File): Promise<Blob> => {
     const options = {
-      maxSizeMB: 2,          // Maximum size in MB
+      maxSizeMB: 3,          // Maximum size in MB
       maxWidthOrHeight: 1920, // Max width or height
       useWebWorker: false      // Use web worker for faster compression
     };
@@ -383,10 +383,10 @@ const UpdateFolderPage = () => {
     // // console.log("calling")
     const files = event.target.files;
     if (!files) return;
-    if (files.length + newFolderImages.length > 100) {
-      showErrorToast('You can only select up to 100 images at a time.');
-      return;
-    }
+    // if (files.length + newFolderImages.length > 100) {
+    //   showErrorToast('You can only select up to 100 images at a time.');
+    //   return;
+    // }
     setCompresedImageLoading(true);
 
 
@@ -397,18 +397,37 @@ const UpdateFolderPage = () => {
 
     // worker.postMessage("hey from worker");
     const fileArray = Array.from(files);
-    const chunkSize = Math.ceil(fileArray.length / 3);
+    const chunkSize = Math.ceil(fileArray.length / 2);
     const imageChunks = splitArrayIntoChunks(fileArray, chunkSize);
+    const totalFilesLength = fileArray.length;
+    let totalCompletedFiles = 0
+    if (currentFolder)
+      dispatch(addToCompressingFolder({ folderId: currentFolder.id, folderName: currentFolder.name, totalProgress: 0.01 }))
 
     const workerPromises = imageChunks.map((chunk, index) => {
       return new Promise<File[]>((resolve) => {
         const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
         worker.onmessage = (e) => {
-          resolve(e.data);
+          // console.log(e)
+          if (e.data.type === "progress") {
+            totalCompletedFiles += e.data.completedFiles;
+            // console.log()
+            // console.log("compressed completed", totalCompletedFiles);
+            if (currentFolder)
+              dispatch(addToCompressingFolder({ folderId: currentFolder.id, folderName: currentFolder.name, totalProgress: (totalCompletedFiles / totalFilesLength) * 100 }))
+          } else if (e.data.type === "complete") {
+            resolve(e.data.files);
+
+          }
         };
+
         worker.postMessage({ files: chunk, work: index });
       });
     });
+
+
+
+
 
     // const compressedFiles = await Promise.all(
     //   // acceptedFiles.map(async (file) => {
@@ -430,6 +449,7 @@ const UpdateFolderPage = () => {
     //   //   }
     //   // })
     // );
+    // console.log(workerPromises1)0
     const result = await Promise.all(workerPromises);
     const compressedFiles = result.flat()
     setCompresedImageLoading(false);
@@ -445,6 +465,8 @@ const UpdateFolderPage = () => {
     })
 
     setNewFolderImages((prev) => [...prev, ...validCompressedFiles]);
+    if (currentFolder)
+      dispatch(removeFromCompressingFolder(currentFolder.id))
   };
   const splitArrayIntoChunks = (arr: any[], chunkSize: number) => {
     const chunks = [];
