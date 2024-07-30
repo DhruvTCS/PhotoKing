@@ -29,6 +29,7 @@ export interface Folder {
         id: number;
         project_id: number;
         image: string;
+        thumbnail: string
         media_type: number;
     }[]
 

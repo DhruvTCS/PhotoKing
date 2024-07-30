@@ -31,6 +31,7 @@ export interface CalendarSubEvents {
     end_date: string;
     end_time: string;
     location_coordinates?: string,
+    isNew?: boolean;
     members: {
         id: number,
         member: number,
