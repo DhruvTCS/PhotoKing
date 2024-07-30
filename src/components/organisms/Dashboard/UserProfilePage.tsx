@@ -122,6 +122,9 @@ const UserProfilePage: React.FC = () => {
     const onChangeData = (name: string, value: string) => {
         if (name === 'name') {
             if (value.length < 25) setUserName(value)
+        }
+        else if (name === "email") {
+            if (value.length < 25) setUserEmail(value)
         } else if (name === 'email') {
             if (true) setUserEmail(value)
         } else if (name === 'website') {
@@ -152,13 +155,21 @@ const UserProfilePage: React.FC = () => {
         return pattern.test(url)
     }
     const isDataChange = () => {
-        if (userName !== user?.name && userEmail !== user?.email) return true
+        if (userName !== user?.name || userEmail !== user?.email) return true
         else return false
+    }
+    const isValidEmail = (value: string) => {
+        let validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (value.match(validRegex)) return true;
+        else return false;
     }
     const isValidData = (name: string) => {
         if (name == "name") {
             if (userName.length > 0) return true
             else return false
+        } else if (name === "email") {
+            if (userEmail.length > 0 && isValidEmail(userEmail)) return true;
+            else return false;
         } else if (name === "website") {
             if (userWebsite && userWebsite.length > 0 && isValidURL(userWebsite)) return true
             else return false
@@ -228,10 +239,12 @@ const UserProfilePage: React.FC = () => {
     }
 
     function handleSubmit(): void {
-        if (isValidData("name") && isValidData("youtube") && isValidData("insta") && isValidData("facebook") && isValidData("website")) {
+        if (isValidData("name") && isValidData("youtube") && isValidData("email") && isValidData("insta") && isValidData("facebook") && isValidData("website")) {
             const formData = new FormData();
 
             formData.append("name", userName)
+            if (userEmail !== user?.email)
+                formData.append("email", userEmail)
             if (userWebsite)
                 formData.append("website", userWebsite)
             if (userInsta)
@@ -306,10 +319,11 @@ const UserProfilePage: React.FC = () => {
                             </LabelContainer>
                             <InputDiv>
                                 <InputIcon src={EmailIconPNG} />
-                                <Input value={userEmail} />
+                                <Input value={userEmail} onChange={(e) => onChangeData('email', e.target.value)} />
                             </InputDiv>
                         </InputDataContainer>
                         <UnderLine width={100} isPercent={true} />
+                        <Errortext message='Please provide valid email' show={showError && !isValidData("email")} />
                     </InputContainer>
                     {/* <InputContainer>
                         <InputDataContainer>
