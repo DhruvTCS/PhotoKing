@@ -23,6 +23,7 @@ export const OTPVerificationReducer = (builder: ActionReducerMapBuilder<UserStat
                     username: string;
                     role: number;
                     image: string | null;
+                    is_email_verified: boolean
 
                 }
             }

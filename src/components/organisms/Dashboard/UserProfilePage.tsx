@@ -16,7 +16,7 @@ import FaceBookIconPNG from '../../../assets/Icons/SocialMedia/facebookIcon.png'
 import InstaIconPNG from '../../../assets/Icons/SocialMedia/instaIcon.png'
 import WebsiteIconPNG from '../../../assets/Icons/SocialMedia/websiteIcon.png'
 import YoutubeIconPNG from '../../../assets/Icons/SocialMedia/youtubeIcon.png'
-import { getBusinessDetailsAPI, updateUserDetailsAPI } from '../../../Redux/ApiCalls/Auth/user'
+import { getBusinessDetailsAPI, updateUserDetailsAPI, verifyEmailLinkAPI } from '../../../Redux/ApiCalls/Auth/user'
 import Errortext from '../../atoms/Utlis/Errortext'
 import LoadingDots from '../../atoms/Utlis/LoadinDots'
 const UserProfilePage: React.FC = () => {
@@ -249,6 +249,13 @@ const UserProfilePage: React.FC = () => {
             setShowError(true);
         }
     }
+
+    const handleVerifyEmail = (email: string) => {
+        console.log(email)
+        dispatch(verifyEmailLinkAPI({ email }))
+    }
+    if (!user)
+        return null;
     return (
         <Container>
             <BackButtonContainer>
@@ -292,7 +299,11 @@ const UserProfilePage: React.FC = () => {
                     </InputContainer>
                     <InputContainer>
                         <InputDataContainer>
-                            <Label>Email </Label>
+                            <LabelContainer>
+
+                                <Label>Email </Label>
+                                <VerifyButton onClick={() => handleVerifyEmail(user.email)}>{user?.is_email_verified ? `Verified` : 'Verify Email'}</VerifyButton>
+                            </LabelContainer>
                             <InputDiv>
                                 <InputIcon src={EmailIconPNG} />
                                 <Input value={userEmail} />
@@ -544,26 +555,6 @@ const DataContainer = styled.div`
   padding: 30px;
   justify-content: space-between;
 `
-
-const JobTypeSelect = styled.select`
-  width: 475px;
-  border: none;
-  background-color: transparent;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 17.07px;
-  text-align: left;
-  &:focus {
-    outline: none;
-  }
-`
-const SelectionOption = styled.option`
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 17.07px;
-`
 const SubmitButtonContainer = styled.div`
   display: flex;
   align-tems: center;
@@ -574,6 +565,26 @@ const SubmitButtonContainer = styled.div`
 const InputFields = styled.div`
   text-align: left;
 `
+const LabelContainer = styled.div`
+
+display:flex;
+align-items: baseline;
+width: 92%;
+justify-content: space-between;
+`;
+
+const VerifyButton = styled.button`
+background-color:transparent;
+border:1px solid #AE2AB1;
+border-radius:10px;
+color:#AE2AB1;
+padding:4px;
+cursor:pointer;
+font-family: Urbanist, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  margin-left:20px;
+`;
 const Label = styled.label`
   font-family: Urbanist, sans-serif;
   font-size: 15px;

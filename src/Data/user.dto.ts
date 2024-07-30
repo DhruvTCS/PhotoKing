@@ -7,6 +7,7 @@ export interface User {
     name: string;
     image: string | null;
     username: string;
+    is_email_verified: boolean;
 }
 export interface Notification {
     id: number;
