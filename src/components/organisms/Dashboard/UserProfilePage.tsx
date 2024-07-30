@@ -315,7 +315,7 @@ const UserProfilePage: React.FC = () => {
                             <LabelContainer>
 
                                 <Label>Email </Label>
-                                <VerifyButton onClick={() => handleVerifyEmail(user.email)}>{user?.is_email_verified ? `Verified` : 'Verify Email'}</VerifyButton>
+                                <VerifyButton isVerify={user.is_email_verified} onClick={() => { if (!user.is_email_verified) handleVerifyEmail(user.email) }}>{user?.is_email_verified ? `Verified` : 'Verify Email'}</VerifyButton>
                             </LabelContainer>
                             <InputDiv>
                                 <InputIcon src={EmailIconPNG} />
@@ -539,7 +539,7 @@ const Input = styled.input`
   font-weight: 500;
   line-height: 19.5px;
   text-align: left;
-  width: 350px;
+  width: 100%;
 
   border: none;
   &:focus {
@@ -562,6 +562,7 @@ const JobTypeContainer = styled.div`
 const InputDataContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width:100%;
 `
 const DataContainer = styled.div`
   display: flex;
@@ -587,11 +588,11 @@ width: 92%;
 justify-content: space-between;
 `;
 
-const VerifyButton = styled.button`
+const VerifyButton = styled.button<{ isVerify: boolean }>`
 background-color:transparent;
-border:1px solid #AE2AB1;
+border:1px solid ${props => props.isVerify ? `green` : 'red'};
 border-radius:10px;
-color:#AE2AB1;
+color:${props => props.isVerify ? `green` : 'red'};
 padding:4px;
 cursor:pointer;
 font-family: Urbanist, sans-serif;
