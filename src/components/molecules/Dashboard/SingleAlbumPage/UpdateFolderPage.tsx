@@ -15,6 +15,7 @@ import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup';
 import { deleteFolderImagesAPI, getSingleFolderAPI, updateFolderAPI } from '../../../../Redux/ApiCalls/Dashboard/FolderApi';
 import DiscardPopUp from '../../../atoms/Dashboard/Folder/DiscardSelectedImagesPopup';
 import { addToCompressingFolder, removeCurrentFolder, removeFromCompressingFolder } from '../../../../Redux/Slice/Dashboard/AlbumSlice';
+import ImageWithSkeleton from '../../../atoms/Dashboard/Folder/ImageWraper';
 
 
 const PageConatiner = styled.div`
@@ -291,7 +292,7 @@ const UpdateFolderPage = () => {
   const [newFolderImages, setNewFolderImages] = useState<File[]>([]);
   const [folderName, setFolderName] = useState<string>();
   const [selectedFolderImages, setSelectedFolderImages] = useState<number[]>([]);
-  const [folderImages, setFolderImages] = useState<{ id: number, project_id: number, image: string, media_type: number }[]>()
+  const [folderImages, setFolderImages] = useState<{ id: number, thumbnail: string, project_id: number, image: string, media_type: number }[]>()
   const [compresedImageLoading, setCompresedImageLoading] = useState(false);
   const [activeUploadButton, setActiveUploadButton] = useState(true);
   const [deletModal, setDeleteModal] = useState(false);
@@ -299,7 +300,9 @@ const UpdateFolderPage = () => {
   const [previewImageUrl, setPreviewImageUrl] = useState<string[]>([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [discardPopup, setDiscardPopup] = useState(false);
-  const [displayedImages, setDisplayImages] = useState<{ id: number, project_id: number, image: string, media_type: number }[]>([])
+  const [displayedImages, setDisplayImages] = useState<{
+    thumbnail: string; id: number, project_id: number, image: string, media_type: number
+  }[]>([])
   const [workers, setWorkers] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
@@ -403,10 +406,12 @@ const UpdateFolderPage = () => {
     let totalCompletedFiles = 0
     if (currentFolder)
       dispatch(addToCompressingFolder({ folderId: currentFolder.id, folderName: currentFolder.name, totalProgress: 0.01 }))
-
+    let workersThread: any = []
     const workerPromises = imageChunks.map((chunk, index) => {
       return new Promise<File[]>((resolve) => {
         const worker = new Worker(new URL("./myWorker.worker.ts", import.meta.url))
+        workersThread.push(worker);
+
         worker.onmessage = (e) => {
           // console.log(e)
           if (e.data.type === "progress") {
@@ -457,7 +462,7 @@ const UpdateFolderPage = () => {
     // Filter out any undefined values
 
     const validCompressedFiles = compressedFiles.filter((file): file is File => file !== undefined);
-    result.forEach
+    console.log(validCompressedFiles)
     let previewURL = validCompressedFiles.map(file => URL.createObjectURL(file))
     setPreviewImageUrl(pre => {
       urls = [...pre, ...previewURL]
@@ -467,6 +472,9 @@ const UpdateFolderPage = () => {
     setNewFolderImages((prev) => [...prev, ...validCompressedFiles]);
     if (currentFolder)
       dispatch(removeFromCompressingFolder(currentFolder.id))
+    workersThread.forEach((worker: any) => {
+      worker.terminate();
+    })
   };
   const splitArrayIntoChunks = (arr: any[], chunkSize: number) => {
     const chunks = [];
@@ -666,7 +674,8 @@ const UpdateFolderPage = () => {
             folderImages && folderImages.length !== 0 && displayedImages.length !== 0 ?
               displayedImages.map((image, index) => (
                 <ImagePreview key={index} onClick={() => { if (isImageSelected) handleSelectedImage(image.id, image.image) }}>
-                  <PreviewImage src={image.image} alt="preview" loading='lazy' />
+                  <ImageWithSkeleton imgURL={image.thumbnail} />
+                  {/* <PreviewImage src={image.image} alt="preview" loading='lazy' /> */}
                   {
                     isImageSelected && <SelectedIconContainer  >
                       {

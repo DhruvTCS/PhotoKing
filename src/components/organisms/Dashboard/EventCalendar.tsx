@@ -45,20 +45,19 @@ const EventCalendar: React.FC = () => {
     )
     const dispatch = useAppDispatch()
     useEffect(() => {
-        // const timeout = setTimeout(() => {
+        const timeout = setTimeout(() => {
 
-        // console.log(currentQuarter);
-        fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
-        // }, 500)
-
+            console.log(currentQuarter);
+            fetchAndSetEvents(currentQuarter.start, currentQuarter.end);
+        }, 700)
+        console.log("called")
         return () => {
-            // clearTimeout(timeout);
+            clearTimeout(timeout);
         }
     }, [currentQuarter]);
 
     useEffect(() => {
-        // // console.log(convertToDateTime("2024/07/15", "14:00:00"))
-        // // console.log("+++++++++++++++++++++++++++++++++++++++")
+
         if (!members && !isMemberFetched) {
             dispatch(getAllMembers())
         }

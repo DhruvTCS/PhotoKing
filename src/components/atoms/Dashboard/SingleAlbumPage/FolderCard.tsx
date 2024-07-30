@@ -415,12 +415,12 @@ const FolderCard: React.FC<FolderCardProps> = ({
                     <ImageContainer>
                         {folder.images && folder.images.length !== 0 ? (
                             <Images>
-                                <Image1 src={folder.images[0].image} />
+                                <Image1 src={folder.images[0].thumbnail} />
                                 {folder.images.length >= 2 ? (
-                                    <Image2 src={folder.images[1].image} />
+                                    <Image2 src={folder.images[1].thumbnail} />
                                 ) : null}
                                 {folder.images.length >= 3 ? (
-                                    <Image3 src={folder.images[2].image} />
+                                    <Image3 src={folder.images[2].thumbnail} />
                                 ) : null}
                                 {folder.images.length >= 4 ? (
                                     <RemainingImageCountContainer>

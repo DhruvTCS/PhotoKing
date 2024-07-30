@@ -50,7 +50,7 @@ const ProgressSnackbar: React.FC = () => {
                 currentCompressingFolder
                 && currentCompressingFolder.length > 0
                 && currentCompressingFolder.map((data, index) => {
-                    console.log(uploadFolderProgress.length + index)
+                    // console.log(uploadFolderProgress.length + index)
                     return (
 
                         <Snackbar

@@ -51,6 +51,7 @@ const EventCreateModal: React.FC<ModalProps> = ({
     const [subEvents, setSubEvents] = useState<CalendarSubEvents[]>([])
     const [locationList, setLocationList] = useState<string[]>([])
     const selectMenuRef = useRef<HTMLDivElement>(null)
+    const [deletedSubEvents, setDeletedSubEvents] = useState<number[]>([]);
     const [
         currentSubEvent,
         setCurrentSubEvent,
@@ -179,16 +180,28 @@ const EventCreateModal: React.FC<ModalProps> = ({
 
             // // console.log({ date, time, title: eventName, location: eventLocation, members: `${selectedMembers}` })
             if (isUpdate && currentEvent) {
-                let subEventsData = subEvents.map((event) => ({
-                    sub_event_id: event.id,
-                    sub_event_name: event.sub_event_name,
-                    start_date: event.start_date,
-                    start_time: event.start_time,
-                    end_date: event.end_date,
-                    end_time: event.end_time,
-                    location: event.location,
-                    member_ids: event.members.map((member) => member.member),
-                }))
+                let subEventsData = subEvents.map((event) => {
+                    if (event.id < 0)
+                        return {
+                            sub_event_name: event.sub_event_name,
+                            start_date: event.start_date,
+                            start_time: event.start_time,
+                            end_date: event.end_date,
+                            end_time: event.end_time,
+                            location: event.location,
+                            member_ids: event.members.map((member) => member.member),
+                        }
+                    else return {
+                        sub_event_id: event.id,
+                        sub_event_name: event.sub_event_name,
+                        start_date: event.start_date,
+                        start_time: event.start_time,
+                        end_date: event.end_date,
+                        end_time: event.end_time,
+                        location: event.location,
+                        member_ids: event.members.map((member) => member.member),
+                    }
+                })
 
                 dispatch(
                     updateEventAPI({
@@ -196,6 +209,7 @@ const EventCreateModal: React.FC<ModalProps> = ({
                         title: eventName,
                         event_member: [...selectedMembers, ...eventMembers],
                         sub_events: subEventsData,
+                        delete_sub_events: deletedSubEvents
                     }),
                 )
             }
@@ -269,6 +283,11 @@ const EventCreateModal: React.FC<ModalProps> = ({
     }
     const handleRemoveSubEvents = (subEvent: CalendarSubEvents) => {
         setSubEvents((pre) => pre.filter((e) => e.id !== subEvent.id))
+    }
+
+    const handleDeleteSubEvent = (id: number) => {
+        setDeletedSubEvents(pre => [...pre, id])
+        setSubEvents(pre => pre.filter(e => e.id !== id))
     }
     if (!isOpen) return null
 
@@ -351,14 +370,21 @@ const EventCreateModal: React.FC<ModalProps> = ({
                                         value={event.sub_event_name}
                                         readOnly
                                     />
-                                    <CloseButtonSubEvent
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleRemoveSubEvents(event)
-                                        }}
-                                    >
-                                        &times;
-                                    </CloseButtonSubEvent>
+                                    {currentEvent && event.id >= 0
+                                        ?
+                                        <DeleteIcon src={DeleteIconPNG} onClick={(e) => { e.stopPropagation(); handleDeleteSubEvent(event.id) }} />
+                                        :
+                                        <CloseButtonSubEvent
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                handleRemoveSubEvents(event)
+                                            }}
+                                        >
+                                            &times;
+                                        </CloseButtonSubEvent>
+                                    }
+
+
                                 </SubEventNameContainer>
                             ))}
                         </SubEventsList>
