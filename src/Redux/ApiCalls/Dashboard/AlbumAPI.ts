@@ -136,3 +136,20 @@ export const removeRedeemUserAPI = createAsyncThunk(
             return rejectWithValue(error.response.data);
         }
     });
+
+
+export const deleteAlbumAPI = createAsyncThunk(
+    'album/deleteAlbumAPI',
+    async (data: { album_id: number }, { rejectWithValue }) => {
+        try {
+
+            const response = await apiCall({
+                method: 'DELETE',
+                url: `/project/user/delete-project/${data.album_id}/`,
+            })
+            // console.log(response);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    });

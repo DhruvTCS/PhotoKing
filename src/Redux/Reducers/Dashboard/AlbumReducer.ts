@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, PayloadAction } from '@reduxjs/toolkit';
 import { AlbumState } from '../../Slice/Dashboard/AlbumSlice';
-import { createAlbumAPI, getAllAlbums, updateAlbumAPI } from '../../ApiCalls/Dashboard/AlbumAPI';
+import { createAlbumAPI, deleteAlbumAPI, getAllAlbums, updateAlbumAPI } from '../../ApiCalls/Dashboard/AlbumAPI';
 import { Folder } from '../../../Data/album.dto';
 import { getFoldersForAlbum } from '../../ApiCalls/Dashboard/FolderApi';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
@@ -51,14 +51,30 @@ export const AlbumReducer = (builder: ActionReducerMapBuilder<AlbumState>) => {
             showSuccessToast("Album updated successfully.")
             state.isUpdate = true;
 
-        })
-        .addCase(updateAlbumAPI.rejected, (state, action: PayloadAction<any>) => {
+        }).addCase(updateAlbumAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             state.isError = true;
 
             // console.log(action.payload);
             state.error = action.payload;
-        }).addCase(getFoldersForAlbum.pending, (state) => {
+        }).addCase(deleteAlbumAPI.pending, (state) => {
+            state.loading = true;
+
+        })
+        .addCase(deleteAlbumAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            showSuccessToast("Album deleted successfully.")
+            state.isUpdate = true;
+
+        })
+        .addCase(deleteAlbumAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            state.isError = true;
+
+            // console.log(action.payload);
+            state.error = action.payload;
+        })
+        .addCase(getFoldersForAlbum.pending, (state) => {
 
             state.folderLoading = true;
             state.isError = false;

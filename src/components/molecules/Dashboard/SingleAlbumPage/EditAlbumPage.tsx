@@ -7,7 +7,8 @@ import SubmitButton from '../../../atoms/Login/SubmitButton'
 import { uploadToCloudinary1 } from '../../../../Redux/ApiCalls/Cloudinary'
 import { Folder, NewAlbum, NewFolder } from '../../../../Data/album.dto'
 import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks'
-import { updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI'
+import { deleteAlbumAPI, updateAlbumAPI } from '../../../../Redux/ApiCalls/Dashboard/AlbumAPI'
+import DeleteIconPNG from '../../../../assets/Icons/deleteIcon.png'
 import { useNavigate } from 'react-router-dom'
 import {
     clearError,
@@ -26,6 +27,7 @@ import { showErrorToast, showSuccessToast } from '../../../atoms/Utlis/Toast'
 
 import imageCompression from 'browser-image-compression'
 import Errortext from '../../../atoms/Utlis/Errortext'
+import DeletePopup from '../../../atoms/Dashboard/Folder/DeletePopup'
 
 const AlbumPageContainer = styled.div`
   height: 94%;
@@ -210,7 +212,14 @@ const CancleIcon = styled.img`
 const ImagePreviewConatiner = styled.div`
   position: relative;
 `
-
+const DeleteIcon = styled.img`
+height: 35px;
+width: 35px;
+float: right;
+margin-top:30px;
+margin-right:30px;
+cursor: pointer;
+`;
 const EditAlbumPage: React.FC = () => {
     const [album, setAlbum] = useState<NewAlbum>({
         name: '',
@@ -227,6 +236,7 @@ const EditAlbumPage: React.FC = () => {
     const dispatch = useAppDispatch()
 
     const [isCompressing, setIsCompressing] = useState<boolean>(false)
+    const [deleteAlbumPopup, setDeleteAlbumPopup] = useState<boolean>(false)
     const dateRef = useRef<HTMLInputElement>(null)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [currentFolder, setCurrentFolder] = useState<NewFolder | null>(null)
@@ -458,9 +468,16 @@ const EditAlbumPage: React.FC = () => {
             return true;
         } else return false;
     }
-
+    const handleDeleteAlbum = (id: number) => {
+        dispatch(deleteAlbumAPI({ album_id: id }))
+        setDeleteAlbumPopup(false);
+    }
+    if (!currentAlbum)
+        return null;
     return (
         <AlbumPageContainer>
+            <DeleteIcon src={DeleteIconPNG} onClick={() => setDeleteAlbumPopup(true)} />
+            {deleteAlbumPopup && <DeletePopup cancel={() => setDeleteAlbumPopup(false)} Delete={() => handleDeleteAlbum(currentAlbum.id)} text='Are you sure you want to delete entire album' buttonText='Delete' />}
             <UperContainer>
                 <UploadImageContainer>
                     <UploadImageText>Cover Photo</UploadImageText>
