@@ -19,6 +19,7 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
             username: string,
             profile_image: string,
             role: string,
+            is_email_verified: boolean,
         }>) => {
             // console.log(action.payload)
             state.loading = false;
@@ -31,6 +32,8 @@ export const RegisterReducer = (builder: ActionReducerMapBuilder<UserState>) => 
                 image: action.payload.profile_image,
                 role: parseInt(action.payload.role),
                 username: action.payload.username,
+                is_email_verified: action.payload.is_email_verified
+
             }
             state.user = userData;
             state.access_token = action.payload.access_token;

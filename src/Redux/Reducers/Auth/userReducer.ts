@@ -5,7 +5,7 @@ import { refreshAccessToken } from '../../ApiCalls/Auth/refreshToken';
 import store from '../../Store';
 import { clearError as clearAlbumError } from '../../Slice/Dashboard/AlbumSlice';
 import { clearError as clearMemberError } from '../../Slice/Dashboard/MemberSlice'
-import { getBusinessDetailsAPI, updateUserDetailsAPI } from '../../ApiCalls/Auth/user';
+import { getBusinessDetailsAPI, updateUserDetailsAPI, verifyEmailLinkAPI } from '../../ApiCalls/Auth/user';
 import { showSuccessToast } from '../../../components/atoms/Utlis/Toast';
 export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
     builder.addCase(getUserByToken.pending, (state) => {
@@ -89,6 +89,23 @@ export const UserReducer = (builder: ActionReducerMapBuilder<UserState>) => {
             state.isSocialChanged = true;
         })
         .addCase(updateUserDetailsAPI.rejected, (state, action: PayloadAction<any>) => {
+            state.loading = false;
+            // state.isError = true;
+
+            // // console.log(action.payload);
+            // state.error = action.payload;
+        })
+        .addCase(verifyEmailLinkAPI.pending, (state) => {
+            state.loading = true;
+            state.error = {};
+            state.isError = false;
+
+        })
+        .addCase(verifyEmailLinkAPI.fulfilled, (state, action: PayloadAction<any>) => {
+            showSuccessToast("Verification email sent successfully.")
+            state.loading = false;
+        })
+        .addCase(verifyEmailLinkAPI.rejected, (state, action: PayloadAction<any>) => {
             state.loading = false;
             // state.isError = true;
 

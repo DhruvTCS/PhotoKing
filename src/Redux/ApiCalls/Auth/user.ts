@@ -71,3 +71,19 @@ export const updateUserDetailsAPI = createAsyncThunk(
         }
     }
 );
+export const verifyEmailLinkAPI = createAsyncThunk(
+    'auth/verifyEmailLinkAPI',
+    async (data: any, { rejectWithValue }) => {
+        try {
+            const response = await apiCall({
+                method: 'POST',
+                url: '/account/user/send-verify-token/',
+                data
+            });
+            // console.log(response.data);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
