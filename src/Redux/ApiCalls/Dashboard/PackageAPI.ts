@@ -31,7 +31,7 @@ export const getAllPackageAPI = createAsyncThunk(
     });
 export const updatePackageAPI = createAsyncThunk(
     'album/updatePackageAPI',
-    async (data: { package_id: number, description: string, title: string, price: number }, { rejectWithValue }) => {
+    async (data: { package_id: number, description: string, title: string, price: number, website?: string, facebook_link?: string, insta_link?: string, youtube_link?: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'PUT',
