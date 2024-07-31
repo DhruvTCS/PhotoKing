@@ -2,7 +2,7 @@
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Error } from '../../../Data/error.dto';
-import { PaymentReducer } from '../../Reducers/Dashboard/PymentReducer';
+import { PaymentReducer } from '../../Reducers/Dashboard/PaymentReducer';
 
 export interface PaymentState {
     loading: boolean;

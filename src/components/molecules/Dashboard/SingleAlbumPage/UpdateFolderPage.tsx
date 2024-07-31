@@ -317,7 +317,7 @@ const UpdateFolderPage = () => {
       setNewFolderImages([]);
       setFolderName(currentFolder.name);
       setFolderImages(currentFolder.images);
-      setDisplayImages(currentFolder.images.slice(0, 40))
+      setDisplayImages(currentFolder.images.slice(0, 55))
       setSelectedFolderImages([])
       setPreviewImageUrl([]);
     }
