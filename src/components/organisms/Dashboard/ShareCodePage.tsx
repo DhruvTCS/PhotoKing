@@ -134,9 +134,9 @@ const ShareCodePage: React.FC = () => {
             <MainContainer>
                 <QrCodeConatiner>
                     <QrCodeDiv>
-                        <QRCode value={`http://localhost:3000/dashboard/sharecode/${params["code"]}`} size={240} />
+                        <QRCode value={`http://${window.location.host}/dashboard/sharecode/${params["code"]}`} size={240} />
                     </QrCodeDiv>
-                    <ShareButton shareUrl={`http://localhost:3000/dashboard/sharecode/${params["code"]}`} />
+                    <ShareButton shareUrl={`http://${window.location.host}/dashboard/sharecode/${params["code"]}`} />
 
                 </QrCodeConatiner>
                 <EventCodeConatiner>
