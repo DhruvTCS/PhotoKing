@@ -13,8 +13,11 @@ import { useAppDispatch, useAppSelector } from '../../../../Redux/Hooks';
 import { createPackageAPI, updatePackageAPI } from '../../../../Redux/ApiCalls/Dashboard/PackageAPI';
 import LoadingDots from '../../../atoms/Utlis/LoadinDots';
 import { showErrorToast } from '../../../atoms/Utlis/Toast';
-
-
+import { getBusinessDetailsAPI } from '../../../../Redux/ApiCalls/Auth/user';
+import FacebookIconPNG from '../../../../assets/Icons/SocialMedia/facebookIcon.png'
+import InstaIconPNG from '../../../../assets/Icons/SocialMedia/instaIcon.png'
+import WebsiteIconPNG from '../../../../assets/Icons/SocialMedia/websiteIcon.png'
+import YoutubeIconPNG from '../../../../assets/Icons/SocialMedia/youtubeIcon.png'
 const AddNewPackagePage: React.FC = () => {
   const [packageName, setPackageName] = useState('');
   const [price, setPrice] = useState('');
@@ -23,8 +26,13 @@ const AddNewPackagePage: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [activeButton, setActiveButton] = useState(false);
   const [isShowTextEditor, setIsShowTextEditor] = useState(true);
+  const [packageWebsite, setPackageWebsite] = useState<string>();
+  const [packageInsta, setPackageInsta] = useState<string>();
+  const [packageFacebook, setPackageFacebook] = useState<string>();
+  const [packageYoutube, setPackageYoutube] = useState<string>();
   const [isPackageChange, setIsPackageChange] = useState(false);
   const navigate = useNavigate();
+  const { user, SocialLinks } = useAppSelector(state => state.auth)
   const quillRef = useRef<ReactQuill>(null);
   const { loading, error, isError, currentPackage, isPackageUpdate } = useAppSelector(state => state.package);
   const dispatch = useAppDispatch();
@@ -33,19 +41,38 @@ const AddNewPackagePage: React.FC = () => {
       if (error && error.message) showErrorToast(error.message);
       else showErrorToast("Something went wrong! Please try again later.");
     }
-    if (currentPackage) {
+    else if (currentPackage) {
       setPackageName(currentPackage.title);
       setPrice(currentPackage.price.toString());
       setDescription(currentPackage.description);
       setIsShowTextEditor(false);
       setPureDescription(DOMPurify.sanitize(currentPackage.description));
+      if (currentPackage.website)
+        setPackageWebsite(currentPackage.website);
+      if (currentPackage.facebook_link)
+        setPackageFacebook(currentPackage.facebook_link);
+      if (currentPackage.insta_link)
+        setPackageInsta(currentPackage.insta_link);
+      if (currentPackage.youtube_link)
+        setPackageYoutube(currentPackage.youtube_link);
+    } else {
+
+      if (Object.keys(SocialLinks).length <= 0) {
+        dispatch(getBusinessDetailsAPI())
+      } else {
+        if (SocialLinks.website) setPackageWebsite(SocialLinks.website)
+        if (SocialLinks.facebook_link) setPackageFacebook(SocialLinks.facebook_link)
+        if (SocialLinks.insta_link) setPackageInsta(SocialLinks.insta_link)
+        if (SocialLinks.youtube_link) setPackageYoutube(SocialLinks.youtube_link)
+
+      }
     }
-  }, [])
+  }, [SocialLinks])
   useEffect(() => {
     handleActiveButton();
     if (currentPackage)
       handlePackageChange();
-  }, [packageName, price, description])
+  }, [packageName, price, description, packageWebsite, packageFacebook, packageInsta, packageYoutube])
 
   useEffect(() => {
 
@@ -60,7 +87,7 @@ const AddNewPackagePage: React.FC = () => {
     } else {
       // // console.log("send package data");
 
-      dispatch(createPackageAPI({ title: packageName, price: parseInt(price), description }))
+      dispatch(createPackageAPI({ title: packageName, price: parseInt(price), description, website: packageWebsite, facebook_link: packageFacebook, insta_link: packageInsta, youtube_link: packageYoutube }))
     }
   }
 
@@ -100,12 +127,60 @@ const AddNewPackagePage: React.FC = () => {
       setPrice(value);
     } else if (name === "description" && (value.length === 0 || validateDescription(value))) {
       setDescription(value);
+    } else if (name === "website" && value.length < 45) {
+      setPackageWebsite(value);
+    } else if (name === "insta" && value.length < 45) {
+      setPackageInsta(value);
+    } else if (name === "facebook" && value.length < 45) {
+      setPackageFacebook(value);
+    } else if (name === "youtube" && value.length < 45) {
+      setPackageYoutube(value);
+    }
+  }
+  const isWebsiteChange = () => {
+    if (currentPackage && currentPackage.website) {
+      if (currentPackage.website !== packageWebsite) return true;
+      else return false;
+    } else {
+      if (packageWebsite && packageWebsite.length > 0) return true;
+      else return false;
+    }
+  }
+  const isInstaChange = () => {
+    if (currentPackage && currentPackage.insta_link) {
+      if (currentPackage.insta_link !== packageInsta) return true;
+      else return false;
+    } else {
+      if (packageInsta && packageInsta.length > 0) return true;
+      else return false;
+    }
+  }
+  const isFaceBookChange = () => {
+    if (currentPackage && currentPackage.facebook_link) {
+      if (currentPackage.facebook_link !== packageFacebook) return true;
+      else return false;
+    } else {
+      if (packageFacebook && packageFacebook.length > 0) return true;
+      else return false;
+    }
+  }
+  const isYoutubeChange = () => {
+    if (currentPackage && currentPackage.youtube_link) {
+      if (currentPackage.youtube_link !== packageYoutube) return true;
+      else return false;
+    } else {
+      if (packageYoutube && packageYoutube.length > 0) return true;
+      else return false;
     }
   }
   const handlePackageChange = () => {
+
     if (currentPackage) {
 
-      if (packageName !== currentPackage.title || parseInt(price) !== currentPackage.price || description !== currentPackage.description) {
+      if (packageName !== currentPackage.title || parseInt(price) !== currentPackage.price || description !== currentPackage.description || isWebsiteChange() || isYoutubeChange() || isInstaChange() || isFaceBookChange()) {
+        console.log("++++++++++++")
+        console.log(isWebsiteChange())
+        console.log("++++++++++++")
         setIsPackageChange(true);
       } else {
         setIsPackageChange(false);
@@ -114,14 +189,47 @@ const AddNewPackagePage: React.FC = () => {
     }
   }
   const handleActiveButton = () => {
-    if (packageName.length > 0 && packageName.length < 40 && price.length > 0 && price.length < 8 && description.length > 0) {
+    if (packageName.length > 0 && packageName.length < 40 && price.length > 0 && price.length < 8 && description.length > 0 && isValidSocialData("insta") && isValidSocialData("website") && isValidSocialData("facebook") && isValidSocialData("youtube")) {
       setActiveButton(true);
     } else {
       setActiveButton(false);
     }
   }
+  function isValidURL(url: string) {
+    const pattern = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+      "((([a-zA-Z0-9$_.+!*',;?&=-]|%[0-9a-fA-F]{2})+:)*([a-zA-Z0-9$_.+!*',;?&=-]|%[0-9a-fA-F]{2})+@)?" + // username:password@
+      '((\\[(|((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))\\])|' + // IP address
+      "(([a-zA-Z0-9$_.+!*',;?&=-]|%[0-9a-fA-F]{2})+\\.)*[a-zA-Z0-9](([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+" + // subdomain
+      '[a-zA-Z0-9-]{2,63}\\.?)' + // domain name
+      '(:\\d{1,5})?' + // port
+      "(\\/([a-zA-Z0-9$_.+!*',;:@&=-]|%[0-9a-fA-F]{2})*)*" + // path
+      "(\\?[a-zA-Z0-9$_.+!*',;:@&=-]*(\\([a-zA-Z0-9$_.+!*',;:@&=-]|%[0-9a-fA-F]{2})*\\))*" + // query string
+      "(#([a-zA-Z0-9$_.+!*',;:@&=-]|%[0-9a-fA-F]{2})*)?$",
+      'i',
+    ) // fragment locator
 
+    return pattern.test(url)
+  }
+  const isValidSocialData = (name: string) => {
+    if (name === "website" && packageWebsite) {
+      if (packageWebsite && packageWebsite.length > 0 && isValidURL(packageWebsite)) return true
+      else return false
 
+    } else if (name === "insta" && packageInsta) {
+      if (packageInsta && packageInsta.length > 0 && isValidURL(packageInsta)) return true
+      else return false
+
+    } else if (name === "facebook" && packageFacebook) {
+      if (packageFacebook && packageFacebook.length > 0 && isValidURL(packageFacebook)) return true
+      else return false
+
+    } else if (name === "youtube" && packageYoutube) {
+      if (packageYoutube && packageYoutube.length > 0 && isValidURL(packageYoutube)) return true
+      else return false
+
+    } else return true;
+  }
   return (
     <MainContainer>
       <BackButtonContainer onClick={() => navigate(-1)} >
@@ -183,6 +291,44 @@ const AddNewPackagePage: React.FC = () => {
             </InputContainerDescription>
             {/* <div>
             </div> */}
+            <SocialContainer>
+              <InputSocialContainer>
+                <InputLabel>Website  : </InputLabel>
+                <SocialInputContainer>
+                  <SocialIcon src={WebsiteIconPNG} />
+                  <SocialInput value={packageWebsite} type='text' onChange={(e) => onchangePackage("website", e.target.value)} />
+                </SocialInputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext show={showError && !isValidSocialData("website")} message={'Please provide valid website link.'} />
+              </InputSocialContainer>
+              <InputSocialContainer>
+                <InputLabel>Instagram : </InputLabel>
+                <SocialInputContainer>
+                  <SocialIcon src={InstaIconPNG} />
+                  <SocialInput value={packageInsta} type='text' onChange={(e) => onchangePackage("insta", e.target.value)} />
+                </SocialInputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext show={showError && !isValidSocialData("insta")} message={'Please provide valid instagram link.'} />
+              </InputSocialContainer>
+              <InputSocialContainer>
+                <InputLabel>Facebook : </InputLabel>
+                <SocialInputContainer >
+                  <SocialIcon src={FacebookIconPNG} />
+                  <SocialInput value={packageFacebook} type='text' onChange={(e) => onchangePackage("facebook", e.target.value)} />
+                </SocialInputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext show={showError && !isValidSocialData("facebook")} message={'Please provide valid facebook link.'} />
+              </InputSocialContainer>
+              <InputSocialContainer>
+                <InputLabel>Youtube : </InputLabel>
+                <SocialInputContainer>
+                  <SocialIcon src={YoutubeIconPNG} />
+                  <SocialInput value={packageYoutube} type='text' onChange={(e) => onchangePackage("youtube", e.target.value)} />
+                </SocialInputContainer>
+                <UnderLine width={100} isPercent={true} />
+                <Errortext show={showError && !isValidSocialData("youtube")} message={'Please provide valid youtube link.'} />
+              </InputSocialContainer>
+            </SocialContainer>
           </FormLowerContainer>
         </Form>
         <ButtonContainer>
@@ -279,9 +425,18 @@ flex-direction: column;
 align-items: baseline;
 
 `;
+const InputSocialContainer = styled.div`
+display: flex;
+width:87%;
+min-width:400px;
+flex-direction: column;
+align-items: baseline;
+margin-bottom:16px;
+
+`
 const InputContainerDescription = styled.div`
 display: flex;
-width:50%;
+width:79%;
 flex-direction: column;
 align-items: baseline;
 
@@ -317,9 +472,32 @@ color: #292929;
 outline: none;
 }
 `;
+const SocialInput = styled.input`
+width:100%;
+border:none;
+background: transparent;
+
+font-family: Montserrat;
+font-size: 16px;
+font-weight: 400;
+line-height: 25px;
+text-align: left;
+color: #292929;
+&::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+&:focus{
+outline: none;
+}
+`;
 const FormLowerContainer = styled.div`
 width:100%;
 padding-top:40px;
+display: flex;
+justify-content:space-between;
 `;
 const DescriptionTab = styled.div`
 margin-top:10px;
@@ -348,4 +526,22 @@ height:300px;
 padding:10px;
 border-radius:10px;
 overflow:auto;
+`;
+const SocialContainer = styled.div`
+width:68%;
+display:flex;
+flex-direction:column;
+align-items:end;
+`;
+const SocialInputContainer = styled.div`
+display:flex;
+align-items:center;
+margin-top:6px;
+width:100%;
+
+`;
+const SocialIcon = styled.img`
+height:23px;
+width:23px;
+margin-right:10px;
 `;

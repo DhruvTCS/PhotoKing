@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import apiCall from "../AuthorizedApi";
 export const createPackageAPI = createAsyncThunk(
     'album/createPackageAPI',
-    async (data: { title: string, price: number, description: string }, { rejectWithValue }) => {
+    async (data: { title: string, price: number, description: string, website?: string, youtube_link?: string, insta_link?: string, facebook_link?: string }, { rejectWithValue }) => {
         try {
             const response = await apiCall({
                 method: 'POST',

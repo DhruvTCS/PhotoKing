@@ -23,6 +23,7 @@ export const PaymentReducer = (builder: ActionReducerMapBuilder<PaymentState>) =
         })
         .addCase(completePaymentAPI.fulfilled, (state, action: PayloadAction<any>) => {
             state.loading = false;
+            console.log("payment completed")
             state.paymentSuccess = true;
             showSuccessToast("Payment successful.")
         }).addCase(completePaymentAPI.rejected, (state, action: PayloadAction<any>) => {
