@@ -97,7 +97,7 @@ const AddNewPackagePage: React.FC = () => {
     } else {
       // // console.log("send package data");
       if (currentPackage)
-        dispatch(updatePackageAPI({ title: packageName, price: parseInt(price), description, package_id: currentPackage.id }))
+        dispatch(updatePackageAPI({ title: packageName, price: parseInt(price), description, package_id: currentPackage.id, website: packageWebsite, facebook_link: packageFacebook, insta_link: packageInsta, youtube_link: packageYoutube }))
     }
   }
   const validatePackageName = (packageName: string) => {
@@ -178,9 +178,9 @@ const AddNewPackagePage: React.FC = () => {
     if (currentPackage) {
 
       if (packageName !== currentPackage.title || parseInt(price) !== currentPackage.price || description !== currentPackage.description || isWebsiteChange() || isYoutubeChange() || isInstaChange() || isFaceBookChange()) {
-        console.log("++++++++++++")
-        console.log(isWebsiteChange())
-        console.log("++++++++++++")
+        // console.log("++++++++++++")
+        // console.log(isWebsiteChange())
+        // console.log("++++++++++++")
         setIsPackageChange(true);
       } else {
         setIsPackageChange(false);
